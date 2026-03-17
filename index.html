@@ -253,7 +253,7 @@ button.secondary{
 
 /* Narrative paragraphs */
 .lm-narr{
-  font-size:clamp(13px,1.35vw,15px);color:rgba(255,255,255,.52);
+  font-size:clamp(14px,1.45vw,16px);color:rgba(255,255,255,.52);
   line-height:1.82;margin:0 0 32px;max-width:640px;
   animation:lmUp .55s .2s both;
 }
@@ -273,12 +273,12 @@ button.secondary{
 }
 .lm-rung:hover{transform:translateY(-3px);border-color:rgba(201,162,39,.28);}
 .lm-rung-tier{
-  font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
   margin-bottom:8px;display:block;opacity:.65;
 }
 .lm-rung-icon{font-size:22px;margin-bottom:9px;display:block;}
-.lm-rung-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:5px;line-height:1.3;}
-.lm-rung-desc{font-size:11.5px;color:rgba(255,255,255,.4);line-height:1.6;}
+.lm-rung-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:7px;line-height:1.3;}
+.lm-rung-desc{font-size:13px;color:rgba(255,255,255,.48);line-height:1.68;}
 
 /* Rung color themes */
 .lm-rung-diy{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09);}
@@ -498,7 +498,7 @@ button.secondary{
       <p class="demo-tag">Your CHNA data already makes <strong>the case for bank funding.</strong></p>
     </div>
   </div>
-  <nav class="demo-rail" role="tablist"><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.12);margin-left:6px;"><span class="rn" style="background:rgba(201,162,39,.18);color:#E8C84A;">07</span><span class="rl" style="color:rgba(232,200,74,.75);">Executive Training</span></button></nav>
+  <nav class="demo-rail" role="tablist"><button class="rb" id="rb_about" onclick="go('about')" style="border-right:1px solid rgba(255,255,255,.12);margin-right:4px;padding-right:22px;"><span class="rn" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:14px;">⬡</span><span class="rl" style="color:rgba(255,255,255,.5);">About</span></button><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.12);margin-left:6px;"><span class="rn" style="background:rgba(201,162,39,.18);color:#E8C84A;">07</span><span class="rl" style="color:rgba(232,200,74,.75);">Executive Training</span></button></nav>
 </header>
 <main id="wg-content">
 <section id="s_chna" class="step" style="display:block"><div class="story-hdr"><div class="story-num">01</div><div><h2 class="story-hl">Your community’s need is already documented.</h2><p class="story-sub">Most health systems have CHNA data sitting in a PDF. Mayo has something rare: three documented priorities, a county-wide survey of 937 residents, and the Rochester Epidemiology Project — 56 million patient records stretching back to 1966. The evidence for a funded NEMT program already exists. This step shows you exactly what it says.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">2025 Olmsted County CHNA &mdash; Three Priorities, Four Evidence Nodes</div>
@@ -928,6 +928,166 @@ button.secondary{
             <button class="primary" onclick="mayoNav('chna')">&#8635; Review CHNA Evidence</button>
           </div>
         </div></div><div class="step-foot step-cta"><div class="cta-wrap"><blockquote class="cta-quote"><span class="cta-qm">“</span>We are your partner. We have all the tools you need, all in one place. <strong>You can do it yourself. You can have us help you.</strong> We’re here to enable the kind of population health outcomes your community deserves.<span class="cta-qm">”</span></blockquote><div class="cta-btns"><button class="cta-primary" onclick="alert('Contact info@aqueducthealth.com to begin your Aqueduct Partnership engagement.')">Begin Your Aqueduct Partnership →</button><button class="cta-ghost" onclick="go('chna')">↻ Review from Start</button></div></div></div></section>
+</section>
+
+<!-- ═══ ABOUT SECTION ═════════════════════════════════════════════════════ -->
+<section id="s_about" class="step" style="display:none">
+  <div style="background:linear-gradient(150deg,#000D1E 0%,#001533 50%,#001E44 100%);
+    padding:48px 36px 52px;position:relative;overflow:hidden;">
+    <!-- Decorative glow -->
+    <div style="position:absolute;width:600px;height:600px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(201,162,39,.08) 0%,transparent 70%);
+      top:50%;right:-100px;transform:translateY(-50%);pointer-events:none;"></div>
+    <div style="position:absolute;width:400px;height:400px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(0,120,255,.06) 0%,transparent 70%);
+      bottom:-100px;left:-60px;pointer-events:none;"></div>
+
+    <!-- Wordmark + headline -->
+    <div style="position:relative;z-index:1;max-width:860px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+        <div style="width:48px;height:48px;border-radius:11px;flex-shrink:0;
+          background:linear-gradient(135deg,#C9A227,#8A6500);
+          display:flex;align-items:center;justify-content:center;
+          font-weight:900;font-size:15px;color:#fff;
+          box-shadow:0 4px 24px rgba(201,162,39,.45);">T3</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.9);">Aqueduct T360 MATCH</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.25),transparent);"></div>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,162,39,.55);white-space:nowrap;">Community Health Evidence → Funded Program</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.25));"></div>
+      </div>
+
+      <h2 style="font-family:Georgia,serif;font-size:clamp(24px,3.2vw,40px);font-weight:400;
+        font-style:italic;color:#fff;line-height:1.22;margin:0 0 18px;">
+        Your community's health data already makes<br>
+        <em style="font-style:normal;background:linear-gradient(110deg,#C9A227,#E8C84A,#FFF0A0);
+          -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">the case for what comes next.</em>
+      </h2>
+
+      <p style="font-size:clamp(14px,1.4vw,16px);color:rgba(255,255,255,.52);
+        line-height:1.82;margin:0 0 10px;max-width:680px;">
+        Most health systems have a CHNA sitting in a PDF. A few have the evidence to act on it.
+        <strong style="color:rgba(255,255,255,.75);">Almost none have the financial model, the regulatory pathway, the bank strategy, and the document suite to move from insight to funded program in a single session.</strong>
+        That is the end-to-end versatility T360 MATCH was built to deliver — your complete toolkit, your choice of how deeply to engage it.
+      </p>
+    </div>
+  </div>
+
+  <!-- Three-tier engagement ladder -->
+  <div class="tool-body" style="background:#fff;">
+    <div class="section-title" style="font-size:16px;margin-bottom:4px;">How deeply you engage is entirely up to you.</div>
+    <p class="small" style="margin-bottom:20px;">T360 MATCH meets you where you are — from a self-directed walkthrough to a fully managed white-glove partnership. Three tiers, one platform, one mission.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:28px;">
+
+      <!-- Tier 1 -->
+      <div style="border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;">
+        <div style="background:linear-gradient(135deg,#1e293b,#334155);padding:20px 20px 16px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+            color:#94a3b8;margin-bottom:10px;">Tier 1 · Self-Directed</div>
+          <div style="font-size:22px;margin-bottom:10px;">🗺️</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:0;">Do It Yourself</div>
+        </div>
+        <div style="padding:16px 20px 20px;background:#fff;">
+          <p style="font-size:13.5px;color:#4a5568;line-height:1.72;margin:0 0 14px;">
+            The platform is your guide. Work through six steps, build your live ROI model, generate all seven documents, and approach your banking partners — on your own schedule, at your own pace. The evidence base, the regulatory mapping, and the draft artifacts are all here.
+          </p>
+          <div style="font-size:12px;font-weight:700;color:#64748b;padding:8px 12px;
+            background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0;">
+            ✓ Full platform access &nbsp;·&nbsp; ✓ 7 generated documents &nbsp;·&nbsp; ✓ Live ROI model
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 2 -->
+      <div style="border-radius:14px;overflow:hidden;border:1px solid rgba(201,162,39,.35);
+        box-shadow:0 4px 20px rgba(201,162,39,.12);">
+        <div style="background:linear-gradient(135deg,#001533,#002455);padding:20px 20px 16px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+            color:#C9A227;margin-bottom:10px;">Tier 2 · Executive Training</div>
+          <div style="font-size:22px;margin-bottom:10px;">🎓</div>
+          <div style="font-size:16px;font-weight:800;
+            background:linear-gradient(110deg,#C9A227,#E8C84A);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;margin-bottom:0;">Guided Mastery</div>
+        </div>
+        <div style="padding:16px 20px 20px;background:#fff;">
+          <p style="font-size:13.5px;color:#4a5568;line-height:1.72;margin:0 0 14px;">
+            Five interactive modules — regulation, revenue, patient engagement, operations, sustainability — give you hands-on decision-grade training anchored to the same evidence base that powers this platform. Each module includes scored simulations and builds directly on the prior.
+          </p>
+          <button onclick="go('training')" style="background:linear-gradient(135deg,#C9A227,#8A6500);
+            color:#fff;border:none;border-radius:9px;padding:10px 20px;font-size:13px;
+            font-weight:700;cursor:pointer;font-family:inherit;
+            box-shadow:0 3px 12px rgba(201,162,39,.35);transition:transform .12s;"
+            onmouseover="this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.transform='none'">
+            Go to Training Program →
+          </button>
+        </div>
+      </div>
+
+      <!-- Tier 3 -->
+      <div style="border-radius:14px;overflow:hidden;border:1px solid rgba(0,140,255,.2);">
+        <div style="background:linear-gradient(135deg,#0a1628,#0d2040);padding:20px 20px 16px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+            color:#60a5fa;margin-bottom:10px;">Tier 3 · White-Glove Partnership</div>
+          <div style="font-size:22px;margin-bottom:10px;">🤝</div>
+          <div style="font-size:16px;font-weight:800;
+            background:linear-gradient(120deg,#60a5fa,#93c5fd);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;margin-bottom:0;">We Build It With You</div>
+        </div>
+        <div style="padding:16px 20px 20px;background:#fff;">
+          <p style="font-size:13.5px;color:#4a5568;line-height:1.72;margin:0 0 14px;">
+            Engage the Aqueduct project management team live. We package your program for commercial banking review, guide your executive communication strategy, and stay with you from evidence to funded launch — with the white-glove service your institution deserves.
+          </p>
+          <div style="font-size:12px;font-weight:700;color:#64748b;padding:8px 12px;
+            background:#F0F7FF;border-radius:8px;border:1px solid rgba(0,140,255,.15);">
+            Contact <span style="color:#1D4ED8;">info@aqueducthealth.com</span> to begin your partnership engagement.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Platform capabilities strip -->
+    <div style="background:linear-gradient(135deg,#001533,#002455);border-radius:12px;
+      padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
+      <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.35);
+        text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;">Platform includes</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1;">
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);">📍 CHNA Evidence Engine</span>
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);">📊 4-Layer Live ROI Model</span>
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);">🏦 CRA Bank Strategy</span>
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);">📋 7-Artifact Document Suite</span>
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);">🔬 REP Study Infrastructure</span>
+        <span style="font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;
+          background:rgba(201,162,39,.15);color:#C9A227;border:1px solid rgba(201,162,39,.25);">🎓 Executive Training Program</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="primary" onclick="mayoNav('chna')">Begin: CHNA Evidence →</button>
+      <button class="secondary" onclick="go('training')">View Training Program</button>
+    </div>
+  </div>
+
+  <div class="step-foot">
+    <p class="step-bridge">You can do it yourself. You can have us help you. We're here to enable the population health outcomes your community deserves.</p>
+    <button class="step-cont" onclick="go('chna')">Start the workflow →</button>
+  </div>
+</section>
+
 <!-- ═══ TRAINING SECTION ══════════════════════════════════════════════════ -->
 <section id="s_training" class="step" style="display:none">
   <div class="story-hdr">
@@ -939,7 +1099,6 @@ button.secondary{
   </div>
   <div class="tool-body">
 
-    <!-- Hero intro -->
     <div class="trn-hero">
       <div class="trn-hero-icon">🎓</div>
       <div>
@@ -952,17 +1111,14 @@ button.secondary{
       </div>
     </div>
 
-    <!-- Progress bar -->
     <div class="trn-progbar">
       <span class="trn-pb-lbl">Curriculum Progress</span>
       <div class="trn-pb-track"><div class="trn-pb-fill"></div></div>
       <span class="trn-pb-ct">1 of 5 modules available</span>
     </div>
 
-    <!-- Module cards -->
     <div class="mod-grid">
 
-      <!-- MODULE 1 — Slate/Compliance — LOCKED -->
       <div class="mod-card mod-m1 mod-locked">
         <div class="mod-hdr">
           <div class="mod-num-badge">1</div>
@@ -983,7 +1139,6 @@ button.secondary{
         </div>
       </div>
 
-      <!-- MODULE 2 — Gold/Revenue — ACTIVE -->
       <div class="mod-card mod-m2 mod-active">
         <div class="mod-hdr">
           <div class="mod-num-badge">2</div>
@@ -1006,7 +1161,6 @@ button.secondary{
         </div>
       </div>
 
-      <!-- MODULE 3 — Teal/Behavioral — LOCKED -->
       <div class="mod-card mod-m3 mod-locked">
         <div class="mod-hdr">
           <div class="mod-num-badge">3</div>
@@ -1026,7 +1180,6 @@ button.secondary{
         </div>
       </div>
 
-      <!-- MODULE 4 — Purple/Operations — LOCKED -->
       <div class="mod-card mod-m4 mod-locked">
         <div class="mod-hdr">
           <div class="mod-num-badge">4</div>
@@ -1046,7 +1199,6 @@ button.secondary{
         </div>
       </div>
 
-      <!-- MODULE 5 — Forest Green/Sustainability — LOCKED -->
       <div class="mod-card mod-m5 mod-locked">
         <div class="mod-hdr">
           <div class="mod-num-badge">5</div>
@@ -1067,7 +1219,7 @@ button.secondary{
         </div>
       </div>
 
-    </div><!-- /mod-grid -->
+    </div>
 
     <div class="trn-notice">
       <strong>🔓 Module 2 is available now as a live interactive demonstration.</strong> Modules 1, 3, 4, and 5 are in active development and will unlock sequentially. Each module is purpose-built for your role — not generic CME, but decision-grade training anchored to real evidence, real billing mechanics, and the platform you're already using.
@@ -1083,13 +1235,21 @@ button.secondary{
 </main>
 <script>
 
-var ORDER=['chna','linkage','roi','cra','banks','draft','training'];
+var ORDER=['about','chna','linkage','roi','cra','banks','draft','training'];
 function go(t){
   ORDER.forEach(function(id,i){
     var el=document.getElementById('s_'+id);
     var btn=document.getElementById('rb_'+id);
     if(el) el.style.display=(id===t)?'block':'none';
-    if(btn){var ti=ORDER.indexOf(t);btn.className='rb'+(id===t?' rb-on':i<ti?' rb-done':'');}
+    if(btn){
+      var ti=ORDER.indexOf(t);
+      // About tab: never gets rb-done styling, just rb-on or plain
+      if(id==='about'){
+        btn.className='rb'+(id===t?' rb-on':'');
+      } else {
+        btn.className='rb'+(id===t?' rb-on':i<ti?' rb-done':'');
+      }
+    }
   });
   var c=document.getElementById('wg-content');
   if(c) c.scrollTop=0;
@@ -1125,7 +1285,9 @@ window.closeLanding = function() {
   if (!ov) return;
   ov.classList.add('lm-exit');
   setTimeout(function() { ov.style.display = 'none'; }, 400);
+  // Stay on chna tab (already the default), About is always accessible via the tab
 };
+
 
 
 window.toggleMEN = function(n) {
