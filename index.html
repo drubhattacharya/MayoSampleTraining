@@ -112,8 +112,8 @@ body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction
   font-size:12px; color:var(--light); margin-top:6px; line-height:1.4;
 }
 .kpis{display:grid; grid-template-columns: repeat(4,1fr); gap:12px;}
-@media (max-width: 1024px){ .kpis{grid-template-columns: repeat(2,1fr);}
-@media (max-width: 640px){ .kpis{grid-template-columns:1fr;}
+@media (max-width: 1024px){ .kpis{grid-template-columns: repeat(2,1fr);}}
+@media (max-width: 640px){ .kpis{grid-template-columns:1fr;}}
 .callout{
   border:1px solid var(--border);
   border-left:3px solid var(--teal);
@@ -135,7 +135,7 @@ body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction
 .b-weak{border-color:var(--red-border); background:var(--red-soft); color:var(--red);}
 .grid{display:grid; gap:16px;}
 .grid-2{grid-template-columns: 360px 1fr;}
-@media (max-width: 1024px){ .grid-2{grid-template-columns:1fr;}
+@media (max-width: 1024px){ .grid-2{grid-template-columns:1fr;}}
 button.primary{
   background: var(--teal);
   color:#fff;
@@ -183,203 +183,312 @@ button.secondary{
   display:flex; justify-content:space-between; gap:10px;
   font-weight:600; font-size:13px; color:var(--muted);
   margin-bottom:6px;
-}
-
-/* ══ LANDING OVERLAY ══════════════════════════════════════════════════════ */
-#lm-overlay{
-  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(155deg,#000C1A 0%,#001533 50%,#002050 100%);
-  animation:lmIn .45s cubic-bezier(.22,.68,0,1.2);
-}
-#lm-overlay.lm-exit{animation:lmOut .35s ease forwards;pointer-events:none;}
-@keyframes lmIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-@keyframes lmOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.025)}}
-.lm-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.lm-star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite var(--del,0s);}
-@keyframes twinkle{0%,100%{opacity:var(--lo,.1)}50%{opacity:var(--hi,.5)}}
-.lm-inner{
-  position:relative;z-index:2;max-width:780px;width:calc(100% - 48px);
-  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;
-}
-.lm-wordmark{
-  display:flex;align-items:center;gap:12px;margin-bottom:32px;
-  animation:lmFadeUp .5s .05s both;
-}
-.lm-mark{
-  width:46px;height:46px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(135deg,#C9A227,#8A6A00);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:14px;color:#fff;
-  box-shadow:0 4px 20px rgba(201,162,39,.4);
-}
-.lm-wordmark-text{text-align:left;}
-.lm-wordmark-name{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.2;}
-.lm-wordmark-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;}
-.lm-eyebrow{
-  font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-  color:rgba(201,162,39,.65);margin-bottom:20px;
-  display:flex;align-items:center;gap:12px;width:100%;
-  animation:lmFadeUp .5s .1s both;
-}
-.lm-eyebrow::before,.lm-eyebrow::after{content:'';flex:1;height:1px;background:rgba(201,162,39,.18);}
-.lm-headline{
-  font-family:Georgia,serif;font-size:clamp(24px,3.8vw,44px);
-  font-style:italic;font-weight:400;color:#fff;
-  line-height:1.22;margin:0 0 14px;
-  animation:lmFadeUp .5s .15s both;
-}
-.lm-headline strong{
-  font-style:normal;
-  background:linear-gradient(110deg,#C9A227,#E8C84A,#fff5cc);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.lm-sub{
-  font-size:clamp(13px,1.4vw,15px);color:rgba(255,255,255,.5);
-  line-height:1.8;margin:0 0 38px;max-width:600px;
-  animation:lmFadeUp .5s .2s both;
-}
-.lm-pillars{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-  width:100%;margin-bottom:38px;
-  animation:lmFadeUp .5s .28s both;
-}
-@media(max-width:580px){.lm-pillars{grid-template-columns:1fr 1fr;}}
-.lm-pillar{
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-  border-radius:12px;padding:16px 13px;text-align:left;
-  transition:background .2s,border-color .2s,transform .2s;
-}
-.lm-pillar:hover{background:rgba(201,162,39,.07);border-color:rgba(201,162,39,.22);transform:translateY(-2px);}
-.lm-p-icon{font-size:20px;margin-bottom:8px;display:block;}
-.lm-p-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.85);margin-bottom:3px;line-height:1.3;}
-.lm-p-desc{font-size:11px;color:rgba(255,255,255,.38);line-height:1.55;}
-.lm-cta{
-  background:linear-gradient(135deg,#C9A227,#9A7600);color:#fff;border:none;
-  border-radius:12px;padding:16px 48px;font-size:15px;font-weight:800;
-  cursor:pointer;font-family:inherit;letter-spacing:.02em;
-  box-shadow:0 6px 30px rgba(201,162,39,.45),0 2px 8px rgba(0,0,0,.35);
-  transition:transform .15s,box-shadow .15s;
-  animation:lmFadeUp .5s .35s both;
-}
-.lm-cta:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(201,162,39,.55),0 2px 8px rgba(0,0,0,.35);}
-.lm-footnote{
-  margin-top:16px;font-size:11px;color:rgba(255,255,255,.18);letter-spacing:.03em;
-  animation:lmFadeUp .5s .4s both;
-}
-@keyframes lmFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-
-/* ══ TRAINING TAB ══════════════════════════════════════════════════════════ */
-.trn-intro{
-  background:linear-gradient(135deg,var(--navy) 0%,#002455 100%);
-  border-radius:12px;padding:20px 24px;margin-bottom:20px;
-  display:flex;align-items:flex-start;gap:18px;
-}
-.trn-intro-icon{font-size:32px;flex-shrink:0;margin-top:2px;}
-.trn-intro h3{font-family:Georgia,serif;font-size:18px;font-style:italic;color:#fff;margin:0 0 6px;font-weight:400;}
-.trn-intro h3 strong{font-style:normal;color:var(--gold2);}
-.trn-intro p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;margin:0;}
-.trn-progress-bar{
-  display:flex;align-items:center;gap:12px;margin-bottom:24px;
-  background:rgba(0,21,51,.04);border:1px solid #E2E8F0;
-  border-radius:10px;padding:12px 18px;
-}
-.trn-pb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap;}
-.trn-pb-track{flex:1;height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden;}
-.trn-pb-fill{height:100%;width:20%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .4s;}
-.trn-pb-count{font-size:12px;font-weight:700;color:var(--navy);font-family:monospace;white-space:nowrap;}
-.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
-.mod-card{border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;background:#fff;transition:box-shadow .2s,transform .2s;position:relative;}
-.mod-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1);transform:translateY(-2px);}
-.mod-card.mod-active{border-color:rgba(201,162,39,.5);box-shadow:0 4px 20px rgba(201,162,39,.18);}
-.mod-card.mod-locked{opacity:.68;}
-.mod-card.mod-locked:hover{transform:none;box-shadow:none;}
-.mod-hdr{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px;}
-.mod-active .mod-hdr{background:linear-gradient(135deg,var(--navy),#002455);}
-.mod-num{width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
-.mod-title-wrap{flex:1;}
-.mod-title{font-size:13px;font-weight:800;color:var(--navy);line-height:1.35;margin:0;}
-.mod-active .mod-title{color:#fff;}
-.mod-subtitle{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500;}
-.mod-active .mod-subtitle{color:rgba(255,255,255,.45);}
-.mod-topics{padding:10px 18px 14px;display:flex;flex-direction:column;gap:4px;}
-.mod-topic{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#4a5568;line-height:1.5;}
-.mod-topic::before{content:'›';color:#94a3b8;flex-shrink:0;margin-top:1px;font-weight:700;}
-.mod-foot{padding:11px 18px;border-top:1px solid #F0F4F8;display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.mod-open-btn{
-  background:linear-gradient(135deg,var(--gold),#8A6A00);color:#fff;
-  border:none;border-radius:8px;padding:9px 20px;font-size:12px;font-weight:700;
-  cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(201,162,39,.35);
-  transition:transform .12s,box-shadow .12s;display:flex;align-items:center;gap:6px;
-}
-.mod-open-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(201,162,39,.45);}
-.mod-lock-pill{
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:var(--muted);font-weight:600;
-  padding:5px 11px;border:1px solid #E2E8F0;border-radius:99px;background:#F8FAFC;
-}
-.mod-live-badge{
-  font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-  background:linear-gradient(135deg,rgba(201,162,39,.15),rgba(201,162,39,.06));
-  color:#7A5C00;border:1px solid rgba(201,162,39,.3);
-  padding:3px 10px;border-radius:99px;
-}
-.trn-notice{
-  margin-top:20px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.2);
-  border-radius:10px;padding:14px 18px;font-size:12px;color:#7A5C00;line-height:1.65;
-}
-</style>
+}</style>
 </head>
 <body>
-<!-- ══ LANDING OVERLAY ══════════════════════════════════════════════════ -->
-<div id="lm-overlay" role="dialog" aria-modal="true" aria-label="Welcome to Aqueduct T360 MATCH">
-  <div class="lm-stars" id="lm-stars"></div>
-  <div class="lm-inner">
-    <div class="lm-wordmark">
-      <div class="lm-mark">T3</div>
-      <div class="lm-wordmark-text">
-        <div class="lm-wordmark-name">Aqueduct T360 MATCH</div>
-        <div class="lm-wordmark-sub">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
+<!-- ═══ LANDING + TRAINING STYLES (separate block, immune to media query issues) ═══ -->
+<style>
+/* ── LANDING OVERLAY ─────────────────────────────────────────────────── */
+#lm-overlay{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(155deg,#000D1E 0%,#001533 55%,#001E44 100%);
+  overflow:hidden;
+}
+#lm-overlay.lm-exit{animation:lmOut .4s ease forwards;pointer-events:none;}
+@keyframes lmIn{from{opacity:0}to{opacity:1}}
+@keyframes lmOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.03)}}
+
+/* Star field */
+.lm-star{position:absolute;border-radius:50%;background:#fff;
+  animation:lmTwinkle var(--d,3s) ease-in-out infinite var(--dl,0s);}
+@keyframes lmTwinkle{0%,100%{opacity:var(--lo,.08)}50%{opacity:var(--hi,.5)}}
+
+/* Radial glow behind content */
+.lm-glow{
+  position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(201,162,39,.09) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+
+/* Main content panel */
+.lm-panel{
+  position:relative;z-index:2;max-width:820px;width:calc(100% - 40px);
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:0 10px;
+}
+
+/* Wordmark row */
+.lm-wm{display:flex;align-items:center;gap:14px;margin-bottom:28px;
+  animation:lmUp .55s .05s both;}
+@keyframes lmUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.lm-wm-mark{width:48px;height:48px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,#C9A227,#8A6500);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:15px;color:#fff;
+  box-shadow:0 4px 24px rgba(201,162,39,.45);}
+.lm-wm-name{text-align:left;font-size:14px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.25;}
+.lm-wm-sub{font-size:11px;color:rgba(255,255,255,.32);margin-top:2px;}
+
+/* Rule divider */
+.lm-rule{
+  width:100%;display:flex;align-items:center;gap:14px;margin-bottom:22px;
+  animation:lmUp .55s .1s both;
+}
+.lm-rule::before,.lm-rule::after{content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,162,39,.22),transparent);}
+.lm-rule-text{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(201,162,39,.55);white-space:nowrap;}
+
+/* Headline */
+.lm-h{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(26px,4vw,46px);font-weight:400;font-style:italic;
+  color:#fff;line-height:1.2;margin:0 0 18px;
+  animation:lmUp .55s .15s both;
+}
+.lm-h em{font-style:normal;
+  background:linear-gradient(110deg,#C9A227,#E8C84A,#FFF0A0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Narrative paragraphs */
+.lm-narr{
+  font-size:clamp(13px,1.35vw,15px);color:rgba(255,255,255,.52);
+  line-height:1.82;margin:0 0 32px;max-width:640px;
+  animation:lmUp .55s .2s both;
+}
+.lm-narr strong{color:rgba(255,255,255,.75);font-weight:600;}
+
+/* Three-tier value ladder */
+.lm-ladder{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;margin-bottom:32px;
+  animation:lmUp .55s .26s both;
+}
+@media(max-width:580px){.lm-ladder{grid-template-columns:1fr;}}
+.lm-rung{
+  border-radius:13px;padding:18px 15px 16px;text-align:left;
+  border:1px solid rgba(255,255,255,.08);
+  transition:transform .2s,border-color .2s;
+}
+.lm-rung:hover{transform:translateY(-3px);border-color:rgba(201,162,39,.28);}
+.lm-rung-tier{
+  font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:8px;display:block;opacity:.65;
+}
+.lm-rung-icon{font-size:22px;margin-bottom:9px;display:block;}
+.lm-rung-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:5px;line-height:1.3;}
+.lm-rung-desc{font-size:11.5px;color:rgba(255,255,255,.4);line-height:1.6;}
+
+/* Rung color themes */
+.lm-rung-diy{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09);}
+.lm-rung-diy .lm-rung-tier{color:#94a3b8;}
+.lm-rung-guided{background:rgba(201,162,39,.07);border-color:rgba(201,162,39,.2);}
+.lm-rung-guided .lm-rung-tier{color:#C9A227;}
+.lm-rung-partner{background:rgba(0,105,210,.1);border-color:rgba(0,140,255,.22);}
+.lm-rung-partner .lm-rung-title{background:linear-gradient(120deg,#60a5fa,#93c5fd);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.lm-rung-partner .lm-rung-tier{color:#60a5fa;}
+
+/* CTA button */
+.lm-btn{
+  background:linear-gradient(135deg,#C9A227,#8A6500);color:#fff;
+  border:none;border-radius:13px;padding:17px 52px;
+  font-size:15px;font-weight:800;cursor:pointer;
+  font-family:'DM Sans',system-ui,sans-serif;letter-spacing:.025em;
+  box-shadow:0 6px 32px rgba(201,162,39,.48),0 2px 8px rgba(0,0,0,.4);
+  transition:transform .18s,box-shadow .18s;
+  animation:lmUp .55s .34s both;
+}
+.lm-btn:hover{transform:translateY(-2px);box-shadow:0 10px 44px rgba(201,162,39,.58),0 2px 8px rgba(0,0,0,.4);}
+.lm-tagline{margin-top:14px;font-size:11px;color:rgba(255,255,255,.2);
+  letter-spacing:.04em;animation:lmUp .55s .38s both;}
+
+/* ── TRAINING TAB ──────────────────────────────────────────────────────── */
+.trn-hero{
+  background:linear-gradient(135deg,#001533 0%,#002455 100%);
+  border-radius:14px;padding:24px 28px;margin-bottom:22px;
+  display:flex;align-items:flex-start;gap:20px;
+  border:1px solid rgba(201,162,39,.15);
+}
+.trn-hero-icon{font-size:36px;flex-shrink:0;margin-top:2px;line-height:1;}
+.trn-hero h3{font-family:Georgia,serif;font-size:19px;font-style:italic;
+  color:#fff;margin:0 0 8px;font-weight:400;line-height:1.3;}
+.trn-hero h3 strong{font-style:normal;
+  background:linear-gradient(110deg,#C9A227,#E8C84A);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.trn-hero p{font-size:13px;color:rgba(255,255,255,.48);line-height:1.75;margin:0;}
+.trn-hero p strong{color:rgba(255,255,255,.72);}
+
+/* Progress bar */
+.trn-progbar{
+  display:flex;align-items:center;gap:14px;margin-bottom:22px;
+  border:1px solid #E2E8F0;border-radius:10px;padding:12px 18px;background:#fff;
+}
+.trn-pb-lbl{font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:#64748B;white-space:nowrap;}
+.trn-pb-track{flex:1;height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden;}
+.trn-pb-fill{height:100%;background:linear-gradient(90deg,#C9A227,#E8C84A);
+  border-radius:99px;width:20%;}
+.trn-pb-ct{font-size:12px;font-weight:700;color:#001533;
+  font-family:monospace;white-space:nowrap;}
+
+/* Module grid */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+
+/* Module card base */
+.mod-card{
+  border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;
+  background:#fff;transition:box-shadow .2s,transform .2s;
+}
+.mod-card:not(.mod-locked):hover{box-shadow:0 8px 28px rgba(0,0,0,.11);transform:translateY(-2px);}
+.mod-card.mod-locked{opacity:.65;cursor:default;}
+
+/* Active / unlocked card */
+.mod-card.mod-active{border-color:rgba(201,162,39,.45);
+  box-shadow:0 4px 20px rgba(201,162,39,.15);}
+
+/* Card header */
+.mod-hdr{padding:16px 18px 13px;display:flex;align-items:flex-start;gap:12px;}
+.mod-num-badge{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:#fff;
+}
+.mod-title-blk{flex:1;}
+.mod-card-title{font-size:13px;font-weight:800;line-height:1.35;margin:0;}
+.mod-card-sub{font-size:11px;margin-top:3px;font-weight:500;}
+
+/* Card body */
+.mod-topics{padding:8px 18px 13px;display:flex;flex-direction:column;gap:4px;}
+.mod-topic{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#4a5568;line-height:1.55;}
+.mod-topic-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+
+/* Card footer */
+.mod-foot{padding:11px 18px;border-top:1px solid #F0F4F8;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.mod-launch-btn{
+  border:none;border-radius:9px;padding:10px 22px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',system-ui,sans-serif;
+  display:flex;align-items:center;gap:7px;
+  transition:transform .12s,box-shadow .12s;color:#fff;
+}
+.mod-launch-btn:hover{transform:translateY(-1px);}
+.mod-lock{display:flex;align-items:center;gap:5px;font-size:11px;
+  color:#94a3b8;font-weight:600;padding:5px 11px;
+  border:1px solid #E2E8F0;border-radius:99px;background:#F8FAFC;}
+.mod-live{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:99px;}
+
+/* Module 1 — Deep slate / compliance */
+.mod-m1 .mod-hdr{background:linear-gradient(135deg,#1e293b,#334155);}
+.mod-m1 .mod-num-badge{background:linear-gradient(135deg,#475569,#334155);}
+.mod-m1 .mod-card-title{color:#1e293b;}
+.mod-m1 .mod-card-sub{color:#64748b;}
+.mod-m1 .mod-topic-dot{background:#64748b;}
+
+/* Module 2 — Gold / revenue (ACTIVE) */
+.mod-m2 .mod-hdr{background:linear-gradient(135deg,#001533,#002455);}
+.mod-m2 .mod-num-badge{background:linear-gradient(135deg,#C9A227,#8A6500);}
+.mod-m2 .mod-card-title{color:#fff;}
+.mod-m2 .mod-card-sub{color:rgba(255,255,255,.45);}
+.mod-m2-body .mod-card-title{color:#001533;}
+.mod-m2-body .mod-card-sub{color:#64748b;}
+.mod-m2-body .mod-topic-dot{background:#C9A227;}
+.mod-m2 .mod-launch-btn{background:linear-gradient(135deg,#C9A227,#8A6500);
+  box-shadow:0 4px 16px rgba(201,162,39,.4);}
+.mod-m2 .mod-live{background:rgba(201,162,39,.12);color:#7A5C00;border:1px solid rgba(201,162,39,.3);}
+
+/* Module 3 — Teal / behavioral */
+.mod-m3 .mod-hdr{background:linear-gradient(135deg,#0f2d2d,#0f3d3a);}
+.mod-m3 .mod-num-badge{background:linear-gradient(135deg,#0A8B7F,#065f5a);}
+.mod-m3 .mod-card-title{color:#0f2d2d;}
+.mod-m3 .mod-card-sub{color:#0A8B7F;}
+.mod-m3 .mod-topic-dot{background:#0A8B7F;}
+
+/* Module 4 — Purple / operations */
+.mod-m4 .mod-hdr{background:linear-gradient(135deg,#1e1b4b,#2e1065);}
+.mod-m4 .mod-num-badge{background:linear-gradient(135deg,#6D28D9,#4c1d95);}
+.mod-m4 .mod-card-title{color:#1e1b4b;}
+.mod-m4 .mod-card-sub{color:#6D28D9;}
+.mod-m4 .mod-topic-dot{background:#6D28D9;}
+
+/* Module 5 — Forest green / sustainability */
+.mod-m5 .mod-hdr{background:linear-gradient(135deg,#052e16,#064e3b);}
+.mod-m5 .mod-num-badge{background:linear-gradient(135deg,#047857,#052e16);}
+.mod-m5 .mod-card-title{color:#052e16;}
+.mod-m5 .mod-card-sub{color:#047857;}
+.mod-m5 .mod-topic-dot{background:#047857;}
+
+/* Bottom notice */
+.trn-notice{
+  margin-top:20px;background:rgba(201,162,39,.05);
+  border:1px solid rgba(201,162,39,.18);border-radius:10px;
+  padding:14px 18px;font-size:12px;color:#7A5C00;line-height:1.7;
+}
+.trn-notice strong{font-weight:700;}
+</style>
+
+<!-- ═══ LANDING OVERLAY ════════════════════════════════════════════════════ -->
+<div id="lm-overlay">
+  <!-- Star field (populated by JS) -->
+  <div id="lm-stars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
+  <!-- Ambient glow -->
+  <div class="lm-glow"></div>
+
+  <div class="lm-panel">
+
+    <!-- Wordmark -->
+    <div class="lm-wm">
+      <div class="lm-wm-mark">T3</div>
+      <div>
+        <div class="lm-wm-name">Aqueduct T360 MATCH</div>
+        <div class="lm-wm-sub">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
       </div>
     </div>
-    <div class="lm-eyebrow">Community Health Evidence → Funded Program</div>
-    <h1 class="lm-headline">Your CHNA already makes<br><strong>the case for bank funding.</strong></h1>
-    <p class="lm-sub">T360 MATCH translates Mayo Clinic's 2025 Community Health Needs Assessment into a fully documented, financially modeled, and bank-ready Non-Emergency Medical Transportation program — in a single guided workflow.</p>
-    <div class="lm-pillars">
-      <div class="lm-pillar">
-        <span class="lm-p-icon">🏥</span>
-        <div class="lm-p-title">CHNA Evidence Engine</div>
-        <div class="lm-p-desc">Map Olmsted County's three CHNA priorities directly to NEMT program design and CRA qualifying criteria.</div>
+
+    <!-- Divider rule -->
+    <div class="lm-rule"><span class="lm-rule-text">Community Health Evidence → Funded Program</span></div>
+
+    <!-- Headline -->
+    <h1 class="lm-h">Your community's health data already<br>makes <em>the case for what comes next.</em></h1>
+
+    <!-- Narrative -->
+    <p class="lm-narr">
+      Most health systems have a CHNA sitting in a PDF. A few have the evidence to act on it.
+      <strong>Almost none have the financial model, the regulatory pathway, the bank strategy, and the document suite to move from insight to funded program in a single session.</strong>
+      That is the end-to-end versatility T360 MATCH was built to deliver — your complete toolkit, your choice of how deeply to engage it.
+    </p>
+
+    <!-- Three-tier value ladder -->
+    <div class="lm-ladder">
+      <div class="lm-rung lm-rung-diy">
+        <span class="lm-rung-tier">Tier 1 · Self-Directed</span>
+        <span class="lm-rung-icon">🗺️</span>
+        <div class="lm-rung-title">Do It Yourself</div>
+        <div class="lm-rung-desc">The platform is your guide. Work through six steps, build your ROI model, generate your document package, and approach your banking partners — on your own schedule, at your own pace.</div>
       </div>
-      <div class="lm-pillar">
-        <span class="lm-p-icon">📊</span>
-        <div class="lm-p-title">4-Layer Live ROI Model</div>
-        <div class="lm-p-desc">FFS margin, SDOH coding uplift, CCM/TCM billing, and VBC earn-back — calculated in real time at Mayo's scale.</div>
+      <div class="lm-rung lm-rung-guided">
+        <span class="lm-rung-tier">Tier 2 · Executive Training</span>
+        <span class="lm-rung-icon">🎓</span>
+        <div class="lm-rung-title">Guided Mastery</div>
+        <div class="lm-rung-desc">Five interactive modules — regulation, revenue, patient engagement, operations, sustainability — give you the hands-on experience to build and lead a program with confidence.</div>
       </div>
-      <div class="lm-pillar">
-        <span class="lm-p-icon">🏦</span>
-        <div class="lm-p-title">CRA Bank Strategy</div>
-        <div class="lm-p-desc">Tailored engagement plans for seven Rochester-area banks, with suggested ask amounts and pitch framing.</div>
-      </div>
-      <div class="lm-pillar">
-        <span class="lm-p-icon">📋</span>
-        <div class="lm-p-title">7-Artifact Document Suite</div>
-        <div class="lm-p-desc">Pro forma, CRA memo, term sheet, board brief, SLA, REP protocol, and KPI dashboard — generated instantly.</div>
-      </div>
-      <div class="lm-pillar">
-        <span class="lm-p-icon">🔬</span>
-        <div class="lm-p-title">REP Study Infrastructure</div>
-        <div class="lm-p-desc">Rochester Epidemiology Project study design that turns a community program into peer-reviewed evidence.</div>
-      </div>
-      <div class="lm-pillar">
-        <span class="lm-p-icon">🎓</span>
-        <div class="lm-p-title">Executive Training Program</div>
-        <div class="lm-p-desc">5-module curriculum covering regulation, revenue optimization, patient engagement, operations, and sustainability.</div>
+      <div class="lm-rung lm-rung-partner">
+        <span class="lm-rung-tier">Tier 3 · White-Glove Partnership</span>
+        <span class="lm-rung-icon">🤝</span>
+        <div class="lm-rung-title">We Build It With You</div>
+        <div class="lm-rung-desc">Engage the Aqueduct project management team live. We package your program for commercial banking review, guide your executive communication, and stay with you from evidence to funded launch.</div>
       </div>
     </div>
-    <button class="lm-cta" onclick="closeLanding()">Begin Your Journey →</button>
-    <p class="lm-footnote">Six guided steps · Seven ready-to-use documents · One auditable workflow</p>
+
+    <!-- CTA -->
+    <button class="lm-btn" onclick="closeLanding()">Begin Your Journey →</button>
+    <p class="lm-tagline">Six guided steps &nbsp;·&nbsp; Seven ready-to-use documents &nbsp;·&nbsp; One auditable workflow</p>
+
   </div>
-</div>
+</div><!-- /lm-overlay -->
 
 <header class="demo-hdr">
   <div class="demo-hdr-top">
@@ -389,7 +498,7 @@ button.secondary{
       <p class="demo-tag">Your CHNA data already makes <strong>the case for bank funding.</strong></p>
     </div>
   </div>
-  <nav class="demo-rail" role="tablist"><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.1);margin-left:4px;"><span class="rn" style="background:rgba(201,162,39,.15);color:rgba(201,162,39,.8);">07</span><span class="rl">Executive Training</span></button></nav>
+  <nav class="demo-rail" role="tablist"><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.12);margin-left:6px;"><span class="rn" style="background:rgba(201,162,39,.18);color:#E8C84A;">07</span><span class="rl" style="color:rgba(232,200,74,.75);">Executive Training</span></button></nav>
 </header>
 <main id="wg-content">
 <section id="s_chna" class="step" style="display:block"><div class="story-hdr"><div class="story-num">01</div><div><h2 class="story-hl">Your community’s need is already documented.</h2><p class="story-sub">Most health systems have CHNA data sitting in a PDF. Mayo has something rare: three documented priorities, a county-wide survey of 937 residents, and the Rochester Epidemiology Project — 56 million patient records stretching back to 1966. The evidence for a funded NEMT program already exists. This step shows you exactly what it says.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">2025 Olmsted County CHNA &mdash; Three Priorities, Four Evidence Nodes</div>
@@ -819,152 +928,158 @@ button.secondary{
             <button class="primary" onclick="mayoNav('chna')">&#8635; Review CHNA Evidence</button>
           </div>
         </div></div><div class="step-foot step-cta"><div class="cta-wrap"><blockquote class="cta-quote"><span class="cta-qm">“</span>We are your partner. We have all the tools you need, all in one place. <strong>You can do it yourself. You can have us help you.</strong> We’re here to enable the kind of population health outcomes your community deserves.<span class="cta-qm">”</span></blockquote><div class="cta-btns"><button class="cta-primary" onclick="alert('Contact info@aqueducthealth.com to begin your Aqueduct Partnership engagement.')">Begin Your Aqueduct Partnership →</button><button class="cta-ghost" onclick="go('chna')">↻ Review from Start</button></div></div></div></section>
-</main>
-
-<!-- ══ TRAINING SECTION ══════════════════════════════════════════════════ -->
+<!-- ═══ TRAINING SECTION ══════════════════════════════════════════════════ -->
 <section id="s_training" class="step" style="display:none">
   <div class="story-hdr">
     <div class="story-num">07</div>
     <div>
       <h2 class="story-hl">Five modules. The complete executive curriculum for NEMT program leadership.</h2>
-      <p class="story-sub">The Aqueduct T360 MATCH Executive Training Program equips health system leaders with the regulatory, financial, behavioral, operational, and strategic competencies to launch, sustain, and publish results from a high-impact NEMT program. Module 2 is live — explore it now.</p>
+      <p class="story-sub">The T360 MATCH Executive Training Program equips health system leaders with the regulatory, financial, behavioral, operational, and strategic competencies to launch, sustain, and publish results from a high-impact NEMT program. Module 2 is live — explore it now.</p>
     </div>
   </div>
   <div class="tool-body">
 
-    <div class="trn-intro">
-      <div class="trn-intro-icon">🎓</div>
+    <!-- Hero intro -->
+    <div class="trn-hero">
+      <div class="trn-hero-icon">🎓</div>
       <div>
         <h3>T360 MATCH <strong>Executive Training Program</strong></h3>
-        <p>A five-module curriculum built around the evidence base in this platform — from regulatory imperatives and billing mechanics to behavioral science, operational integration, and long-term sustainability. Each module combines foundational content with active simulation exercises designed for C-suite and VP-level decision makers.</p>
+        <p>
+          You have the platform. The training program takes you deeper. Five modules built around the same evidence base that powers this toolkit — each one combining foundational content with scored simulations designed for C-suite and VP-level decision makers.
+          <br><br>
+          <strong>Your ROI model inputs from Tab 03 carry directly into the Module 2 simulation exercises.</strong> The platform and the curriculum are one continuous learning environment.
+        </p>
       </div>
     </div>
 
-    <div class="trn-progress-bar">
-      <span class="trn-pb-label">Curriculum Progress</span>
-      <div class="trn-pb-track"><div class="trn-pb-fill" id="trn-fill"></div></div>
-      <span class="trn-pb-count" id="trn-count">1 of 5 modules available</span>
+    <!-- Progress bar -->
+    <div class="trn-progbar">
+      <span class="trn-pb-lbl">Curriculum Progress</span>
+      <div class="trn-pb-track"><div class="trn-pb-fill"></div></div>
+      <span class="trn-pb-ct">1 of 5 modules available</span>
     </div>
 
+    <!-- Module cards -->
     <div class="mod-grid">
 
-      <!-- MODULE 1 — LOCKED -->
-      <div class="mod-card mod-locked">
+      <!-- MODULE 1 — Slate/Compliance — LOCKED -->
+      <div class="mod-card mod-m1 mod-locked">
         <div class="mod-hdr">
-          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">1</div>
-          <div class="mod-title-wrap">
-            <p class="mod-title">The Regulatory Imperative, Risk Mitigation &amp; Accreditation Preparedness</p>
-            <p class="mod-subtitle">Foundation · Compliance · Risk</p>
+          <div class="mod-num-badge">1</div>
+          <div class="mod-title-blk">
+            <p class="mod-card-title" style="color:rgba(255,255,255,.9);">The Regulatory Imperative, Risk Mitigation &amp; Accreditation Preparedness</p>
+            <p class="mod-card-sub" style="color:rgba(255,255,255,.45);">Compliance · TJC/NCQA · AKS · Risk</p>
           </div>
         </div>
         <div class="mod-topics">
-          <div class="mod-topic">Aligning NEMT with TJC and NCQA accreditation standards</div>
-          <div class="mod-topic">Navigating the Anti-Kickback Statute, Safe Harbor Regulations &amp; CMPL</div>
-          <div class="mod-topic">False Claims Act and Conflict of Interest compliance</div>
-          <div class="mod-topic">State-level risk management and CHNA documentation requirements</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Aligning NEMT with TJC and NCQA accreditation standards</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Anti-Kickback Statute, Safe Harbor Regulations &amp; CMPL</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>False Claims Act and Conflict of Interest compliance frameworks</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>State-level risk management and CHNA documentation</div>
         </div>
         <div class="mod-foot">
-          <span class="mod-lock-pill">🔒 Coming Soon</span>
-          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+          <span class="mod-lock">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:#94a3b8;">~90 min</span>
         </div>
       </div>
 
-      <!-- MODULE 2 — ACTIVE -->
-      <div class="mod-card mod-active">
+      <!-- MODULE 2 — Gold/Revenue — ACTIVE -->
+      <div class="mod-card mod-m2 mod-active">
         <div class="mod-hdr">
-          <div class="mod-num" style="background:linear-gradient(135deg,var(--gold),#8A6A00);">2</div>
-          <div class="mod-title-wrap">
-            <p class="mod-title">Revenue Optimization &amp; Value-Based Care Strategies</p>
-            <p class="mod-subtitle">Finance · VBC · CCM/TCM · ROI</p>
+          <div class="mod-num-badge">2</div>
+          <div class="mod-title-blk">
+            <p class="mod-card-title">Revenue Optimization &amp; Value-Based Care Strategies</p>
+            <p class="mod-card-sub">Finance · VBC · CCM/TCM · ROI</p>
           </div>
         </div>
-        <div class="mod-topics" style="background:#fff;">
-          <div class="mod-topic" style="color:#1a2332;">Linking patient no-shows to VBC quality thresholds and earn-back pools</div>
-          <div class="mod-topic" style="color:#1a2332;">Utilizing NEMT time for CCM and TCM CPT billing</div>
-          <div class="mod-topic" style="color:#1a2332;">Calculating ROI across four value layers with scenario analysis</div>
-          <div class="mod-topic" style="color:#1a2332;">Building the board-ready financial case for program investment</div>
+        <div class="mod-topics mod-m2-body">
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Linking patient no-shows to VBC quality thresholds and earn-back pools</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Utilizing NEMT time for CCM and TCM CPT billing</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Calculating ROI across four value layers with sensitivity analysis</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Building the board-ready financial case for program investment</div>
         </div>
         <div class="mod-foot">
-          <button class="mod-open-btn" onclick="window.open('https://claude.site/artifacts/92566b4e-48fb-4b3d-a4c2-d68d81bae5b4', '_blank')">
-            <span>▶</span> Launch Module 2
+          <button class="mod-launch-btn mod-m2" onclick="window.open('https://drubhattacharya.github.io/MATCHdemo/','_blank')">
+            ▶&nbsp; Launch Module 2
           </button>
-          <span class="mod-live-badge">● LIVE</span>
+          <span class="mod-live mod-m2">● LIVE</span>
         </div>
       </div>
 
-      <!-- MODULE 3 — LOCKED -->
-      <div class="mod-card mod-locked">
+      <!-- MODULE 3 — Teal/Behavioral — LOCKED -->
+      <div class="mod-card mod-m3 mod-locked">
         <div class="mod-hdr">
-          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">3</div>
-          <div class="mod-title-wrap">
-            <p class="mod-title">Patient Engagement, Behavioral Science &amp; Adherence</p>
-            <p class="mod-subtitle">Behavior Change · Communication · Trust</p>
+          <div class="mod-num-badge">3</div>
+          <div class="mod-title-blk">
+            <p class="mod-card-title" style="color:rgba(255,255,255,.9);">Patient Engagement, Behavioral Science &amp; Adherence</p>
+            <p class="mod-card-sub" style="color:rgba(255,255,255,.45);">Behavior Change · Communication · Trust</p>
           </div>
         </div>
         <div class="mod-topics">
-          <div class="mod-topic">Applying behavioral science principles for increased patient uptake</div>
-          <div class="mod-topic">Standardized communication scripts for engagement and retention</div>
-          <div class="mod-topic">Leveraging technology to build patient trust and care plan adherence</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Behavioral science principles for increased patient uptake</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Standardized communication scripts for engagement and retention</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Technology-enabled trust and care plan adherence</div>
         </div>
         <div class="mod-foot">
-          <span class="mod-lock-pill">🔒 Coming Soon</span>
-          <span style="font-size:11px;color:var(--muted);">~75 min</span>
+          <span class="mod-lock">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:#94a3b8;">~75 min</span>
         </div>
       </div>
 
-      <!-- MODULE 4 — LOCKED -->
-      <div class="mod-card mod-locked">
+      <!-- MODULE 4 — Purple/Operations — LOCKED -->
+      <div class="mod-card mod-m4 mod-locked">
         <div class="mod-hdr">
-          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">4</div>
-          <div class="mod-title-wrap">
-            <p class="mod-title">Operational Planning, T360 Integration &amp; Seamless Workflows</p>
-            <p class="mod-subtitle">Operations · EHR · Vendor Management</p>
+          <div class="mod-num-badge">4</div>
+          <div class="mod-title-blk">
+            <p class="mod-card-title" style="color:rgba(255,255,255,.9);">Operational Planning, T360 Integration &amp; Seamless Workflows</p>
+            <p class="mod-card-sub" style="color:rgba(255,255,255,.45);">Operations · EHR · Vendor Management</p>
           </div>
         </div>
         <div class="mod-topics">
-          <div class="mod-topic">Using T360 tools for comprehensive population needs assessment</div>
-          <div class="mod-topic">Establishing robust vendor management and SLA frameworks</div>
-          <div class="mod-topic">Integrating NEMT into existing EHR and clinical workflows</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>T360 tools for comprehensive population needs assessment</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Vendor management frameworks and SLA design</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>NEMT integration into existing EHR and clinical workflows</div>
         </div>
         <div class="mod-foot">
-          <span class="mod-lock-pill">🔒 Coming Soon</span>
-          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+          <span class="mod-lock">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:#94a3b8;">~90 min</span>
         </div>
       </div>
 
-      <!-- MODULE 5 — LOCKED -->
-      <div class="mod-card mod-locked">
+      <!-- MODULE 5 — Forest Green/Sustainability — LOCKED -->
+      <div class="mod-card mod-m5 mod-locked">
         <div class="mod-hdr">
-          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">5</div>
-          <div class="mod-title-wrap">
-            <p class="mod-title">Program Sustainability, Long-Term Impact &amp; Future Mandates</p>
-            <p class="mod-subtitle">Strategy · KPIs · Publication · Funding</p>
+          <div class="mod-num-badge">5</div>
+          <div class="mod-title-blk">
+            <p class="mod-card-title" style="color:rgba(255,255,255,.9);">Program Sustainability, Long-Term Impact &amp; Future Mandates</p>
+            <p class="mod-card-sub" style="color:rgba(255,255,255,.45);">Strategy · KPIs · Publication · Funding</p>
           </div>
         </div>
         <div class="mod-topics">
-          <div class="mod-topic">Developing long-term financial strategies and diversified funding</div>
-          <div class="mod-topic">Establishing KPIs for Patient Reported Outcomes and efficiency</div>
-          <div class="mod-topic">Planning for peer-reviewed publication of clinical results</div>
-          <div class="mod-topic">Commercial payer partnership and foundation/government funding pathways</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Long-term financial strategy and diversified funding pathways</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>KPIs for Patient Reported Outcomes and operational efficiency</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Planning peer-reviewed publication of clinical results</div>
+          <div class="mod-topic"><span class="mod-topic-dot"></span>Commercial payer and foundation/government funding opportunities</div>
         </div>
         <div class="mod-foot">
-          <span class="mod-lock-pill">🔒 Coming Soon</span>
-          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+          <span class="mod-lock">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:#94a3b8;">~90 min</span>
         </div>
       </div>
 
     </div><!-- /mod-grid -->
 
     <div class="trn-notice">
-      <strong>🔓 Module 2 is available now as a live interactive demonstration.</strong> Modules 1, 3, 4, and 5 are in development and will unlock sequentially. Each module builds on the prior, with the platform data flowing directly into simulation exercises — so ROI model inputs you set in Tab 03 inform the financial scenarios you work through in Module 2.
+      <strong>🔓 Module 2 is available now as a live interactive demonstration.</strong> Modules 1, 3, 4, and 5 are in active development and will unlock sequentially. Each module is purpose-built for your role — not generic CME, but decision-grade training anchored to real evidence, real billing mechanics, and the platform you're already using.
     </div>
 
   </div>
   <div class="step-foot">
-    <p class="step-bridge">Module 2 takes approximately 60–90 minutes and includes a scored simulation. Your financial inputs from the ROI model carry forward directly into the module's board-case exercise.</p>
-    <button class="step-cont" onclick="window.open('https://claude.site/artifacts/92566b4e-48fb-4b3d-a4c2-d68d81bae5b4','_blank')">Launch Module 2 →</button>
+    <p class="step-bridge">Module 2 takes approximately 60–90 minutes and includes a scored simulation. The financial inputs you've set in the ROI model carry directly into the board-case exercise.</p>
+    <button class="step-cont" onclick="window.open('https://drubhattacharya.github.io/MATCHdemo/','_blank')">Launch Module 2 →</button>
   </div>
 </section>
+
 </main>
 <script>
 
@@ -985,27 +1100,31 @@ go('chna');
 
 /* ── Landing overlay ── */
 (function(){
-  // Generate twinkling stars
-  var stars = document.getElementById('lm-stars');
-  if(stars){
-    for(var i=0;i<80;i++){
-      var s=document.createElement('div');
-      s.className='lm-star';
-      var sz=Math.random()*2+1;
-      s.style.cssText='width:'+sz+'px;height:'+sz+'px;'
-        +'top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;'
-        +'--lo:'+(.05+Math.random()*.15)+';--hi:'+(.4+Math.random()*.5)+';'
-        +'--dur:'+(2+Math.random()*4)+'s;--del:'+(Math.random()*3)+'s;';
-      stars.appendChild(s);
+  var starsEl = document.getElementById('lm-stars');
+  if (starsEl) {
+    for (var i = 0; i < 90; i++) {
+      var s = document.createElement('div');
+      s.style.cssText = 'position:absolute;border-radius:50%;background:#fff;'
+        + 'width:' + (Math.random()*2+0.8) + 'px;'
+        + 'height:' + (Math.random()*2+0.8) + 'px;'
+        + 'top:' + Math.random()*100 + '%;'
+        + 'left:' + Math.random()*100 + '%;'
+        + '--lo:' + (.04+Math.random()*.14) + ';'
+        + '--hi:' + (.35+Math.random()*.55) + ';'
+        + '--d:' + (2+Math.random()*4) + 's;'
+        + '--dl:' + (Math.random()*4) + 's;'
+        + 'animation:lmTwinkle var(--d,3s) ease-in-out infinite var(--dl,0s);'
+        + 'opacity:0.1;';
+      starsEl.appendChild(s);
     }
   }
 })();
 
-window.closeLanding = function(){
+window.closeLanding = function() {
   var ov = document.getElementById('lm-overlay');
-  if(!ov) return;
+  if (!ov) return;
   ov.classList.add('lm-exit');
-  setTimeout(function(){ ov.style.display='none'; }, 340);
+  setTimeout(function() { ov.style.display = 'none'; }, 400);
 };
 
 
