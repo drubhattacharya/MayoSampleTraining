@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mayo Clinic NEMT — Aqueduct T360 MATCH</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#001533;--blue:#003A7A;--gold:#C9A227;--gold2:#E8C84A;--cream:#FDF8EE;--bg:#F0F4F8;}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;overflow:hidden}
+body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;
+  background:var(--bg);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.6;color:#1a2332;}
+.demo-hdr{flex-shrink:0;background:linear-gradient(140deg,var(--navy) 0%,var(--blue) 65%,#0A3566 100%);
+  box-shadow:0 2px 24px rgba(0,0,0,.45);position:relative;overflow:hidden;}
+.demo-hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,162,39,.4),transparent);}
+.demo-hdr-top{display:flex;align-items:center;gap:16px;padding:16px 28px 12px;}
+.demo-logo{width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),#A07810);display:flex;align-items:center;
+  justify-content:center;font-weight:900;font-size:13px;color:var(--navy);}
+.demo-brand{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);}
+.demo-brand-sub{color:rgba(255,255,255,.4);font-weight:400}
+.demo-tag{font-family:Georgia,serif;font-size:clamp(15px,1.5vw,19px);font-style:italic;
+  color:rgba(255,255,255,.82);margin:2px 0 0;line-height:1.2;}
+.demo-tag strong{font-style:normal;background:linear-gradient(120deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.demo-rail{display:flex;align-items:stretch;background:rgba(0,0,0,.2);
+  border-top:1px solid rgba(255,255,255,.08);overflow-x:auto;scrollbar-width:none;}
+.demo-rail::-webkit-scrollbar{display:none}
+.rb{display:flex;align-items:center;gap:8px;padding:10px 20px 12px;background:none;
+  border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:inherit;
+  flex-shrink:0;transition:background .15s;white-space:nowrap;}
+.rb:hover{background:rgba(255,255,255,.07)}
+.rb.rb-on{border-bottom-color:var(--gold);background:rgba(201,162,39,.1)}
+.rn{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.3);font-size:10px;font-weight:800;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;}
+.rb.rb-on .rn{background:var(--gold);color:var(--navy);}
+.rb.rb-done .rn{background:rgba(201,162,39,.22);color:var(--gold);font-size:0;}
+.rb.rb-done .rn::after{content:'✓';font-size:11px;}
+.rl{font-size:12px;font-weight:600;color:rgba(255,255,255,.32);}
+.rb.rb-on .rl{color:#fff;font-weight:700;}
+.rb.rb-done .rl{color:rgba(255,255,255,.55);}
+#wg-content{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;}
+.step{width:100%;animation:fin .22s ease;}
+@keyframes fin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.story-hdr{display:flex;align-items:flex-start;gap:20px;padding:28px 36px 24px;
+  background:linear-gradient(135deg,var(--navy) 0%,#002455 100%);color:#fff;}
+.story-num{width:40px;height:40px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  background:var(--gold);color:var(--navy);font-size:14px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;}
+.story-hl{font-family:Georgia,serif;font-size:clamp(18px,1.8vw,23px);font-style:italic;
+  font-weight:400;color:#fff;margin:0 0 10px;line-height:1.25;}
+.story-sub{font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.72;margin:0;max-width:900px;}
+.tool-body{padding:28px 36px;background:#fff;border-bottom:1px solid #E2E8F0;}
+.step-foot{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;padding:20px 36px 24px;background:var(--cream);
+  border-top:2px solid rgba(201,162,39,.15);}
+.step-bridge{flex:1;min-width:240px;margin:0;font-size:13.5px;line-height:1.7;
+  color:#4a5568;font-style:italic;padding-left:16px;border-left:4px solid rgba(201,162,39,.5);}
+.step-cont{flex-shrink:0;white-space:nowrap;background:linear-gradient(135deg,var(--gold),#A07810);
+  color:var(--navy);border:none;border-radius:10px;padding:13px 30px;font-size:14px;
+  font-weight:700;cursor:pointer;font-family:inherit;
+  box-shadow:0 4px 16px rgba(201,162,39,.35);transition:transform .1s;}
+.step-cont:hover{transform:translateY(-1px)}
+.step-cta{background:linear-gradient(140deg,var(--navy),#001F4A);border-top:none;
+  padding:36px;justify-content:center;}
+.cta-wrap{max-width:860px;width:100%;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;}
+.cta-quote{font-family:Georgia,serif;font-size:clamp(16px,1.6vw,20px);font-style:italic;
+  color:rgba(255,255,255,.85);line-height:1.7;margin:0;padding:24px 32px;
+  border:1px solid rgba(201,162,39,.2);border-radius:12px;background:rgba(201,162,39,.06);}
+.cta-quote strong{color:var(--gold2);font-style:normal;}
+.cta-qm{color:var(--gold);font-size:2em;line-height:0;vertical-align:-.3em;}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.cta-primary{background:linear-gradient(135deg,var(--gold),#A07810);color:var(--navy);
+  border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:800;
+  cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(201,162,39,.4);transition:transform .1s;}
+.cta-primary:hover{transform:translateY(-1px)}
+.cta-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:14px 24px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;}
+.cta-ghost:hover{background:rgba(255,255,255,.13)}
+.section-title{
+  font-size:16px;
+  font-weight:800;
+  color:var(--navy);
+  margin-bottom:4px;
+  letter-spacing:-0.01em;
+}
+.small{font-size:13px; color:var(--muted); line-height:1.5;}
+.kpi{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  background:#fff;
+  position:relative;
+  transition: box-shadow .15s;
+}
+.kpi .label{
+  font-size:12px; color:var(--subtle); font-weight:600;
+  text-transform:uppercase; letter-spacing:0.04em;
+}
+.kpi .value{
+  font-size:24px; font-weight:800; margin-top:4px;
+  color:var(--navy); letter-spacing:-0.02em;
+}
+.kpi .hint{
+  font-size:12px; color:var(--light); margin-top:6px; line-height:1.4;
+}
+.kpis{display:grid; grid-template-columns: repeat(4,1fr); gap:12px;}
+@media (max-width: 1024px){ .kpis{grid-template-columns: repeat(2,1fr);}
+@media (max-width: 640px){ .kpis{grid-template-columns:1fr;}
+.callout{
+  border:1px solid var(--border);
+  border-left:3px solid var(--teal);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  background: linear-gradient(135deg, rgba(13,148,136,.02), rgba(37,99,235,.02));
+}
+.badge{
+  display:inline-block;
+  padding:3px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  border:1px solid var(--border);
+  background:#fff;
+}
+.b-strong{border-color:var(--green-border); background:var(--green-soft); color:var(--green);}
+.b-mod{border-color:var(--amber-border); background:var(--amber-soft); color:var(--amber);}
+.b-weak{border-color:var(--red-border); background:var(--red-soft); color:var(--red);}
+.grid{display:grid; gap:16px;}
+.grid-2{grid-template-columns: 360px 1fr;}
+@media (max-width: 1024px){ .grid-2{grid-template-columns:1fr;}
+button.primary{
+  background: var(--teal);
+  color:#fff;
+  border-color: var(--teal);
+  font-weight:700;
+}
+button.secondary{
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-color: var(--blue-border);
+}
+.mayo-input {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--border);
+  border-radius: 7px; font-size: 15px; font-family: monospace;
+  color: var(--navy); background: #fff; outline: none; transition: border-color .18s;
+}
+.hr{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:16px 0;
+}
+.row{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;}
+.gate .chip{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.85);
+  font-size:12px;
+  padding:5px 12px;
+}
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 12px; border-radius:999px;
+  border:1px solid var(--border); background:var(--bg-warm);
+  font-size:12px; font-weight:600; color:var(--muted);
+}
+.field{
+  flex:1 1 300px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  background:#fff;
+  transition: border-color .15s;
+}
+.field label{
+  display:flex; justify-content:space-between; gap:10px;
+  font-weight:600; font-size:13px; color:var(--muted);
+  margin-bottom:6px;
+}
+
+/* ══ LANDING OVERLAY ══════════════════════════════════════════════════════ */
+#lm-overlay{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(155deg,#000C1A 0%,#001533 50%,#002050 100%);
+  animation:lmIn .45s cubic-bezier(.22,.68,0,1.2);
+}
+#lm-overlay.lm-exit{animation:lmOut .35s ease forwards;pointer-events:none;}
+@keyframes lmIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes lmOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.025)}}
+.lm-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.lm-star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite var(--del,0s);}
+@keyframes twinkle{0%,100%{opacity:var(--lo,.1)}50%{opacity:var(--hi,.5)}}
+.lm-inner{
+  position:relative;z-index:2;max-width:780px;width:calc(100% - 48px);
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;
+}
+.lm-wordmark{
+  display:flex;align-items:center;gap:12px;margin-bottom:32px;
+  animation:lmFadeUp .5s .05s both;
+}
+.lm-mark{
+  width:46px;height:46px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,#C9A227,#8A6A00);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;color:#fff;
+  box-shadow:0 4px 20px rgba(201,162,39,.4);
+}
+.lm-wordmark-text{text-align:left;}
+.lm-wordmark-name{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.2;}
+.lm-wordmark-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:1px;}
+.lm-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(201,162,39,.65);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;width:100%;
+  animation:lmFadeUp .5s .1s both;
+}
+.lm-eyebrow::before,.lm-eyebrow::after{content:'';flex:1;height:1px;background:rgba(201,162,39,.18);}
+.lm-headline{
+  font-family:Georgia,serif;font-size:clamp(24px,3.8vw,44px);
+  font-style:italic;font-weight:400;color:#fff;
+  line-height:1.22;margin:0 0 14px;
+  animation:lmFadeUp .5s .15s both;
+}
+.lm-headline strong{
+  font-style:normal;
+  background:linear-gradient(110deg,#C9A227,#E8C84A,#fff5cc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.lm-sub{
+  font-size:clamp(13px,1.4vw,15px);color:rgba(255,255,255,.5);
+  line-height:1.8;margin:0 0 38px;max-width:600px;
+  animation:lmFadeUp .5s .2s both;
+}
+.lm-pillars{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  width:100%;margin-bottom:38px;
+  animation:lmFadeUp .5s .28s both;
+}
+@media(max-width:580px){.lm-pillars{grid-template-columns:1fr 1fr;}}
+.lm-pillar{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;padding:16px 13px;text-align:left;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.lm-pillar:hover{background:rgba(201,162,39,.07);border-color:rgba(201,162,39,.22);transform:translateY(-2px);}
+.lm-p-icon{font-size:20px;margin-bottom:8px;display:block;}
+.lm-p-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.85);margin-bottom:3px;line-height:1.3;}
+.lm-p-desc{font-size:11px;color:rgba(255,255,255,.38);line-height:1.55;}
+.lm-cta{
+  background:linear-gradient(135deg,#C9A227,#9A7600);color:#fff;border:none;
+  border-radius:12px;padding:16px 48px;font-size:15px;font-weight:800;
+  cursor:pointer;font-family:inherit;letter-spacing:.02em;
+  box-shadow:0 6px 30px rgba(201,162,39,.45),0 2px 8px rgba(0,0,0,.35);
+  transition:transform .15s,box-shadow .15s;
+  animation:lmFadeUp .5s .35s both;
+}
+.lm-cta:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(201,162,39,.55),0 2px 8px rgba(0,0,0,.35);}
+.lm-footnote{
+  margin-top:16px;font-size:11px;color:rgba(255,255,255,.18);letter-spacing:.03em;
+  animation:lmFadeUp .5s .4s both;
+}
+@keyframes lmFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ══ TRAINING TAB ══════════════════════════════════════════════════════════ */
+.trn-intro{
+  background:linear-gradient(135deg,var(--navy) 0%,#002455 100%);
+  border-radius:12px;padding:20px 24px;margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:18px;
+}
+.trn-intro-icon{font-size:32px;flex-shrink:0;margin-top:2px;}
+.trn-intro h3{font-family:Georgia,serif;font-size:18px;font-style:italic;color:#fff;margin:0 0 6px;font-weight:400;}
+.trn-intro h3 strong{font-style:normal;color:var(--gold2);}
+.trn-intro p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;margin:0;}
+.trn-progress-bar{
+  display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  background:rgba(0,21,51,.04);border:1px solid #E2E8F0;
+  border-radius:10px;padding:12px 18px;
+}
+.trn-pb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap;}
+.trn-pb-track{flex:1;height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden;}
+.trn-pb-fill{height:100%;width:20%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .4s;}
+.trn-pb-count{font-size:12px;font-weight:700;color:var(--navy);font-family:monospace;white-space:nowrap;}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+.mod-card{border-radius:14px;overflow:hidden;border:1px solid #E2E8F0;background:#fff;transition:box-shadow .2s,transform .2s;position:relative;}
+.mod-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1);transform:translateY(-2px);}
+.mod-card.mod-active{border-color:rgba(201,162,39,.5);box-shadow:0 4px 20px rgba(201,162,39,.18);}
+.mod-card.mod-locked{opacity:.68;}
+.mod-card.mod-locked:hover{transform:none;box-shadow:none;}
+.mod-hdr{padding:18px 18px 14px;display:flex;align-items:flex-start;gap:12px;}
+.mod-active .mod-hdr{background:linear-gradient(135deg,var(--navy),#002455);}
+.mod-num{width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;}
+.mod-title-wrap{flex:1;}
+.mod-title{font-size:13px;font-weight:800;color:var(--navy);line-height:1.35;margin:0;}
+.mod-active .mod-title{color:#fff;}
+.mod-subtitle{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500;}
+.mod-active .mod-subtitle{color:rgba(255,255,255,.45);}
+.mod-topics{padding:10px 18px 14px;display:flex;flex-direction:column;gap:4px;}
+.mod-topic{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#4a5568;line-height:1.5;}
+.mod-topic::before{content:'›';color:#94a3b8;flex-shrink:0;margin-top:1px;font-weight:700;}
+.mod-foot{padding:11px 18px;border-top:1px solid #F0F4F8;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.mod-open-btn{
+  background:linear-gradient(135deg,var(--gold),#8A6A00);color:#fff;
+  border:none;border-radius:8px;padding:9px 20px;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(201,162,39,.35);
+  transition:transform .12s,box-shadow .12s;display:flex;align-items:center;gap:6px;
+}
+.mod-open-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(201,162,39,.45);}
+.mod-lock-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;color:var(--muted);font-weight:600;
+  padding:5px 11px;border:1px solid #E2E8F0;border-radius:99px;background:#F8FAFC;
+}
+.mod-live-badge{
+  font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  background:linear-gradient(135deg,rgba(201,162,39,.15),rgba(201,162,39,.06));
+  color:#7A5C00;border:1px solid rgba(201,162,39,.3);
+  padding:3px 10px;border-radius:99px;
+}
+.trn-notice{
+  margin-top:20px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.2);
+  border-radius:10px;padding:14px 18px;font-size:12px;color:#7A5C00;line-height:1.65;
+}
+</style>
+</head>
+<body>
+<!-- ══ LANDING OVERLAY ══════════════════════════════════════════════════ -->
+<div id="lm-overlay" role="dialog" aria-modal="true" aria-label="Welcome to Aqueduct T360 MATCH">
+  <div class="lm-stars" id="lm-stars"></div>
+  <div class="lm-inner">
+    <div class="lm-wordmark">
+      <div class="lm-mark">T3</div>
+      <div class="lm-wordmark-text">
+        <div class="lm-wordmark-name">Aqueduct T360 MATCH</div>
+        <div class="lm-wordmark-sub">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
+      </div>
+    </div>
+    <div class="lm-eyebrow">Community Health Evidence → Funded Program</div>
+    <h1 class="lm-headline">Your CHNA already makes<br><strong>the case for bank funding.</strong></h1>
+    <p class="lm-sub">T360 MATCH translates Mayo Clinic's 2025 Community Health Needs Assessment into a fully documented, financially modeled, and bank-ready Non-Emergency Medical Transportation program — in a single guided workflow.</p>
+    <div class="lm-pillars">
+      <div class="lm-pillar">
+        <span class="lm-p-icon">🏥</span>
+        <div class="lm-p-title">CHNA Evidence Engine</div>
+        <div class="lm-p-desc">Map Olmsted County's three CHNA priorities directly to NEMT program design and CRA qualifying criteria.</div>
+      </div>
+      <div class="lm-pillar">
+        <span class="lm-p-icon">📊</span>
+        <div class="lm-p-title">4-Layer Live ROI Model</div>
+        <div class="lm-p-desc">FFS margin, SDOH coding uplift, CCM/TCM billing, and VBC earn-back — calculated in real time at Mayo's scale.</div>
+      </div>
+      <div class="lm-pillar">
+        <span class="lm-p-icon">🏦</span>
+        <div class="lm-p-title">CRA Bank Strategy</div>
+        <div class="lm-p-desc">Tailored engagement plans for seven Rochester-area banks, with suggested ask amounts and pitch framing.</div>
+      </div>
+      <div class="lm-pillar">
+        <span class="lm-p-icon">📋</span>
+        <div class="lm-p-title">7-Artifact Document Suite</div>
+        <div class="lm-p-desc">Pro forma, CRA memo, term sheet, board brief, SLA, REP protocol, and KPI dashboard — generated instantly.</div>
+      </div>
+      <div class="lm-pillar">
+        <span class="lm-p-icon">🔬</span>
+        <div class="lm-p-title">REP Study Infrastructure</div>
+        <div class="lm-p-desc">Rochester Epidemiology Project study design that turns a community program into peer-reviewed evidence.</div>
+      </div>
+      <div class="lm-pillar">
+        <span class="lm-p-icon">🎓</span>
+        <div class="lm-p-title">Executive Training Program</div>
+        <div class="lm-p-desc">5-module curriculum covering regulation, revenue optimization, patient engagement, operations, and sustainability.</div>
+      </div>
+    </div>
+    <button class="lm-cta" onclick="closeLanding()">Begin Your Journey →</button>
+    <p class="lm-footnote">Six guided steps · Seven ready-to-use documents · One auditable workflow</p>
+  </div>
+</div>
+
+<header class="demo-hdr">
+  <div class="demo-hdr-top">
+    <div class="demo-logo">T3</div>
+    <div>
+      <div class="demo-brand">Aqueduct T360 MATCH <span class="demo-brand-sub">&middot; Mayo Clinic &middot; Rochester, MN</span></div>
+      <p class="demo-tag">Your CHNA data already makes <strong>the case for bank funding.</strong></p>
+    </div>
+  </div>
+  <nav class="demo-rail" role="tablist"><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.1);margin-left:4px;"><span class="rn" style="background:rgba(201,162,39,.15);color:rgba(201,162,39,.8);">07</span><span class="rl">Executive Training</span></button></nav>
+</header>
+<main id="wg-content">
+<section id="s_chna" class="step" style="display:block"><div class="story-hdr"><div class="story-num">01</div><div><h2 class="story-hl">Your community’s need is already documented.</h2><p class="story-sub">Most health systems have CHNA data sitting in a PDF. Mayo has something rare: three documented priorities, a county-wide survey of 937 residents, and the Rochester Epidemiology Project — 56 million patient records stretching back to 1966. The evidence for a funded NEMT program already exists. This step shows you exactly what it says.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">2025 Olmsted County CHNA &mdash; Three Priorities, Four Evidence Nodes</div>
+          <p class="small" style="margin-bottom:16px;">Produced collaboratively by Mayo Clinic, Olmsted Medical Center, and Olmsted County Public Health Services. Available at <a href="https://storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210" target="_blank" style="color:var(--blue);">storymaps.arcgis.com</a>. Click each node to expand the NEMT connection.</p>
+          <div class="kpis" style="margin-bottom:18px;">
+            <div class="kpi"><div class="label">Priority #1 &mdash; Access to Care</div><div class="value" style="font-size:26px;">34%</div><div class="hint">of adults delayed care (2024 survey, N=937); 15% lack a PCP; top barrier: can&rsquo;t get appointment</div></div>
+            <div class="kpi"><div class="label">Priority #2 &mdash; Mental Health</div><div class="value" style="font-size:26px;color:var(--teal);">37%</div><div class="hint">reported mental health issues &mdash; up 3% since 2021; Olmsted depression (28%) exceeds MN (23%) and U.S. (22%)</div></div>
+            <div class="kpi"><div class="label">Priority #3 &mdash; Food Security (new 2025)</div><div class="value" style="font-size:26px;color:var(--amber);">33K</div><div class="hint">Channel One Food Bank clients in 2024; 23% Hispanic, 14% Black; co-occurring transport barrier population</div></div>
+            <div class="kpi"><div class="label">Disability Population</div><div class="value" style="font-size:26px;color:var(--blue);">9.7%</div><div class="hint">~16,000 residents &mdash; highest NEMT need; documented access barriers per CHNA. Foreign-born: 11.1%.</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+            <div class="callout" style="cursor:pointer;border-left:4px solid var(--blue);padding:13px 16px;" onclick="toggleMEN(1)">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">&#127973;</span><div><strong>Access to Care &mdash; Appointment Delay &amp; Transportation Barriers</strong><div class="small" style="color:var(--muted);margin-top:2px;">Priority #1 &middot; 34% delayed care &middot; 15% no PCP &middot; disability + foreign-born most affected</div></div></div>
+                <div style="display:flex;gap:6px;align-items:center;"><span class="badge b-strong">High NEMT Relevance</span><span id="men1_arr" style="color:var(--muted);">&#9658;</span></div>
+              </div>
+              <div id="men1_body" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:8px;"><strong>Key data:</strong> 34% of adults delayed care. Top reason: &ldquo;not being able to get an appointment.&rdquo; Transportation compounds this for residents with disabilities (9.7%) and foreign-born residents (11.1%). PCP gap improved from 22% in 2018 to 15% in 2024, but 15% of 164,784 = ~24,700 without a primary care provider.</p>
+                <p class="small" style="margin-bottom:8px;"><strong>NEMT connection:</strong> Each prevented transport-related no-show directly addresses CHNA Priority #1. SDOH Z-code documentation (Z75.3 &mdash; Transportation Barrier) creates a simultaneous evidence chain for IRS Schedule H and CRA community development classification.</p>
+                <p class="small"><strong>Mayo advantage:</strong> FindHelp is already embedded in Mayo&rsquo;s EHR (added 2022). NEMT enrollment can be built into the existing FindHelp workflow &mdash; reducing care coordinator burden and accelerating the documentation trail examiners need.</p>
+                <div class="small" style="color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:10px;margin-top:8px;">Source: 2025 Mayo Clinic in Rochester CHNA Report &middot; 2024 Olmsted County Community Survey (N=937) &middot; Access to Care indicator</div>
+              </div>
+            </div>
+            <div class="callout" style="cursor:pointer;border-left:4px solid var(--teal);padding:13px 16px;" onclick="toggleMEN(2)">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">&#129504;</span><div><strong>Mental Health &mdash; Persistent Priority, Renter &amp; Disability Concentration</strong><div class="small" style="color:var(--muted);margin-top:2px;">Priority #2 &middot; Persistent across 2022 + 2025 &middot; Depression rate exceeds state &amp; national benchmarks</div></div></div>
+                <div style="display:flex;gap:6px;align-items:center;"><span class="badge b-mod">Med. NEMT Relevance</span><span id="men2_arr" style="color:var(--muted);">&#9658;</span></div>
+              </div>
+              <div id="men2_body" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:8px;"><strong>Key data:</strong> 37% of adults reported mental health issues in 2024 &mdash; up 3% since 2021. Olmsted depression rate 28% vs. 23% (MN) and 22% (U.S.). Higher disparities among renters &mdash; a strong proxy for lower income and reduced vehicle access. Mayo invested $4M+ in SERCC and $7.5M+ in mental health nonprofits in the 2022&ndash;2025 cycle.</p>
+                <p class="small" style="margin-bottom:8px;"><strong>NEMT connection:</strong> Behavioral health appointments have among the highest transport-attributable no-show rates of any specialty. NEMT for renter/disability populations for behavioral health visits addresses both Access (#1) and Mental Health (#2) simultaneously &mdash; dual-priority Schedule H documentation from a single program investment.</p>
+                <p class="small"><strong>CRA framing:</strong> Community development services for LMI populations addressing mental health access qualify under 12 CFR 25.04(c)(3). Serving two CHNA priorities in one program produces enhanced narrative strength for the exam file.</p>
+                <div class="small" style="color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:10px;margin-top:8px;">Source: 2025 Mayo Clinic CHNA &middot; Mental Health indicator &middot; Rochester Epidemiology Project &middot; MN Dept. of Health BRFSS</div>
+              </div>
+            </div>
+            <div class="callout" style="cursor:pointer;border-left:4px solid var(--amber);padding:13px 16px;" onclick="toggleMEN(3)">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">&#127825;</span><div><strong>Food Security &mdash; New 2025 Priority &middot; Co-occurring SDOH &middot; CRA Basic Needs Bridge</strong><div class="small" style="color:var(--muted);margin-top:2px;">Priority #3 &middot; Newly identified &middot; Channel One: 23% Hispanic, 14% Black</div></div></div>
+                <div style="display:flex;gap:6px;align-items:center;"><span class="badge b-mod">Med. NEMT Relevance</span><span id="men3_arr" style="color:var(--muted);">&#9658;</span></div>
+              </div>
+              <div id="men3_body" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:8px;"><strong>Key data:</strong> 33,000 Channel One Food Bank clients in 2024. 8% of adults worried about running out of food. Food security rate 92% county-wide (vs. 90% MN / 86% national) but 2% lower than 2020. Client demographics: 23% Hispanic, 14% Black, 11% Asian &mdash; all populations with elevated transportation barriers.</p>
+                <p class="small" style="margin-bottom:8px;"><strong>NEMT bundling:</strong> At Mayo&rsquo;s operational scale, NEMT trip routing can include a Channel One pickup/delivery stop &mdash; creating three-priority documentation (Access + Mental Health + Food Security) from a single investment. A design opportunity unique to a health system with Mayo&rsquo;s existing Channel One relationship.</p>
+                <p class="small"><strong>CRA framing:</strong> &ldquo;Basic needs&rdquo; category under CRA community development definitions. A bank investment addressing all three 2025 CHNA priorities creates the strongest multi-priority CRA narrative available in the Rochester MSA Assessment Area.</p>
+                <div class="small" style="color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:10px;margin-top:8px;">Source: 2025 Mayo Clinic CHNA &middot; Food Security indicator &middot; Channel One Food Bank 2024 &middot; Feeding America</div>
+              </div>
+            </div>
+            <div class="callout" style="cursor:pointer;border-left:4px solid var(--navy);padding:13px 16px;" onclick="toggleMEN(4)">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">&#128300;</span><div><strong>Rochester Epidemiology Project &mdash; Mayo&rsquo;s Unique Attribution Infrastructure</strong><div class="small" style="color:var(--muted);margin-top:2px;">Mayo-only asset &middot; Longitudinal data since 1966 &middot; 56M+ patient records in Mayo Platform</div></div></div>
+                <div style="display:flex;gap:6px;align-items:center;"><span class="badge b-strong">Unique to Mayo</span><span id="men4_arr" style="color:var(--muted);">&#9658;</span></div>
+              </div>
+              <div id="men4_body" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:8px;"><strong>What it is:</strong> The Rochester Epidemiology Project (REP) is a population-based data linkage system covering Olmsted County residents, operated with Mayo Clinic since 1966. The 2025 CHNA explicitly used REP to show health indicator trends &mdash; a methodological advantage no other local health system can replicate.</p>
+                <p class="small" style="margin-bottom:8px;"><strong>NEMT attribution:</strong> REP&rsquo;s linked records enable NEMT outcomes studies with longitudinal population controls unavailable elsewhere. A propensity-matched cohort study produces publication-quality evidence at a fraction of a de novo RCT cost &mdash; transforming the program from a community service into a real-world evidence platform.</p>
+                <p class="small"><strong>Board framing:</strong> &ldquo;This is not just a transportation program &mdash; it is a peer-reviewed publication opportunity that distinguishes Mayo&rsquo;s community benefit strategy nationally and documents ROI with the methodological rigor Mayo Clinic&rsquo;s research reputation demands.&rdquo;</p>
+                <div class="small" style="color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:10px;margin-top:8px;">Source: Rochester Epidemiology Project (mayoclinic.org) &middot; Mayo Clinic Platform (56M+ records) &middot; 2025 CHNA process description</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="primary" onclick="mayoNav('linkage')">Map CHNA &rarr; CRA Opportunities &rarr;</button>
+            <button class="secondary" onclick="window.open('https://storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210','_blank')">Open CHNA StoryMap &#8599;</button>
+          </div>
+        </div></div><div class="step-foot"><p class="step-bridge">You’ve seen the evidence. The next question every CFO asks is: <em>which federal regulation turns community health need into bank-eligible investment?</em> The answer is specific, citable, and already established.</p><button class="step-cont" onclick="go('linkage')">See how this becomes fundable →</button></div></section><section id="s_linkage" class="step" style="display:none"><div class="story-hdr"><div class="story-num">02</div><div><h2 class="story-hl">Federal regulation turns your CHNA into a bankable investment.</h2><p class="story-sub">12 CFR 25.04(c)(3) is the regulation that makes this possible. It allows banks to receive Community Reinvestment Act credit for funding healthcare transportation for low-income populations. Mayo’s three CHNA priorities map directly to this criterion — the translation that most health systems never make.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">CHNA Priority &rarr; NEMT Program &rarr; CRA Activity Mapping</div>
+          <p class="small" style="margin-bottom:16px;">Maps each 2025 CHNA priority to program elements, CRA classification, and Schedule H pathway &mdash; the evidence chain you present to banks. Rochester MSA Assessment Area = all of Olmsted County + all of Dodge County (confirmed by OCC examinations).</p>
+          <div style="overflow-x:auto;margin-bottom:18px;">
+            <table class="tbl" style="min-width:860px;font-size:13px;">
+              <thead><tr><th>2025 CHNA Priority</th><th>Key Data</th><th>NEMT Program Element</th><th>CRA Classification</th><th>Schedule H Activity</th><th>Confidence</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Access to Care #1</strong><br><span class="small" style="color:var(--muted);">34% delayed; 15% no PCP</span></td><td class="small">Transport barrier for disability (9.7%) and foreign-born (11.1%)</td><td class="small">Round-trip NEMT to primary care, specialty &amp; preventive appointments for LMI/disability patients</td><td><span class="badge b-strong">CD Services &mdash; Healthcare</span><br><span class="small" style="color:var(--muted);">12 CFR 25.04(c)(3) Topic L</span></td><td class="small">Responding to CHNA #1; LMI-targeted; Z-code outcomes documentation</td><td><span class="badge b-strong">High</span></td></tr>
+                <tr><td><strong>Mental Health #2</strong><br><span class="small" style="color:var(--muted);">37% prevalence; exceeds MN + U.S.</span></td><td class="small">Higher delay rates among renters + disability &mdash; transport-dependent groups</td><td class="small">NEMT to behavioral health appointments; SERCC transport; psychiatric medication pickup</td><td><span class="badge b-mod">CD Services &mdash; Mental Health</span><br><span class="small" style="color:var(--muted);">Enhanced CD credit eligible</span></td><td class="small">Dual-priority: Access (#1) + Mental Health (#2) from single program</td><td><span class="badge b-mod">Medium</span></td></tr>
+                <tr><td><strong>Food Security #3</strong><br><span class="small" style="color:var(--muted);">33K clients; declining trend</span></td><td class="small">23% Hispanic, 14% Black &mdash; overlapping transport-barrier population</td><td class="small">NEMT trip bundling: healthcare + Channel One food bank stop where clinically safe</td><td><span class="badge b-mod">CD Services &mdash; Basic Needs</span><br><span class="small" style="color:var(--muted);">Three-priority documentation</span></td><td class="small">CHNA food + access combination; novel Schedule H framing</td><td><span class="badge b-weak">Low-Med</span></td></tr>
+                <tr><td><strong>REP Research Benefit</strong><br><span class="small" style="color:var(--muted);">Mayo-only</span></td><td class="small">Rochester Epidemiology Project enables propensity-matched attribution studies</td><td class="small">Peer-reviewed NEMT outcomes publication using REP linked records; national evidence generation</td><td><span class="badge b-strong">CD &mdash; Research Benefit</span></td><td class="small">Publication advances national NEMT evidence; IRS Schedule H research benefit</td><td><span class="badge b-strong">High (Research)</span></td></tr>
+                <tr style="background:rgba(13,148,136,.05);"><td colspan="2"><strong>Combined Multi-Priority Value</strong></td><td class="small">NEMT addressing all three 2025 CHNA priorities simultaneously</td><td colspan="2"><strong>Maximum CRA narrative strength &mdash; multi-priority, LMI-targeted, REP-validated</strong></td><td><span class="badge b-strong">Strongest Available</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="grid grid-2" style="margin-bottom:16px;">
+            <div class="callout" style="border-left:4px solid var(--amber);"><strong style="color:var(--amber);">&#9889; Why This Is Different for Mayo</strong><p class="small" style="margin-top:6px;">Most health systems have one CHNA priority connecting to NEMT. Mayo has three &mdash; and uniquely holds the Rochester Epidemiology Project to generate attribution evidence that turns a transportation program into a peer-reviewed publication. The bank funds the program; Mayo generates national-level evidence.</p></div>
+            <div class="callout" style="border-left:4px solid var(--blue);"><strong style="color:var(--blue);">&#127963; Assessment Area Confirmed</strong><p class="small" style="margin-top:6px;">The Rochester MSA CRA Assessment Area covers <strong>all of Olmsted County and all of Dodge County</strong> (OCC-confirmed). All three CHNA priorities are documented county-wide. A Mayo-anchored NEMT program sits squarely within every Rochester-branch bank&rsquo;s Assessment Area.</p></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('chna')">&larr; Back to CHNA</button><button class="primary" onclick="mayoNav('roi')">Build Financial Model &rarr;</button></div>
+        </div></div><div class="step-foot"><p class="step-bridge">The regulatory pathway is confirmed. Now the question becomes: <em>what is this actually worth at Mayo’s scale?</em> The ROI model is built around your real numbers — 59,000 patients, four revenue layers, board-ready scenario framing.</p><button class="step-cont" onclick="go('roi')">Build the financial model →</button></div></section><section id="s_roi" class="step" style="display:none"><div class="story-hdr"><div class="story-num">03</div><div><h2 class="story-hl">The financial case is stronger than most boards expect.</h2><p class="story-sub">An NEMT program at Mayo’s scale isn’t just a cost — it’s a revenue recovery mechanism. Kept appointments generate contribution margin. SDOH documentation creates coding uplift. CCM/TCM billing layers add incremental revenue. VBC quality earn-backs close the loop. Enable each layer below and watch the ROI build in real time.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">Full ROI Model &mdash; Mayo Clinic / Olmsted County Scale</div>
+          <p class="small" style="margin-bottom:4px;">59,421 Olmsted County patients in 2024 · 42,103 inpatient admissions · 84,800 ER visits · REP longitudinal population data since 1966. Defaults calibrated to Mayo's ambulatory pilot scale. Enable all layers to build the complete value stack.</p>
+          <div id="mayo_l0_summary" style="margin-bottom:14px;display:none;background:rgba(201,162,39,.07);border-left:3px solid #C9A227;border-radius:8px;padding:10px 14px;"></div>
+
+          <div style="display:flex;gap:20px;align-items:start;flex-wrap:wrap;">
+            <!-- LEFT COLUMN: all inputs -->
+            <div style="display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden;width:380px;flex-shrink:0;">
+
+              <!-- LAYER 0: FFS BASE -->
+              <div class="callout" style="border-left:4px solid var(--navy);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <strong class="small" style="color:var(--navy);">&#9312; Layer 0 &mdash; FFS Contribution Margin Base</strong>
+                  <span class="badge" style="background:var(--navy);color:#fff;font-size:10px;padding:2px 7px;border-radius:99px;">Always Active</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Annual visits targeted (V)</label><input id="mr_v" type="number" value="25000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">No-show rate (n)</label><input id="mr_n" type="number" value="0.18" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Transport share of no-shows (s)</label><input id="mr_s" type="number" value="0.28" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Mitigation rate (m)</label><input id="mr_m" type="number" value="0.50" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Net revenue per visit ($r)</label><input id="mr_r" type="number" value="285" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Marginal clinical cost ($c)</label><input id="mr_c" type="number" value="110" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Trip cost per round trip ($t)</label><input id="mr_t" type="number" value="65" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Overhead rate (o)</label><input id="mr_o" type="number" value="0.10" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
+                </div>
+                <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+                  <button onclick="confirmMayoLayer0()" id="mayo_l0_btn" style="background:linear-gradient(135deg,var(--navy),#1a3a5c);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.03em;">&#10003; Confirm Layer 0 Inputs</button>
+                  <span id="mayo_l0_confirmed" style="display:none;font-size:11px;color:#047857;font-weight:700;">&#10003; Confirmed &mdash; analysis generated below</span>
+                </div>
+              </div>
+              <div class="callout" style="border-left:4px solid var(--blue);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <strong class="small" style="color:var(--navy);">&#9313; Layer 1 &mdash; Coding &amp; SDOH Documentation Uplift</strong>
+                  <label style="display:flex;align-items:center;gap:5px;cursor:pointer;" class="small"><input type="checkbox" id="mr_cod_on" onchange="toggleMayoLayer('cod')"/> Enable</label>
+                </div>
+                <p class="small" style="margin:0 0 6px;color:var(--muted);">Z-code (Z75.3) documentation uplift + CPT capture improvement on NEMT-enabled visits.</p>
+                <div id="mr_cod_box" style="display:none;margin-top:8px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Z-code capture rate (%)</label><input id="mr_zrate" type="number" value="25" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">$ uplift per Z-coded encounter</label><input id="mr_zupl" type="number" value="20" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">CPT capture rate (%)</label><input id="mr_cptrate" type="number" value="15" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">$ uplift per CPT-captured encounter</label><input id="mr_cptupl" type="number" value="15" oninput="calcMayoROI()" class="mayo-input"/></div>
+                </div></div>
+              </div>
+
+              <!-- LAYER 2: CCM/TCM -->
+              <div class="callout" style="border-left:4px solid var(--teal);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <strong class="small" style="color:var(--navy);">&#9314; Layer 2 &mdash; CCM / TCM Capture</strong>
+                  <label style="display:flex;align-items:center;gap:5px;cursor:pointer;" class="small"><input type="checkbox" id="mr_ccm_on" onchange="toggleMayoLayer('ccm')"/> Enable</label>
+                </div>
+                <div style="background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:6px;padding:6px 10px;font-size:11px;color:#991B1B;font-weight:600;margin-bottom:8px;">&#9888; CCM/TCM time must be real, threshold-meeting, and non-duplicative. Patient travel time is not billable.</div>
+                <div id="mr_ccm_box" style="display:none;">
+                  <div style="font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CCM Inputs</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">CCM-eligible patients</label><input id="mr_cp" type="number" value="800" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Enrollment rate (%)</label><input id="mr_ce" type="number" value="40" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Avg billed months/patient/yr</label><input id="mr_cmo" type="number" value="8" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Avg allowed per patient-month ($)</label><input id="mr_call" type="number" value="62" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Billing success rate (%)</label><input id="mr_csuc" type="number" value="85" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Staff min/month &times; $0.65/min</label><input id="mr_cmin" type="number" value="20" step="5" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  </div>
+                  <div style="font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 6px;">TCM Inputs</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">TCM-eligible discharges/yr</label><input id="mr_td" type="number" value="420" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Reach/completion rate (%)</label><input id="mr_tr" type="number" value="55" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">% billed 99496 (high MDM, 7-day)</label><input id="mr_thigh" type="number" value="35" step="5" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Billing success rate (%)</label><input id="mr_tsuc" type="number" value="82" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LAYER 3: VBC -->
+              <div class="callout" style="border-left:4px solid var(--green);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <strong class="small" style="color:var(--navy);">&#9315; Layer 3 &mdash; VBC Quality Earn-back</strong>
+                  <label style="display:flex;align-items:center;gap:5px;cursor:pointer;" class="small"><input type="checkbox" id="mr_vbc_on" onchange="toggleMayoLayer('vbc')"/> Enable</label>
+                </div>
+                <div id="mr_vbc_box" style="display:none;margin-top:8px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Contract type</label>
+                    <select id="mr_vbc_type" onchange="toggleMayoCliff();calcMayoROI();" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;">
+                      <option value="linear">Linear earn-back (ACO / withhold)</option>
+                      <option value="cliff">Cliff / threshold bonus (Star Ratings)</option>
+                    </select>
+                  </div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">At-risk quality pool ($)</label><input id="mr_pool" type="number" value="750000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Baseline quality score</label><input id="mr_base" type="number" value="74" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Projected score with NEMT</label><input id="mr_proj" type="number" value="81" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div id="mr_cliff_row1" style="display:none;"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Threshold score for bonus</label><input id="mr_thresh" type="number" value="77" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div id="mr_cliff_row2" style="display:none;"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Bonus amount if threshold met ($)</label><input id="mr_cliffbonus" type="number" value="300000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Bank CRA contribution ($/yr)</label><input id="mr_bank" type="number" value="75000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                </div></div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: live results -->
+            <div style="display:flex;flex-direction:column;gap:12px;min-width:0;flex:1;">
+              <!-- Big ROI display -->
+              <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:12px;padding:20px;text-align:center;color:#fff;">
+                <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Return on Investment</div>
+                <div id="mayo_roi_big" style="font-size:52px;font-weight:900;color:#E8C84A;font-family:monospace;line-height:1;">&mdash;</div>
+                <div id="mayo_net_big" style="font-size:17px;font-family:monospace;color:rgba(167,243,208,.9);margin-top:6px;">&mdash;</div>
+                <div id="mayo_be_txt" style="font-size:11px;opacity:.6;margin-top:8px;background:rgba(255,255,255,.08);padding:4px 14px;border-radius:999px;display:inline-block;">Break-even: &mdash;</div>
+              </div>
+
+              <!-- Live value stack rows — FIXED SPACING -->
+              <div class="callout" style="padding:12px 14px;">
+                <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">&#128202; Live Value Stack</div>
+                <div id="mayo_wf_rows" style="display:flex;flex-direction:column;gap:0;"></div>
+              </div>
+
+              <!-- KPI grid -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="background:var(--bg-warm);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Program Cost/yr</div>
+                  <div id="m_kpi_cost" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--navy);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:rgba(4,120,87,.06);border:1px solid rgba(4,120,87,.2);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">FFS Net Benefit</div>
+                  <div id="m_kpi_ffs" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--green);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.2);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Coding Uplift</div>
+                  <div id="m_kpi_cod" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--blue);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.2);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">CCM Net (incr.)</div>
+                  <div id="m_kpi_ccm" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--teal);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.2);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">TCM Net</div>
+                  <div id="m_kpi_tcm" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--teal);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:rgba(4,120,87,.06);border:1px solid rgba(4,120,87,.2);border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">VBC Earn-back</div>
+                  <div id="m_kpi_vbc" style="font-size:20px;font-weight:900;font-family:monospace;color:var(--green);margin-top:2px;">&mdash;</div>
+                </div>
+                <div style="background:linear-gradient(135deg,rgba(0,51,102,.08),rgba(0,51,102,.04));border:1px solid rgba(0,51,102,.2);border-radius:8px;padding:10px 12px;grid-column:1/-1;">
+                  <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">All-in Net Value (All Active Layers)</div>
+                  <div id="m_kpi_allin" style="font-size:24px;font-weight:900;font-family:monospace;color:var(--navy);margin-top:2px;">&mdash;</div>
+                </div>
+              </div>
+
+              <!-- Sensitivity mini-table -->
+              <div class="callout" style="padding:12px 14px;">
+                <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">&#128200; Sensitivity &mdash; Mitigation Rate vs. Trip Cost</div>
+                <div id="mayo_sensitivity" style="font-size:11px;font-family:monospace;color:var(--navy);line-height:1.9;white-space:pre;overflow-x:auto;"></div>
+              </div>
+
+              <!-- Scenario comparison -->
+              <div class="callout" style="padding:12px 14px;">
+                <div style="font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">&#127919; Board Scenario Comparison</div>
+                <div id="mayo_scenarios" style="font-size:12px;color:var(--navy);line-height:1.8;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+            <button class="secondary" onclick="mayoNav('linkage')">&larr; Back to Map</button>
+            <button class="primary" onclick="mayoNav('cra')">Build CRA Application &rarr;</button>
+            <button onclick="mayoNav('draft')" style="background:linear-gradient(135deg,#7A5C00,#B88A00);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128196; Generate Artifacts &rarr;</button>
+          </div>
+        </div></div><div class="step-foot"><p class="step-bridge">You have the financial case. Now build the document a bank’s CRA officer needs to see — a five-section justification memo that qualifies this program as a community development activity in their exam file.</p><button class="step-cont" onclick="go('cra')">Build the bank application →</button></div></section><section id="s_cra" class="step" style="display:none"><div class="story-hdr"><div class="story-num">04</div><div><h2 class="story-hl">Every bank with a Rochester branch has a CRA obligation here.</h2><p class="story-sub">The Rochester MSA CRA Assessment Area covers all of Olmsted and Dodge counties, confirmed by OCC examinations. Any bank with branches here must demonstrate community reinvestment activity. Your program, documented against Mayo’s 2025 CHNA, is exactly what their compliance officer needs.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">CRA Activity Justification Builder &mdash; Five Sections</div>
+          <p class="small" style="margin-bottom:16px;">Pre-populated with 2025 Olmsted County CHNA data and Rochester MSA Assessment Area confirmation. Customize each field, then generate the draft document.</p>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">1</span><div><div style="font-size:13px;font-weight:700;color:#fff;">CHNA Citation &amp; Community Health Need</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">Required for IRS Schedule H and CRA community development credit</div></div></div>
+            <div style="padding:14px 16px;">
+              <div class="callout" style="font-size:12px;border-left:3px solid var(--blue);padding:8px 12px;margin-bottom:10px;"><strong>Citation (pre-filled):</strong> 2025 Community Health Needs Assessment &mdash; Olmsted County, MN. Released Oct 7, 2025. Co-produced by Olmsted County Public Health Services, Mayo Clinic in Rochester, and Olmsted Medical Center. storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210</div>
+              <div class="callout" style="font-size:12px;border-left:3px solid var(--blue);padding:8px 12px;margin-bottom:10px;line-height:1.7;"><strong>Priorities addressed:</strong><br>#1 Access to Care &mdash; 34% delayed care; 15% lack PCP; disability (9.7%) + foreign-born (11.1%) face transport barriers.<br>#2 Mental Health &mdash; 37% prevalence; depression rate exceeds MN + U.S.; renter/disability concentration.<br>#3 Food Security &mdash; 33,000 Channel One clients; 23% Hispanic, 14% Black; co-occurring transport barrier population.</div>
+              <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Statement of Need (customize)</label>
+              <textarea id="cra_need" rows="3" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:vertical;">Transportation barriers prevent LMI residents of Olmsted County from accessing needed healthcare, particularly for chronic disease management, behavioral health, and post-discharge follow-up. The 2025 CHNA identifies Access to Care as the County's highest-significance health priority, with disability (9.7%) and foreign-born status (11.1%) as compounding barriers. A Non-Emergency Medical Transportation program directly addresses this gap by providing reliable transport to Mayo Clinic ambulatory facilities for eligible LMI patients within the Rochester MSA CRA Assessment Area.</textarea>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">2</span><div><div style="font-size:13px;font-weight:700;color:#fff;">Activity Description, Bank Role &amp; Assessment Area Confirmation</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">Confirms activity within Rochester MSA Assessment Area</div></div></div>
+            <div style="padding:14px 16px;">
+              <div class="grid grid-2" style="gap:10px;margin-bottom:10px;">
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Bank partner name</label><input id="cra_bank" type="text" placeholder="e.g., U.S. Bank N.A." style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"/></div>
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Activity type</label><select id="cra_acttype" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option>Qualified Charitable Contribution / Grant</option><option>Community Development Investment</option><option>Community Development Loan</option><option>Community Development Service (in-kind)</option></select></div>
+              </div>
+              <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Activity description (customize)</label>
+              <textarea id="cra_activity" rows="4" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:vertical;">The bank will provide a qualified charitable contribution to Mayo Clinic in Rochester to fund the operational costs of the Olmsted County NEMT Program. Funds will subsidize round-trip transportation for LMI patients at Mayo Clinic ambulatory facilities. Mayo Clinic will administer the program, manage vendor relationships, document ride completions, and collect SDOH Z-code data for each NEMT-enabled encounter. This activity responds to Access to Care (Priority #1) in the 2025 Olmsted County CHNA and serves populations within the Rochester MSA CRA Assessment Area (Olmsted + Dodge counties, MN).</textarea>
+              <div class="callout" style="font-size:12px;border-left:3px solid var(--blue);padding:8px 12px;margin-top:10px;"><strong>Assessment Area (pre-filled):</strong> Program activities occur within the Rochester MSA CRA Assessment Area &mdash; all of Olmsted County and all of Dodge County, MN &mdash; confirmed by OCC CRA examinations. All patients are Olmsted County residents served at Mayo Clinic facilities in Rochester.</div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">3</span><div><div style="font-size:13px;font-weight:700;color:#fff;">LMI Population Documentation</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">Primary beneficiaries must be LMI individuals &mdash; required for CRA community development classification</div></div></div>
+            <div style="padding:14px 16px;">
+              <div class="grid grid-2" style="gap:10px;margin-bottom:10px;">
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Income eligibility threshold</label><select id="cra_lmi" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option>&le; 80% Area Median Income (CRA LMI standard)</option><option>&le; 200% Federal Poverty Level</option><option>Medicaid / CHIP enrollment</option><option>Hybrid: Medicaid + self-attestation</option></select></div>
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Verification method</label><select id="cra_verify" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option>Medicaid/CHIP enrollment at point of service</option><option>Self-attestation with income documentation</option><option>Census tract LMI targeting (&ge;50% LMI households)</option><option>Hybrid: enrollment + self-attestation</option></select></div>
+              </div>
+              <div class="callout" style="font-size:12px;border-left:3px solid var(--teal);padding:8px 12px;line-height:1.7;"><strong>Special populations (2025 CHNA):</strong><br>&#9745; Adults with disabilities (9.7% of Olmsted County &mdash; documented access barriers)<br>&#9745; Foreign-born residents (11.1%) &mdash; language + navigation barriers compound transport gap<br>&#9745; Renters &mdash; higher mental health disparities and transport dependence<br>&#9745; Uninsured (Salvation Army Good Samaritan Clinic, 4,000+ patients; Mayo-supported)<br>&#9745; LGBTQIA+ residents &mdash; documented healthcare access disparities</div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">4</span><div><div style="font-size:13px;font-weight:700;color:#fff;">Measurable Outcomes &amp; REP Study Design</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">Demonstrates accountability; Mayo-specific REP publication plan creates national evidence</div></div></div>
+            <div style="padding:14px 16px;">
+              <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Primary outcome metrics (customize)</label>
+              <textarea id="cra_outcomes" rows="4" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:vertical;margin-bottom:10px;">1. Total NEMT trips completed per quarter
+2. LMI patient count served (unduplicated, quarterly and annually)
+3. No-show rate reduction vs. matched controls (target: >=35% by Month 6)
+4. SDOH Z75.3 documentation rate (target: >=25% Year 1; >=60% Year 2)
+5. Patient satisfaction score (target: mean >=8.0)
+6. REP matched-cohort study: eligible patients identified and consented</textarea>
+              <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Rochester Epidemiology Project study design (Mayo-specific)</label>
+              <textarea id="cra_rep" rows="3" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;resize:vertical;">Mayo Clinic will conduct a retrospective cohort study using REP linked records. Design: NEMT-enrolled patients matched 1:3 to controls on age, diagnosis, insurance, and prior adherence. Primary outcomes: no-show rate, 30-day readmission, QPP quality measure closure rates (001, 236, 113). Peer-reviewed publication target: Year 2. This generates national-level NEMT evidence anchored to a Mayo Clinic/Olmsted County population.</textarea>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
+            <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">5</span><div><div style="font-size:13px;font-weight:700;color:#fff;">Financial Structure &amp; Term Sheet</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">For bank CRA file and OCC/FDIC examiner review</div></div></div>
+            <div style="padding:14px 16px;">
+              <div class="grid grid-2" style="gap:10px;">
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Annual bank contribution ($)</label><input id="cra_amount" type="number" value="75000" oninput="updateCRATotal()" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:15px;font-family:monospace;"/></div>
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Commitment term</label><select id="cra_term" onchange="updateCRATotal()" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option value="1">1 year (pilot)</option><option value="3" selected>3 years (recommended)</option><option value="5">5 years (preferred)</option></select></div>
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Total commitment ($)</label><input id="cra_total" type="number" value="225000" readonly style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:15px;font-family:monospace;background:var(--bg-warm);"/></div>
+                <div><label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Reporting frequency</label><select id="cra_reporting" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option>Quarterly (recommended)</option><option>Semi-annual</option><option>Annual only</option></select></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('roi')">&larr; Back to ROI</button><button class="secondary" onclick="mayoNav('banks')">Identify Banks &rarr;</button><button class="primary" onclick="mayoNav('draft')">Generate Full Draft &rarr;</button></div>
+        </div></div><div class="step-foot"><p class="step-bridge">The application is ready. The next question is who to call first, what to say, and in what order — based on each bank’s actual CRA exam rating, assessment area exposure, and current exam cycle.</p><button class="step-cont" onclick="go('banks')">See which banks to approach →</button></div></section><section id="s_banks" class="step" style="display:none"><div class="story-hdr"><div class="story-num">05</div><div><h2 class="story-hl">Seven banks. One flagship partnership. A replicable consortium.</h2><p class="story-sub">Rochester has national banks protecting Outstanding ratings, regional banks looking to improve, and community banks for whom a Mayo partnership is the most prestigious CRA activity available. The strategy below maps each institution’s motivation, suggested ask amounts, and the exact framing that works for each.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">Bank Engagement &mdash; Rochester MSA Assessment Area</div>
+          <p class="small" style="margin-bottom:14px;">The Rochester MSA AA (Olmsted + Dodge counties) includes national, regional, and community banks all subject to CRA. Click each institution for a tailored pitch approach based on CRA exam history.</p>
+          <div class="callout" style="border-left:4px solid #C9A227;background:rgba(201,162,39,.06);margin-bottom:16px;"><strong style="color:#7A5C00;">&#127919; Mayo&rsquo;s Strategic Advantage</strong><p class="small" style="margin-top:5px;">Mayo Clinic is the largest employer in Olmsted County. A CRA partnership with Mayo carries reputational value that bank CRA officers actively seek &mdash; it is a marquee exam file relationship. Lead with institutional standing, not dollar amount, then present the complete evidence package.</p></div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+            <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--bg-warm);" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <div style="width:36px;height:36px;border-radius:7px;background:linear-gradient(135deg,#CC0000,#990000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#fff;flex-shrink:0;">US</div>
+                <div style="flex:1;"><strong>U.S. Bank National Association</strong><div class="small" style="color:var(--muted);">National &middot; MN headquarters &middot; Rochester branches &middot; OCC regulated</div></div>
+                <span class="badge b-strong">Outstanding CRA</span>
+              </div>
+              <div style="display:none;padding:12px 16px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:6px;"><strong>Strategy:</strong> Lead with the marquee partnership angle. U.S. Bank maintains Outstanding CRA and seeks high-visibility community health investments. Large banks (&gt;$10B) have annual CRA exams &mdash; multi-year commitments provide consistent qualifying activities. Offer acknowledgment in the REP outcomes publication: <em>&ldquo;U.S. Bank&rsquo;s investment enabled the first rigorous matched-cohort NEMT study at a major academic medical center.&rdquo;</em></p>
+                <div class="callout" style="font-size:12px;padding:7px 10px;background:rgba(0,75,135,.05);border-left:2px solid var(--blue);">Suggested ask: $75,000&ndash;$100,000/year &middot; 3-year term &middot; Qualified charitable contribution &middot; Quarterly outcomes reporting</div>
+              </div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--bg-warm);" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <div style="width:36px;height:36px;border-radius:7px;background:linear-gradient(135deg,#003087,#0052CC);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#fff;flex-shrink:0;">AB</div>
+                <div style="flex:1;"><strong>Associated Bank, N.A.</strong><div class="small" style="color:var(--muted);">Regional &middot; WI-based &middot; MN/Rochester operations &middot; OCC regulated &middot; Eval 2021&ndash;2023</div></div>
+                <span class="badge b-strong">Outstanding CRA</span>
+              </div>
+              <div style="display:none;padding:12px 16px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:6px;"><strong>Strategy:</strong> Outstanding rating means they invest actively to maintain it. Offer co-branding on program materials and in the CHNA implementation strategy documentation &mdash; visible recognition in a public community health record. Logical extension of their community health investment history in Minnesota.</p>
+                <div class="callout" style="font-size:12px;padding:7px 10px;background:rgba(0,75,135,.05);border-left:2px solid var(--blue);">Suggested ask: $50,000&ndash;$75,000/year &middot; 3-year term &middot; Co-branding on program materials</div>
+              </div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--bg-warm);" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <div style="width:36px;height:36px;border-radius:7px;background:linear-gradient(135deg,#006B3F,#009456);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:#fff;flex-shrink:0;">MBT</div>
+                <div style="flex:1;"><strong>MBT Bank</strong><div class="small" style="color:var(--muted);">Community bank &middot; Rochester MSA primary AA &middot; Full-scope CRA review</div></div>
+                <span class="badge b-mod">Satisfactory CRA</span>
+              </div>
+              <div style="display:none;padding:12px 16px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:6px;"><strong>Strategy:</strong> Rochester MSA is MBT&rsquo;s primary AA &mdash; qualifying activities here carry maximum exam weight. Satisfactory rating means motivation to improve. A Mayo Clinic partnership provides the narrative to elevate toward Outstanding. This is a flagship investment at their scale &mdash; position it accordingly.</p>
+                <div class="callout" style="font-size:12px;padding:7px 10px;background:rgba(201,162,39,.05);border-left:2px solid var(--amber);">Suggested ask: $25,000&ndash;$50,000/year &middot; 3-year commitment</div>
+              </div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--bg-warm);" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+                <div style="width:36px;height:36px;border-radius:7px;background:linear-gradient(135deg,#2C5F8A,#3A7CBD);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#127970;</div>
+                <div style="flex:1;"><strong>Bank Consortium &mdash; Community Banks</strong><div class="small" style="color:var(--muted);">Merchants Bank &middot; Bremer Bank &middot; Peoples Bank &middot; Hawk Eye Bank &mdash; all with Rochester MSA AAs</div></div>
+                <span class="badge b-mod">Various Ratings</span>
+              </div>
+              <div style="display:none;padding:12px 16px;border-top:1px solid var(--border);">
+                <p class="small" style="margin-bottom:6px;"><strong>Strategy:</strong> 4&ndash;6 community banks each contributing $20K&ndash;$30K. Each qualifies as CRA community development. Total pool ($80K&ndash;$150K) is diversified. Use the first U.S. Bank/Associated Bank commitment as social proof: <em>&ldquo;U.S. Bank has committed &mdash; we&rsquo;re building a consortium. Your $25K qualifies as a CRA activity in your Rochester MSA Assessment Area.&rdquo;</em> Consider United Way of Southeast Minnesota as fiscal intermediary.</p>
+                <div class="callout" style="font-size:12px;padding:7px 10px;background:rgba(13,148,136,.05);border-left:2px solid var(--teal);">Structure: Community Benefit Fund &middot; Mayo Clinic as program administrator &middot; Pro-rata outcomes reporting</div>
+              </div>
+            </div>
+          </div>
+          <div class="callout" style="border-left:4px solid var(--teal);margin-bottom:16px;">
+            <strong>&#128203; Four-Step Engagement Sequence</strong>
+            <div class="grid grid-2" style="gap:8px;margin-top:10px;">
+              <div class="callout" style="padding:8px 12px;"><strong style="color:var(--blue);font-size:12px;">Step 1 &mdash; Prepare the package</strong><p class="small" style="margin-top:3px;">CHNA brief + ROI model + CRA memo + term sheet. Do not approach banks without a complete document package.</p></div>
+              <div class="callout" style="padding:8px 12px;"><strong style="color:var(--blue);font-size:12px;">Step 2 &mdash; Lead with large banks</strong><p class="small" style="margin-top:3px;">U.S. Bank and Associated Bank first &mdash; Outstanding ratings to protect, capacity to commit. Get a soft commitment first.</p></div>
+              <div class="callout" style="padding:8px 12px;"><strong style="color:var(--blue);font-size:12px;">Step 3 &mdash; Use social proof</strong><p class="small" style="margin-top:3px;">&ldquo;U.S. Bank has committed &mdash; we&rsquo;re building a consortium.&rdquo; Each community bank&rsquo;s $25K is meaningful in their CRA file.</p></div>
+              <div class="callout" style="padding:8px 12px;border-left:3px solid var(--red);"><strong style="color:var(--red);font-size:12px;">Step 4 &mdash; Confirm with counsel</strong><p class="small" style="margin-top:3px;">Verify activities qualify with OCC or Federal Reserve bank counsel before executing agreements.</p></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('cra')">&larr; Back to Application</button><button class="primary" onclick="mayoNav('draft')">Generate Complete Draft &rarr;</button></div>
+        </div></div><div class="step-foot"><p class="step-bridge">You know who to approach and what to say. The last step generates the complete package — seven audit-ready documents that make this program immediately actionable for your team, your board, and your banking partners.</p><button class="step-cont" onclick="go('draft')">Generate your documents →</button></div></section><section id="s_draft" class="step" style="display:none"><div class="story-hdr"><div class="story-num">06</div><div><h2 class="story-hl">In sixty minutes, you’ve built what most health systems spend months on.</h2><p class="story-sub">Seven documents. Each pre-populated with your CHNA data and ROI model outputs. Each saving four to eight hours of preparation. This is what the Aqueduct T360 MATCH platform makes possible — not just analysis, but the complete package your team needs to move from evidence to funded program.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
+          <p class="small" style="margin-bottom:14px;">Seven high-value artifacts pre-populated with 2025 Olmsted County CHNA data and your ROI model inputs. Each saves 4&ndash;8 hours of preparation. Generate, review, copy, and adapt. All financial figures pull live from the ROI model.</p>
+
+          <!-- Artifact button grid -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:20px;">
+            <button onclick="generateMayoDraft('proforma')" style="background:linear-gradient(135deg,var(--navy),#1a3a5c);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128200;</div>
+              <div style="font-size:13px;font-weight:700;">3-Year Pro Forma &amp; P&amp;L</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">Full income statement with year-over-year layer maturation, cost ramp, and cumulative ROI</div>
+            </button>
+            <button onclick="generateMayoDraft('memo')" style="background:linear-gradient(135deg,#1D4ED8,#1e40af);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128196;</div>
+              <div style="font-size:13px;font-weight:700;">CRA Justification Memo</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">5-section OCC/FDIC-ready memo with CHNA citations, LMI documentation, and outcome metrics</div>
+            </button>
+            <button onclick="generateMayoDraft('term')" style="background:linear-gradient(135deg,#7A5C00,#B88A00);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128203;</div>
+              <div style="font-size:13px;font-weight:700;">Bank Term Sheet &amp; Pitch Brief</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">Proposed financial structure, reporting cadence, acknowledgment terms, and ROI summary</div>
+            </button>
+            <button onclick="generateMayoDraft('boarddeck')" style="background:linear-gradient(135deg,#7C3AED,#6d28d9);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#127968;</div>
+              <div style="font-size:13px;font-weight:700;">Board Executive Summary</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">One-page board brief: program rationale, three-scenario ROI, compliance posture, ask</div>
+            </button>
+            <button onclick="generateMayoDraft('sla')" style="background:linear-gradient(135deg,#0F766E,#0d6a61);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128221;</div>
+              <div style="font-size:13px;font-weight:700;">Vendor SLA Template</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">Complete SLA with performance metrics, breach consequences, monitoring protocols, and HIPAA/BAA clauses</div>
+            </button>
+            <button onclick="generateMayoDraft('rep')" style="background:linear-gradient(135deg,#B45309,#92400E);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128300;</div>
+              <div style="font-size:13px;font-weight:700;">REP Study Protocol</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">Rochester Epidemiology Project matched-cohort design, IRB pathway, endpoints, publication plan</div>
+            </button>
+            <button onclick="generateMayoDraft('kpi')" style="background:linear-gradient(135deg,#065F46,#047857);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
+              <div style="font-size:20px;margin-bottom:6px;">&#128202;</div>
+              <div style="font-size:13px;font-weight:700;">KPI &amp; Reporting Dashboard</div>
+              <div style="font-size:11px;opacity:.7;margin-top:3px;">Quarterly reporting template: access, clinical, PRO, financial, and compliance metrics with targets</div>
+            </button>
+          </div>
+
+          <!-- Output pane -->
+          <div id="mayo_draft_out" style="display:none;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+              <strong id="mayo_draft_title" class="small" style="text-transform:uppercase;letter-spacing:.06em;color:var(--navy);">Document Preview</strong>
+              <div style="display:flex;gap:8px;">
+                <button onclick="copyMayoDraft()" class="secondary" style="padding:5px 14px;font-size:12px;">&#128203; Copy to Clipboard</button>
+                <button onclick="downloadMayoDraft()" class="secondary" style="padding:5px 14px;font-size:12px;">&#11015; Download .txt</button>
+              </div>
+            </div>
+            <pre id="mayo_draft_content" style="background:var(--bg-warm);border:1px solid var(--border);border-radius:8px;padding:18px;font-size:12px;font-family:monospace;line-height:1.9;white-space:pre-wrap;max-height:520px;overflow-y:auto;color:var(--navy);"></pre>
+          </div>
+
+          <!-- Platform differentiator -->
+          <div class="callout" style="border-left:4px solid var(--blue);">
+            <strong style="color:var(--navy);">&#128506; What This Platform Does That the ArcGIS CHNA StoryMap Cannot</strong>
+            <div class="grid grid-2" style="gap:12px;margin-top:8px;">
+              <p class="small"><strong>The 2025 CHNA ArcGIS StoryMap</strong> is an excellent community communication tool &mdash; interactive, geographically rich, publicly accessible. It presents health data beautifully and serves its purpose well.<br><br><strong>This platform</strong> takes CHNA evidence into the financial, regulatory, and partnership domain. It answers the question the StoryMap cannot: <em>given what the CHNA documents, what exactly should a bank fund, and why?</em></p>
+              <p class="small">CHNA-to-CRA mapping with regulatory citations &middot; Full 4-layer ROI model at Mayo's actual operational scale &middot; 3-year P&amp;L with layer maturation &middot; Sensitivity analysis and board scenario framing &middot; Bank-specific engagement strategies based on real CRA exam history &middot; Seven pre-populated draft artifacts &middot; Rochester Epidemiology Project study design &mdash; all in a single auditable workflow that closes the loop from community health evidence to multi-year bank partnership.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+            <button class="secondary" onclick="mayoNav('banks')">&larr; Back to Banks</button>
+            <button class="secondary" onclick="mayoNav('roi')">&#128200; Adjust ROI Inputs</button>
+            <button class="primary" onclick="mayoNav('chna')">&#8635; Review CHNA Evidence</button>
+          </div>
+        </div></div><div class="step-foot step-cta"><div class="cta-wrap"><blockquote class="cta-quote"><span class="cta-qm">“</span>We are your partner. We have all the tools you need, all in one place. <strong>You can do it yourself. You can have us help you.</strong> We’re here to enable the kind of population health outcomes your community deserves.<span class="cta-qm">”</span></blockquote><div class="cta-btns"><button class="cta-primary" onclick="alert('Contact info@aqueducthealth.com to begin your Aqueduct Partnership engagement.')">Begin Your Aqueduct Partnership →</button><button class="cta-ghost" onclick="go('chna')">↻ Review from Start</button></div></div></div></section>
+</main>
+
+<!-- ══ TRAINING SECTION ══════════════════════════════════════════════════ -->
+<section id="s_training" class="step" style="display:none">
+  <div class="story-hdr">
+    <div class="story-num">07</div>
+    <div>
+      <h2 class="story-hl">Five modules. The complete executive curriculum for NEMT program leadership.</h2>
+      <p class="story-sub">The Aqueduct T360 MATCH Executive Training Program equips health system leaders with the regulatory, financial, behavioral, operational, and strategic competencies to launch, sustain, and publish results from a high-impact NEMT program. Module 2 is live — explore it now.</p>
+    </div>
+  </div>
+  <div class="tool-body">
+
+    <div class="trn-intro">
+      <div class="trn-intro-icon">🎓</div>
+      <div>
+        <h3>T360 MATCH <strong>Executive Training Program</strong></h3>
+        <p>A five-module curriculum built around the evidence base in this platform — from regulatory imperatives and billing mechanics to behavioral science, operational integration, and long-term sustainability. Each module combines foundational content with active simulation exercises designed for C-suite and VP-level decision makers.</p>
+      </div>
+    </div>
+
+    <div class="trn-progress-bar">
+      <span class="trn-pb-label">Curriculum Progress</span>
+      <div class="trn-pb-track"><div class="trn-pb-fill" id="trn-fill"></div></div>
+      <span class="trn-pb-count" id="trn-count">1 of 5 modules available</span>
+    </div>
+
+    <div class="mod-grid">
+
+      <!-- MODULE 1 — LOCKED -->
+      <div class="mod-card mod-locked">
+        <div class="mod-hdr">
+          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">1</div>
+          <div class="mod-title-wrap">
+            <p class="mod-title">The Regulatory Imperative, Risk Mitigation &amp; Accreditation Preparedness</p>
+            <p class="mod-subtitle">Foundation · Compliance · Risk</p>
+          </div>
+        </div>
+        <div class="mod-topics">
+          <div class="mod-topic">Aligning NEMT with TJC and NCQA accreditation standards</div>
+          <div class="mod-topic">Navigating the Anti-Kickback Statute, Safe Harbor Regulations &amp; CMPL</div>
+          <div class="mod-topic">False Claims Act and Conflict of Interest compliance</div>
+          <div class="mod-topic">State-level risk management and CHNA documentation requirements</div>
+        </div>
+        <div class="mod-foot">
+          <span class="mod-lock-pill">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+        </div>
+      </div>
+
+      <!-- MODULE 2 — ACTIVE -->
+      <div class="mod-card mod-active">
+        <div class="mod-hdr">
+          <div class="mod-num" style="background:linear-gradient(135deg,var(--gold),#8A6A00);">2</div>
+          <div class="mod-title-wrap">
+            <p class="mod-title">Revenue Optimization &amp; Value-Based Care Strategies</p>
+            <p class="mod-subtitle">Finance · VBC · CCM/TCM · ROI</p>
+          </div>
+        </div>
+        <div class="mod-topics" style="background:#fff;">
+          <div class="mod-topic" style="color:#1a2332;">Linking patient no-shows to VBC quality thresholds and earn-back pools</div>
+          <div class="mod-topic" style="color:#1a2332;">Utilizing NEMT time for CCM and TCM CPT billing</div>
+          <div class="mod-topic" style="color:#1a2332;">Calculating ROI across four value layers with scenario analysis</div>
+          <div class="mod-topic" style="color:#1a2332;">Building the board-ready financial case for program investment</div>
+        </div>
+        <div class="mod-foot">
+          <button class="mod-open-btn" onclick="window.open('https://claude.site/artifacts/92566b4e-48fb-4b3d-a4c2-d68d81bae5b4', '_blank')">
+            <span>▶</span> Launch Module 2
+          </button>
+          <span class="mod-live-badge">● LIVE</span>
+        </div>
+      </div>
+
+      <!-- MODULE 3 — LOCKED -->
+      <div class="mod-card mod-locked">
+        <div class="mod-hdr">
+          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">3</div>
+          <div class="mod-title-wrap">
+            <p class="mod-title">Patient Engagement, Behavioral Science &amp; Adherence</p>
+            <p class="mod-subtitle">Behavior Change · Communication · Trust</p>
+          </div>
+        </div>
+        <div class="mod-topics">
+          <div class="mod-topic">Applying behavioral science principles for increased patient uptake</div>
+          <div class="mod-topic">Standardized communication scripts for engagement and retention</div>
+          <div class="mod-topic">Leveraging technology to build patient trust and care plan adherence</div>
+        </div>
+        <div class="mod-foot">
+          <span class="mod-lock-pill">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:var(--muted);">~75 min</span>
+        </div>
+      </div>
+
+      <!-- MODULE 4 — LOCKED -->
+      <div class="mod-card mod-locked">
+        <div class="mod-hdr">
+          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">4</div>
+          <div class="mod-title-wrap">
+            <p class="mod-title">Operational Planning, T360 Integration &amp; Seamless Workflows</p>
+            <p class="mod-subtitle">Operations · EHR · Vendor Management</p>
+          </div>
+        </div>
+        <div class="mod-topics">
+          <div class="mod-topic">Using T360 tools for comprehensive population needs assessment</div>
+          <div class="mod-topic">Establishing robust vendor management and SLA frameworks</div>
+          <div class="mod-topic">Integrating NEMT into existing EHR and clinical workflows</div>
+        </div>
+        <div class="mod-foot">
+          <span class="mod-lock-pill">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+        </div>
+      </div>
+
+      <!-- MODULE 5 — LOCKED -->
+      <div class="mod-card mod-locked">
+        <div class="mod-hdr">
+          <div class="mod-num" style="background:linear-gradient(135deg,#64748B,#475569);">5</div>
+          <div class="mod-title-wrap">
+            <p class="mod-title">Program Sustainability, Long-Term Impact &amp; Future Mandates</p>
+            <p class="mod-subtitle">Strategy · KPIs · Publication · Funding</p>
+          </div>
+        </div>
+        <div class="mod-topics">
+          <div class="mod-topic">Developing long-term financial strategies and diversified funding</div>
+          <div class="mod-topic">Establishing KPIs for Patient Reported Outcomes and efficiency</div>
+          <div class="mod-topic">Planning for peer-reviewed publication of clinical results</div>
+          <div class="mod-topic">Commercial payer partnership and foundation/government funding pathways</div>
+        </div>
+        <div class="mod-foot">
+          <span class="mod-lock-pill">🔒 Coming Soon</span>
+          <span style="font-size:11px;color:var(--muted);">~90 min</span>
+        </div>
+      </div>
+
+    </div><!-- /mod-grid -->
+
+    <div class="trn-notice">
+      <strong>🔓 Module 2 is available now as a live interactive demonstration.</strong> Modules 1, 3, 4, and 5 are in development and will unlock sequentially. Each module builds on the prior, with the platform data flowing directly into simulation exercises — so ROI model inputs you set in Tab 03 inform the financial scenarios you work through in Module 2.
+    </div>
+
+  </div>
+  <div class="step-foot">
+    <p class="step-bridge">Module 2 takes approximately 60–90 minutes and includes a scored simulation. Your financial inputs from the ROI model carry forward directly into the module's board-case exercise.</p>
+    <button class="step-cont" onclick="window.open('https://claude.site/artifacts/92566b4e-48fb-4b3d-a4c2-d68d81bae5b4','_blank')">Launch Module 2 →</button>
+  </div>
+</section>
+</main>
+<script>
+
+var ORDER=['chna','linkage','roi','cra','banks','draft','training'];
+function go(t){
+  ORDER.forEach(function(id,i){
+    var el=document.getElementById('s_'+id);
+    var btn=document.getElementById('rb_'+id);
+    if(el) el.style.display=(id===t)?'block':'none';
+    if(btn){var ti=ORDER.indexOf(t);btn.className='rb'+(id===t?' rb-on':i<ti?' rb-done':'');}
+  });
+  var c=document.getElementById('wg-content');
+  if(c) c.scrollTop=0;
+  if(t==='roi'&&typeof calcMayoROI==='function') setTimeout(calcMayoROI,80);
+}
+window.mayoNav=function(p){go(p);};
+go('chna');
+
+/* ── Landing overlay ── */
+(function(){
+  // Generate twinkling stars
+  var stars = document.getElementById('lm-stars');
+  if(stars){
+    for(var i=0;i<80;i++){
+      var s=document.createElement('div');
+      s.className='lm-star';
+      var sz=Math.random()*2+1;
+      s.style.cssText='width:'+sz+'px;height:'+sz+'px;'
+        +'top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;'
+        +'--lo:'+(.05+Math.random()*.15)+';--hi:'+(.4+Math.random()*.5)+';'
+        +'--dur:'+(2+Math.random()*4)+'s;--del:'+(Math.random()*3)+'s;';
+      stars.appendChild(s);
+    }
+  }
+})();
+
+window.closeLanding = function(){
+  var ov = document.getElementById('lm-overlay');
+  if(!ov) return;
+  ov.classList.add('lm-exit');
+  setTimeout(function(){ ov.style.display='none'; }, 340);
+};
+
+
+window.toggleMEN = function(n) {
+  const isOpen = document.getElementById('men'+n+'_body').style.display !== 'none';
+  [1,2,3,4].forEach(i => {
+    document.getElementById('men'+i+'_body').style.display = 'none';
+    document.getElementById('men'+i+'_arr').textContent = '\u25B8';
+  });
+  if (!isOpen) {
+    document.getElementById('men'+n+'_body').style.display = 'block';
+    document.getElementById('men'+n+'_arr').textContent = '\u25BE';
+  }
+};
+
+window.confirmMayoLayer0 = function() {
+  function gv(id) { const el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; }
+  function norm(v) { return v > 1 ? v / 100 : v; }
+  function fmt(n) { return (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString(); }
+  function pct(n, d) { return d ? (n / d * 100).toFixed(0) + '%' : '—'; }
+
+  // BASE CASE constants (workbook defaults)
+  const BASE_V = 40000, BASE_N = 0.20, BASE_S = 0.30, BASE_M = 0.50;
+  const BASE_R = 225, BASE_C = 90, BASE_T = 60, BASE_O = 0.10;
+  const basePrevented = BASE_V * BASE_N * BASE_S * BASE_M;
+  const baseCost = basePrevented * BASE_T * (1 + BASE_O);
+  const baseFFS = basePrevented * BASE_R - basePrevented * BASE_C - baseCost;
+
+  // USER INPUTS
+  const V = gv('mr_v'), n = norm(gv('mr_n')), s = norm(gv('mr_s')), m = norm(gv('mr_m'));
+  const r = gv('mr_r'), c = gv('mr_c'), t = gv('mr_t'), o = norm(gv('mr_o'));
+  const prevented = V * n * s * m;
+  const progCost = prevented * t * (1 + o);
+  const ffsNet = prevented * r - prevented * c - progCost;
+  const beTrip = r - c;
+  const roiVal = progCost > 0 ? ffsNet / progCost : 0;
+
+  // COMPARISONS vs BASE CASE
+  const preventedRatio = basePrevented > 0 ? prevented / basePrevented : 0;
+  const ffsRatio = baseFFS > 0 ? ffsNet / baseFFS : 0;
+  const revenueVsBase = r - BASE_R;
+  const visitVsBase = V - BASE_V;
+  const marginPerVisit = r - c;
+  const baseMargin = BASE_R - BASE_C;
+
+  // Build summary lines
+  const lines = [];
+
+  // Line 1: prevented visits vs base
+  const prevDir = preventedRatio >= 1 ? 'above' : 'below';
+  const prevMult = preventedRatio.toFixed(2);
+  lines.push(`<strong style="color:#7A5C00;">&#127919; Layer 0 Analysis — Your Program vs. Illustrative Base Case</strong>`);
+
+  // Visits context
+  const visitDelta = visitVsBase > 0 ? `+${visitVsBase.toLocaleString()} above` : `${Math.abs(visitVsBase).toLocaleString()} below`;
+  lines.push(`<span><strong>Visit volume:</strong> ${V.toLocaleString()} targeted visits (${visitDelta} the 40,000 standard). At ${Math.round(n*100)}% no-show × ${Math.round(s*100)}% transport share × ${Math.round(m*100)}% mitigation, your program protects <strong>${Math.round(prevented).toLocaleString()} visits/year</strong> — ${prevMult}× the base case (${Math.round(basePrevented).toLocaleString()} visits).</span>`);
+
+  // Revenue & margin
+  const revLabel = revenueVsBase > 0
+    ? `$${revenueVsBase} above the $${BASE_R} standard — consistent with a higher-complexity or AMC payer mix`
+    : revenueVsBase < 0
+    ? `$${Math.abs(revenueVsBase)} below the $${BASE_R} standard — reflect this in sensitivity analysis`
+    : `matching the $${BASE_R} standard`;
+  lines.push(`<span><strong>Net revenue per visit:</strong> $${r} — ${revLabel}. Contribution margin per kept visit: <strong>$${Math.round(marginPerVisit)}</strong> (vs. $${baseMargin} standard).</span>`);
+
+  // FFS net benefit
+  const ffsDir = ffsNet >= baseFFS ? 'ahead of' : 'below';
+  const ffsDeltaAmt = Math.abs(ffsNet - baseFFS);
+  lines.push(`<span><strong>Year 1 FFS floor:</strong> <strong>${fmt(ffsNet)}</strong> net benefit — ${ffsDir} the base case (${fmt(baseFFS)}) by ${fmt(ffsDeltaAmt)}. ROI on program cost: <strong>${roiVal.toFixed(2)}×</strong>. Break-even trip cost: <strong>$${beTrip.toFixed(0)}/round trip</strong>.</span>`);
+
+  // Break-even margin context
+  const beMargin = beTrip - t;
+  if (beMargin > 0) {
+    lines.push(`<span><strong>Vendor negotiating position:</strong> Your $${t} trip cost sits $${beMargin.toFixed(0)} below break-even — a ${pct(beMargin, beTrip)} safety margin. The program remains FFS-positive up to <strong>$${beTrip.toFixed(0)}/trip</strong>.</span>`);
+  } else {
+    lines.push(`<span><strong>&#9888; Cost caution:</strong> Your trip cost ($${t}) is at or above break-even ($${beTrip.toFixed(0)}). Revisit trip cost or revenue assumptions before proceeding.</span>`);
+  }
+
+  // Downside note
+  const downsidePrevented = V * n * s * 0.30;
+  const downsideCost = downsidePrevented * t * (1 + o);
+  const downsideFFS = downsidePrevented * r - downsidePrevented * c - downsideCost;
+  const downsideLabel = downsideFFS > 0 ? `still positive at ${fmt(downsideFFS)}` : `negative at ${fmt(downsideFFS)} — revisit inputs`;
+  lines.push(`<span><strong>Downside check (30% mitigation):</strong> FFS net ${downsideLabel}.</span>`);
+
+  const el = document.getElementById('mayo_l0_summary');
+  if (el) {
+    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:7px;font-size:12px;line-height:1.6;color:#1a1a1a;">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Mark confirmed
+  const btn = document.getElementById('mayo_l0_btn');
+  const conf = document.getElementById('mayo_l0_confirmed');
+  if (btn) { btn.textContent = '↺ Re-confirm'; btn.style.background = 'linear-gradient(135deg,#047857,#065f46)'; }
+  if (conf) conf.style.display = 'inline';
+
+  // Also run the live calc
+  calcMayoROI();
+};
+window.toggleMayoCliff = function() {
+  const isCliff = document.getElementById('mr_vbc_type') && document.getElementById('mr_vbc_type').value === 'cliff';
+  ['mr_cliff_row1','mr_cliff_row2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isCliff ? 'block' : 'none';
+  });
+};
+
+window.toggleMayoLayer = function(layer) {
+  if (layer === 'ccm') {
+    const box = document.getElementById('mr_ccm_box');
+    const chk = document.getElementById('mr_ccm_on');
+    if (box && chk) { box.style.display = chk.checked ? 'block' : 'none'; }
+  } else if (layer === 'vbc') {
+    const box = document.getElementById('mr_vbc_box');
+    const chk = document.getElementById('mr_vbc_on');
+    if (box && chk) { box.style.display = chk.checked ? 'block' : 'none'; }
+  } else if (layer === 'cod') {
+    const box = document.getElementById('mr_cod_box');
+    const chk = document.getElementById('mr_cod_on');
+    if (box && chk) { box.style.display = chk.checked ? 'block' : 'none'; }
+  }
+  calcMayoROI();
+};
+
+window.calcMayoROI = function() {
+  function gv(id) { const el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; }
+  function norm(v) { return v > 1 ? v / 100 : v; }
+  function fmt(n) { return (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString(); }
+
+  const V = gv('mr_v'), n = norm(gv('mr_n')), s = norm(gv('mr_s')), m = norm(gv('mr_m'));
+  const r = gv('mr_r'), c = gv('mr_c'), t = gv('mr_t'), o = norm(gv('mr_o'));
+  const prevented = V * n * s * m;
+  const gross = prevented * r;
+  const margCost = prevented * c;
+  const tripCost = prevented * t;
+  const overhead = tripCost * o;
+  const progCost = tripCost + overhead;
+  const ffsNet = gross - margCost - progCost;
+
+  // Layer 1: Coding
+  let codNet = 0;
+  const codOn = document.getElementById('mr_cod_on') && document.getElementById('mr_cod_on').checked;
+  if (codOn) {
+    const zRate = norm(gv('mr_zrate')), zUpl = gv('mr_zupl');
+    const cptRate = norm(gv('mr_cptrate')), cptUpl = gv('mr_cptupl');
+    codNet = prevented * zRate * zUpl + prevented * cptRate * cptUpl;
+  }
+
+  // Layer 2: CCM/TCM
+  let ccmNet = 0, tcmNet = 0;
+  const ccmOn = document.getElementById('mr_ccm_on') && document.getElementById('mr_ccm_on').checked;
+  if (ccmOn) {
+    const cp = gv('mr_cp'), ce = norm(gv('mr_ce')), cmo = gv('mr_cmo'), call = gv('mr_call');
+    const csuc = norm(gv('mr_csuc')), cmin = gv('mr_cmin');
+    const enrolled = cp * ce;
+    const billedMonths = enrolled * cmo * csuc;
+    const grossCCM = billedMonths * call;
+    const laborCCM = billedMonths * cmin * 0.65;
+    const ccmGrossNet = grossCCM - laborCCM;
+    ccmNet = ccmGrossNet * 0.40; // 40% incremental attribution
+
+    const td = gv('mr_td'), tr = norm(gv('mr_tr')), thigh = norm(gv('mr_thigh'));
+    const tsuc = norm(gv('mr_tsuc'));
+    const billableTCM = td * tr * tsuc;
+    const weightedAvg = thigh * 290 + (1 - thigh) * 215;
+    const grossTCM = billableTCM * weightedAvg;
+    const laborTCM = billableTCM * 45 * 0.65;
+    tcmNet = grossTCM - laborTCM;
+  }
+
+  // Layer 3: VBC
+  let vbcNet = 0, bankCRA = 0;
+  const vbcOn = document.getElementById('mr_vbc_on') && document.getElementById('mr_vbc_on').checked;
+  if (vbcOn) {
+    const pool = gv('mr_pool'), base = gv('mr_base'), proj = gv('mr_proj');
+    bankCRA = gv('mr_bank');
+    const vbcType = document.getElementById('mr_vbc_type') ? document.getElementById('mr_vbc_type').value : 'linear';
+    if (vbcType === 'cliff') {
+      const thresh = gv('mr_thresh'), bonus = gv('mr_cliffbonus');
+      vbcNet = proj >= thresh ? bonus : 0;
+    } else {
+      vbcNet = Math.max(0, ((proj - base) / 100) * pool);
+    }
+  }
+
+  const totalNet = ffsNet + codNet + ccmNet + tcmNet + vbcNet + bankCRA;
+
+  // Build value stack rows — fixed spacing, no overlap
+  const rows = [
+    { l: 'Gross revenue (' + Math.round(prevented).toLocaleString() + ' visits \xd7 $' + r + ')', v: gross, c: 'pos' },
+    { l: 'Marginal clinical cost', v: -margCost, c: 'neg' },
+    { l: 'Transport cost (\xd7 $' + t + ')', v: -tripCost, c: 'neg' },
+    { l: 'Overhead (' + Math.round(o * 100) + '%)', v: -overhead, c: 'neg' },
+    { l: 'Layer 0 — FFS Net Benefit', v: ffsNet, c: 'tot' },
+  ];
+  if (codOn) {
+    rows.push({ l: 'Layer 1 — Coding / Z-code Uplift', v: codNet, c: 'layer' });
+  }
+  if (ccmOn) {
+    rows.push({ l: 'Layer 2a — CCM Net (40% incremental)', v: ccmNet, c: 'layer' });
+    rows.push({ l: 'Layer 2b — TCM Net', v: tcmNet, c: 'layer' });
+  }
+  if (vbcOn) {
+    rows.push({ l: 'Layer 3 — VBC Quality Earn-back', v: vbcNet, c: 'layer' });
+    if (bankCRA > 0) rows.push({ l: 'Bank CRA Contribution', v: bankCRA, c: 'layer' });
+  }
+  if (rows.length > 5) {
+    rows.push({ l: 'ALL-IN NET VALUE', v: totalNet, c: 'grand' });
+  }
+
+  const wf = document.getElementById('mayo_wf_rows');
+  if (!wf) return;
+  wf.innerHTML = rows.map(function(row) {
+    const sign = row.v < 0 ? '-' : '';
+    const disp = sign + '$' + Math.round(Math.abs(row.v)).toLocaleString();
+    let rowStyle, valStyle;
+    if (row.c === 'pos')   { rowStyle = 'background:rgba(4,120,87,.07);border:1px solid rgba(4,120,87,.2);border-radius:6px;'; valStyle = 'color:#047857;'; }
+    else if (row.c === 'neg')  { rowStyle = 'background:rgba(185,28,28,.06);border:1px solid rgba(185,28,28,.18);border-radius:6px;'; valStyle = 'color:#B91C1C;'; }
+    else if (row.c === 'tot')  { rowStyle = 'background:rgba(0,51,102,.12);border:1px solid rgba(0,51,102,.25);border-radius:6px;font-weight:700;'; valStyle = 'color:var(--navy);'; }
+    else if (row.c === 'layer'){ rowStyle = 'background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.22);border-radius:6px;'; valStyle = 'color:#0F766E;'; }
+    else { rowStyle = 'background:var(--navy);border-radius:6px;font-weight:800;'; valStyle = 'color:#A7F3D0;'; }
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 11px;margin-bottom:5px;font-size:12px;' + rowStyle + '">'
+         + '<span style="color:' + (row.c === 'grand' ? '#fff' : 'inherit') + '">' + row.l + '</span>'
+         + '<span style="font-family:monospace;font-weight:700;' + (row.c === 'grand' ? 'color:#E8C84A;' : valStyle) + '">' + disp + '</span>'
+         + '</div>';
+  }).join('');
+
+  // Big ROI display
+  const roi = progCost > 0 ? (totalNet / progCost).toFixed(2) + 'x' : '\u2014';
+  const beTrip = (r - c).toFixed(0);
+  const roiEl = document.getElementById('mayo_roi_big'), netEl = document.getElementById('mayo_net_big'), beEl = document.getElementById('mayo_be_txt');
+  if (roiEl) roiEl.textContent = roi;
+  if (netEl) netEl.textContent = fmt(totalNet) + ' net annual value';
+  if (beEl)  beEl.textContent  = 'Break-even trip cost: $' + beTrip + ' \u00b7 Program cost: ' + fmt(progCost) + '/yr';
+
+  // KPI tiles
+  function setKpi(id, val) { const el = document.getElementById(id); if (el) el.textContent = fmt(val); }
+  setKpi('m_kpi_cost', -progCost);
+  setKpi('m_kpi_ffs', ffsNet);
+  setKpi('m_kpi_cod', codNet);
+  setKpi('m_kpi_ccm', ccmNet);
+  setKpi('m_kpi_tcm', tcmNet);
+  setKpi('m_kpi_vbc', vbcNet);
+  setKpi('m_kpi_allin', totalNet);
+
+  // Sensitivity table: mitigation rate × trip cost
+  const sens = document.getElementById('mayo_sensitivity');
+  if (sens) {
+    const mitigs = [0.30, 0.40, 0.50, 0.60, 0.70];
+    const trips  = [50, 60, 65, 75, 90];
+    let out = '  Mitig →   ' + trips.map(tv => ('$'+tv+'/trip').padStart(11)).join('') + '\n';
+    out    += '  ' + '─'.repeat(65) + '\n';
+    mitigs.forEach(function(mv) {
+      const label = (Math.round(mv*100)+'%').padEnd(6);
+      const vals = trips.map(function(tv) {
+        const prev2 = V*n*s*mv, pc2 = prev2*tv*(1+o);
+        const net2 = prev2*r - prev2*c - pc2;
+        return fmt(net2).padStart(11);
+      });
+      out += '  ' + label + '   ' + vals.join('') + '\n';
+    });
+    sens.textContent = out;
+  }
+
+  // Board scenarios
+  const scenDiv = document.getElementById('mayo_scenarios');
+  if (scenDiv) {
+    const cons = ffsNet + (codOn ? codNet : (prevented * 0.25 * 20 + prevented * 0.15 * 15));
+    const base2 = cons + tcmNet;
+    const opt = ffsNet + codNet + ccmNet + tcmNet + vbcNet;
+    const rows2 = [
+      { label: 'Conservative (FFS + Coding)', val: cons, note: 'Year 1 floor — high confidence' },
+      { label: 'Base Case (+ TCM)  ★ Anchor', val: base2, note: 'Board recommendation' },
+      { label: 'Optimistic (All Layers)', val: opt, note: 'Year 2+ upside' },
+      { label: 'Net Outlay (+ Bank CRA)', val: opt + bankCRA, note: 'After bank offset' },
+    ];
+    scenDiv.innerHTML = rows2.map(function(s2) {
+      const col = s2.label.includes('Anchor') ? 'color:var(--navy);font-weight:800;' : '';
+      return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);' + col + '">'
+           + '<span>' + s2.label + '</span>'
+           + '<span style="font-family:monospace;font-weight:700;">' + fmt(s2.val) + '</span>'
+           + '</div>'
+           + '<div style="font-size:10px;color:var(--muted);padding:1px 0 6px;">' + s2.note + '</div>';
+    }).join('');
+  }
+
+  // Cache for artifact generation
+  window._mayoROICache = { V, n, s, m, r, c, t, o, prevented, gross, margCost, tripCost, overhead, progCost, ffsNet, codNet, ccmNet, tcmNet, vbcNet, bankCRA, totalNet, roi, beTrip, codOn, ccmOn, vbcOn };
+};
+
+window.updateCRATotal = function() {
+  var amt = parseFloat(document.getElementById('cra_amount').value)||0;
+  var term = parseFloat(document.getElementById('cra_term').value)||1;
+  document.getElementById('cra_total').value = Math.round(amt*term);
+};
+
+window.generateMayoDraft = function(type) {
+  const bank    = (document.getElementById('cra_bank')    && document.getElementById('cra_bank').value)    || '[BANK NAME]';
+  const actType = (document.getElementById('cra_acttype') && document.getElementById('cra_acttype').value) || 'Qualified Charitable Contribution';
+  const amount  = (document.getElementById('cra_amount')  && document.getElementById('cra_amount').value)  || '75000';
+  const term    = (document.getElementById('cra_term')    && document.getElementById('cra_term').value)    || '3';
+  const total   = (document.getElementById('cra_total')   && document.getElementById('cra_total').value)   || '225000';
+  const need    = (document.getElementById('cra_need')    && document.getElementById('cra_need').value)    || '';
+  const activity= (document.getElementById('cra_activity')&& document.getElementById('cra_activity').value)|| '';
+  const lmi     = (document.getElementById('cra_lmi')     && document.getElementById('cra_lmi').value)     || '\u226480% AMI';
+  const verify  = (document.getElementById('cra_verify')  && document.getElementById('cra_verify').value)  || 'Medicaid/CHIP enrollment';
+  const outcomes= (document.getElementById('cra_outcomes')&& document.getElementById('cra_outcomes').value)|| '';
+  const rep     = (document.getElementById('cra_rep')     && document.getElementById('cra_rep').value)     || '';
+  const freq    = (document.getElementById('cra_reporting')&&document.getElementById('cra_reporting').value)|| 'Quarterly';
+  const today   = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  const D = window._mayoROICache || {};
+  function fmt(n) { if (!n && n!==0) return '$\u2014'; return (n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString(); }
+  const ffsNet   = D.ffsNet   || 0;
+  const codNet   = D.codNet   || 0;
+  const ccmNet   = D.ccmNet   || 0;
+  const tcmNet   = D.tcmNet   || 0;
+  const vbcNet   = D.vbcNet   || 0;
+  const bankCRA  = D.bankCRA  || 0;
+  const totalNet = D.totalNet || 0;
+  const progCost = D.progCost || 0;
+  const roi      = D.roi      || '\u2014';
+  const beTrip   = D.beTrip   || '\u2014';
+  const V        = D.V        || 25000;
+  const prevented= D.prevented|| 0;
+
+  const LINE = '\u2501'.repeat(52);
+  let title = '', doc = '';
+
+  if (type === 'proforma') {
+    title = '3-Year Pro Forma & Program P&L \u2014 Mayo Clinic Olmsted NEMT';
+    // Year 1: FFS only, partial CCM, partial coding; Year 2: full; Year 3: mature
+    const y1val = ffsNet + codNet*0.57 + ccmNet*0.37 + tcmNet*0.78;
+    const y2val = ffsNet*1.10 + codNet + ccmNet + tcmNet + vbcNet*0.57;
+    const y3val = ffsNet*1.20 + codNet*1.15 + ccmNet*1.23 + tcmNet*1.15 + vbcNet;
+    const y1cost = progCost, y2cost = progCost*1.07, y3cost = progCost*1.11;
+    const y1net = y1val - y1cost, y2net = y2val - y2cost, y3net = y3val - y3cost;
+    const cumNet = y1net + y2net + y3net;
+    const avg3yr = (y1val + y2val + y3val) / 3;
+    doc = 'CONFIDENTIAL DRAFT \u2014 FOR FINANCE AND LEGAL REVIEW\n'
+        + LINE + '\n'
+        + '3-YEAR PRO FORMA & PROGRAM P&L\n'
+        + 'NEMT PROGRAM \u2014 MAYO CLINIC IN ROCHESTER / OLMSTED COUNTY\n'
+        + LINE + '\n\n'
+        + 'Generated: ' + today + '\n'
+        + 'Scenario: Base Case (FFS + Coding + CCM/TCM; VBC at 57% credit Year 2)\n'
+        + 'Population: Olmsted County LMI ambulatory patients (REP-linked cohort)\n\n'
+        + LINE + '\n'
+        + 'SECTION 1 \u2014 REVENUE WATERFALL BY LAYER\n'
+        + LINE + '\n\n'
+        + ('REVENUE LAYER').padEnd(32) + 'YEAR 1'.padStart(10) + 'YEAR 2'.padStart(12) + 'YEAR 3'.padStart(12) + '\n'
+        + '\u2500'.repeat(66) + '\n'
+        + 'Layer 0: FFS Contribution Margin'.padEnd(32) + fmt(ffsNet).padStart(10)     + fmt(ffsNet*1.10).padStart(12)  + fmt(ffsNet*1.20).padStart(12)  + '\n'
+        + 'Layer 1: Coding / Z-code Uplift'.padEnd(32)  + fmt(codNet*0.57).padStart(10)+ fmt(codNet).padStart(12)       + fmt(codNet*1.15).padStart(12)  + '\n'
+        + 'Layer 2a: CCM Net (incremental)'.padEnd(32)  + fmt(ccmNet*0.37).padStart(10)+ fmt(ccmNet).padStart(12)       + fmt(ccmNet*1.23).padStart(12)  + '\n'
+        + 'Layer 2b: TCM Net'.padEnd(32)                + fmt(tcmNet*0.78).padStart(10)+ fmt(tcmNet).padStart(12)       + fmt(tcmNet*1.15).padStart(12)  + '\n'
+        + 'Layer 3: VBC Quality Earn-back'.padEnd(32)   + '$0 (pending)'.padStart(10)  + fmt(vbcNet*0.57).padStart(12)  + fmt(vbcNet).padStart(12)       + '\n'
+        + 'Bank CRA Contribution (offset)'.padEnd(32)   + fmt(bankCRA).padStart(10)    + fmt(bankCRA).padStart(12)      + fmt(bankCRA).padStart(12)      + '\n'
+        + '\u2500'.repeat(66) + '\n'
+        + 'TOTAL PROGRAM VALUE'.padEnd(32)              + fmt(y1val).padStart(10)      + fmt(y2val).padStart(12)        + fmt(y3val).padStart(12)        + '\n\n'
+        + LINE + '\n'
+        + 'SECTION 2 \u2014 COST STRUCTURE\n'
+        + LINE + '\n\n'
+        + ('COST ITEM').padEnd(32) + 'YEAR 1'.padStart(10) + 'YEAR 2'.padStart(12) + 'YEAR 3'.padStart(12) + '\n'
+        + '\u2500'.repeat(66) + '\n'
+        + 'Transport trips (vendor)'.padEnd(32)          + fmt(D.tripCost||0).padStart(10)    + fmt((D.tripCost||0)*1.05).padStart(12)  + fmt((D.tripCost||0)*1.09).padStart(12) + '\n'
+        + 'Overhead / admin (10%)'.padEnd(32)            + fmt(D.overhead||0).padStart(10)    + fmt((D.overhead||0)*1.05).padStart(12)  + fmt((D.overhead||0)*1.09).padStart(12) + '\n'
+        + 'CCM/TCM staff time (est.)'.padEnd(32)        + '$12,000'.padStart(10)             + '$15,000'.padStart(12)                  + '$18,000'.padStart(12)                 + '\n'
+        + 'EHR integration (one-time)'.padEnd(32)       + '$15,000'.padStart(10)             + '$0'.padStart(12)                       + '$0'.padStart(12)                      + '\n'
+        + '\u2500'.repeat(66) + '\n'
+        + 'TOTAL PROGRAM COST'.padEnd(32)               + fmt(y1cost+27000).padStart(10)    + fmt(y2cost+15000).padStart(12)          + fmt(y3cost+18000).padStart(12)         + '\n\n'
+        + LINE + '\n'
+        + 'SECTION 3 \u2014 NET INCOME STATEMENT\n'
+        + LINE + '\n\n'
+        + ('').padEnd(32) + 'YEAR 1'.padStart(10) + 'YEAR 2'.padStart(12) + 'YEAR 3'.padStart(12) + 'CUMULATIVE'.padStart(14) + '\n'
+        + '\u2500'.repeat(70) + '\n'
+        + 'Total Program Value'.padEnd(32)              + fmt(y1val).padStart(10)       + fmt(y2val).padStart(12)       + fmt(y3val).padStart(12)       + fmt(y1val+y2val+y3val).padStart(14) + '\n'
+        + 'Total Program Cost'.padEnd(32)               + fmt(y1cost+27000).padStart(10)+ fmt(y2cost+15000).padStart(12)+ fmt(y3cost+18000).padStart(12)+ fmt((y1cost+27000)+(y2cost+15000)+(y3cost+18000)).padStart(14) + '\n'
+        + '\u2500'.repeat(70) + '\n'
+        + 'NET PROGRAM BENEFIT'.padEnd(32)              + fmt(y1net-27000).padStart(10) + fmt(y2net-15000).padStart(12) + fmt(y3net-18000).padStart(12) + fmt(cumNet-60000).padStart(14) + '\n'
+        + 'ROI (on program cost)'.padEnd(32)            + (y1cost>0?((y1net/y1cost).toFixed(2)+'x'):'\u2014').padStart(10) + (y2cost>0?((y2net/y2cost).toFixed(2)+'x'):'\u2014').padStart(12) + (y3cost>0?((y3net/y3cost).toFixed(2)+'x'):'\u2014').padStart(12) + '\n'
+        + 'Break-even Trip Cost'.padEnd(32)             + ('$'+beTrip+'/trip').padStart(10) + ''.padStart(12) + ''.padStart(12) + '\n\n'
+        + LINE + '\n'
+        + 'SECTION 4 \u2014 MANAGEMENT ASSUMPTIONS\n'
+        + LINE + '\n\n'
+        + '  \u2022 Year 1: FFS mitigation at model rate; CCM/TCM at 70-80% of model\n'
+        + '    (enrollment ramp, documentation workflow build-out)\n'
+        + '  \u2022 Year 2: All layers at full model values; EHR integration complete\n'
+        + '  \u2022 Year 3: Layer maturation — visit volume +10%, capture rates improve\n'
+        + '  \u2022 VBC earn-back credited at 50% in Year 2, 100% in Year 3 (attribution lag)\n'
+        + '  \u2022 Cost ramp: vendor rate escalation 5%/yr; staff time increases with scale\n'
+        + '  \u2022 Bank CRA contribution assumed constant; renew at Year 3 contract reset\n'
+        + '  \u2022 REP study cohort enrollment begins Year 1; primary outcomes reportable Year 2\n\n'
+        + 'SECTION 5 \u2014 DOWNSIDE CASE (30% Mitigation, FFS Only, No CRA Offset)\n'
+        + '\u2500'.repeat(52) + '\n'
+        + '  Year 1 net: $' + Math.round(Math.max(0, V*D.n*D.s*0.30*(D.r-D.c) - V*D.n*D.s*0.30*D.t*(1+D.o))).toLocaleString() + '\n'
+        + '  Even in downside case, program generates positive net benefit.\n'
+        + '  The $' + beTrip + '/trip break-even creates a wide margin of safety.\n\n'
+        + LINE + '\n'
+        + 'CONFIDENTIAL DRAFT. Review with finance, legal, and compliance before distribution.\n';
+
+  } else if (type === 'memo') {
+    title = 'CRA Activity Justification Memo \u2014 Preview';
+    doc = 'CONFIDENTIAL DRAFT \u2014 FOR LEGAL REVIEW BEFORE DISTRIBUTION\n'
+        + LINE + '\n'
+        + 'CRA COMMUNITY DEVELOPMENT ACTIVITY JUSTIFICATION MEMORANDUM\n'
+        + LINE + '\n\n'
+        + 'TO:    ' + bank + ' \u2014 Community Development / CRA Officer\n'
+        + 'FROM:  Mayo Clinic in Rochester \u2014 Community Engagement Office\n'
+        + 'DATE:  ' + today + '\n'
+        + 'RE:    Olmsted County NEMT Program \u2014 Rochester MSA Assessment Area\n\n'
+        + LINE + '\n'
+        + 'SECTION 1 \u2014 CHNA CITATION & COMMUNITY HEALTH NEED\n'
+        + LINE + '\n\n'
+        + 'CHNA Document:\n'
+        + '  2025 Community Health Needs Assessment \u2014 Olmsted County, MN.\n'
+        + '  Released October 7, 2025. Produced by Olmsted County Public Health\n'
+        + '  Services, Mayo Clinic in Rochester, and Olmsted Medical Center.\n'
+        + '  URL: storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210\n\n'
+        + '2025 Priorities Addressed:\n'
+        + '  #1 Access to Care \u2014 34% of adults delayed care; 15% lack a PCP;\n'
+        + '     disability (9.7%) and foreign-born (11.1%) face transport barriers.\n'
+        + '  #2 Mental Health  \u2014 37% prevalence; depression rate (28%) exceeds\n'
+        + '     MN (23%) and U.S. (22%) benchmarks; renter/disability concentration.\n'
+        + '  #3 Food Security  \u2014 33,000 Channel One clients; 23% Hispanic,\n'
+        + '     14% Black; co-occurring transport-barrier population.\n\n'
+        + 'Statement of Need:\n' + need + '\n\n'
+        + LINE + '\n'
+        + 'SECTION 2 \u2014 ACTIVITY DESCRIPTION & BANK ROLE\n'
+        + LINE + '\n\n'
+        + 'Activity Type: ' + actType + '\n\n'
+        + activity + '\n\n'
+        + 'Assessment Area Confirmation:\n'
+        + '  Rochester MSA CRA Assessment Area = all of Olmsted County +\n'
+        + '  all of Dodge County, MN (OCC-confirmed). All program beneficiaries\n'
+        + '  are Olmsted County residents served at Mayo Clinic facilities.\n\n'
+        + LINE + '\n'
+        + 'SECTION 3 \u2014 LMI POPULATION DOCUMENTATION\n'
+        + LINE + '\n\n'
+        + 'Eligibility Threshold: ' + lmi + '\n'
+        + 'Verification Method:   ' + verify + '\n'
+        + 'Olmsted County median HH income: $87,856 (2023 Census)\n'
+        + 'Poverty rate: 7.9% (~13,000 residents below poverty threshold)\n\n'
+        + 'Special Populations (2025 CHNA-documented):\n'
+        + '  \u2022 Adults with disabilities: 9.7% of Olmsted County (~16,000)\n'
+        + '  \u2022 Foreign-born residents: 11.1% \u2014 language/navigation barriers\n'
+        + '  \u2022 Renters: higher mental health disparities + transport dependence\n'
+        + '  \u2022 Uninsured (Salvation Army Good Samaritan Clinic, 4,000+ patients)\n'
+        + '  \u2022 LGBTQIA+ residents \u2014 documented healthcare access disparities\n\n'
+        + LINE + '\n'
+        + 'SECTION 4 \u2014 MEASURABLE OUTCOMES & ROI SUMMARY\n'
+        + LINE + '\n\n'
+        + 'Program ROI (Base Case):  ' + roi + ' on program cost\n'
+        + 'Net Annual Value:          ' + fmt(totalNet) + '\n'
+        + 'Break-even Trip Cost:      $' + beTrip + '/round trip\n\n'
+        + 'Primary Outcome Metrics:\n' + outcomes + '\n\n'
+        + 'REP Study Design:\n' + rep + '\n\n'
+        + LINE + '\n'
+        + 'SECTION 5 \u2014 FINANCIAL STRUCTURE & TERM SHEET\n'
+        + LINE + '\n\n'
+        + 'Annual Bank Contribution:  $' + amount + '\n'
+        + 'Commitment Term:           ' + term + ' year(s)\n'
+        + 'Total Commitment:          $' + total + '\n'
+        + 'Activity Type:             ' + actType + '\n'
+        + 'Reporting Frequency:       ' + freq + '\n\n'
+        + LINE + '\n'
+        + 'CONFIDENTIAL DRAFT. Review with legal and compliance before distribution.\n';
+
+  } else if (type === 'term') {
+    title = 'Bank Term Sheet / Pitch Brief \u2014 Preview';
+    doc = 'CONFIDENTIAL DRAFT \u2014 FOR REVIEW BEFORE DISTRIBUTION\n'
+        + LINE + '\n'
+        + 'NEMT PROGRAM \u2014 BANK PARTNERSHIP TERM SHEET & PITCH BRIEF\n'
+        + 'Mayo Clinic in Rochester + Olmsted County NEMT Initiative\n'
+        + LINE + '\n\n'
+        + 'Prepared for: ' + bank + '\n'
+        + 'Date: ' + today + '\n\n'
+        + LINE + '\n'
+        + 'EXECUTIVE SUMMARY\n'
+        + LINE + '\n\n'
+        + 'Mayo Clinic is the largest employer in Olmsted County and the anchor\n'
+        + 'institution of the Rochester MSA. This NEMT program addresses the\n'
+        + '#1 priority of the 2025 Olmsted County CHNA (Access to Care) by\n'
+        + 'providing free round-trip transportation for LMI patients to Mayo\n'
+        + 'ambulatory facilities.\n\n'
+        + 'A partnership with Mayo Clinic on a documented community health need\n'
+        + 'is a marquee CRA exam file relationship for any bank operating in the\n'
+        + 'Rochester MSA Assessment Area.\n\n'
+        + LINE + '\n'
+        + 'PROPOSED FINANCIAL STRUCTURE\n'
+        + LINE + '\n\n'
+        + '  Annual contribution:   $' + amount + '\n'
+        + '  Term:                  ' + term + ' years\n'
+        + '  Total commitment:      $' + total + '\n'
+        + '  Activity type:         ' + actType + '\n'
+        + '  CRA classification:    Community Development \u2014 LMI Health Services\n'
+        + '  Regulatory authority:  12 CFR 25.23 (OCC) / 12 CFR 228.23 (Federal Reserve)\n'
+        + '  Reporting:             ' + freq + ' outcomes report to CRA officer\n\n'
+        + LINE + '\n'
+        + 'PROGRAM ROI & FINANCIAL RETURNS\n'
+        + LINE + '\n\n'
+        + '  Conservative net benefit (Year 1):  ' + fmt(ffsNet + codNet) + '\n'
+        + '  Base case net benefit:              ' + fmt(ffsNet + codNet + tcmNet) + '\n'
+        + '  All-in net benefit (all layers):    ' + fmt(totalNet) + '\n'
+        + '  Program ROI:                        ' + roi + '\n'
+        + '  Break-even trip cost:               $' + beTrip + '/round trip\n'
+        + '  Annual visits protected:            ' + Math.round(prevented).toLocaleString() + '\n\n'
+        + LINE + '\n'
+        + 'BANK VALUE PROPOSITION\n'
+        + LINE + '\n\n'
+        + '  1. CRA exam credit: Qualifies as community development activity\n'
+        + '     under Access to Care / LMI health services provision.\n\n'
+        + '  2. Marquee institutional relationship: Mayo Clinic is Olmsted\n'
+        + '     County\'s largest employer. OCC examiners recognize high-profile\n'
+        + '     partnerships with major medical institutions.\n\n'
+        + '  3. National evidence generation: Mayo will conduct a Rochester\n'
+        + '     Epidemiology Project matched-cohort study. Bank\'s contribution\n'
+        + '     will be cited in the peer-reviewed publication as enabling the\n'
+        + '     first rigorous matched-cohort NEMT study at a major AMC.\n\n'
+        + '  4. Multi-year visibility: 3-year term provides consistent qualifying\n'
+        + '     activity across 3 annual CRA exam cycles.\n\n'
+        + '  5. LMI documentation: Medicaid/CHIP enrollment-based eligibility\n'
+        + '     verification provides audit-ready LMI documentation.\n\n'
+        + LINE + '\n'
+        + 'PROPOSED ACKNOWLEDGMENT TERMS\n'
+        + LINE + '\n\n'
+        + '  \u2022 Named acknowledgment in all program materials and reports\n'
+        + '  \u2022 Co-listed in the REP peer-reviewed publication (acknowledgments)\n'
+        + '  \u2022 Quarterly outcomes report for CRA exam file\n'
+        + '  \u2022 Annual joint press release on program milestones\n'
+        + '  \u2022 Invitation to program site visit and patient outcomes presentation\n\n'
+        + LINE + '\n'
+        + 'NEXT STEPS\n'
+        + LINE + '\n\n'
+        + '  1. CRA officer review of this brief\n'
+        + '  2. CRA Activity Justification Memo (formal document, available on request)\n'
+        + '  3. Term sheet execution and compliance review\n'
+        + '  4. Program launch: estimated 90 days post-execution\n\n'
+        + 'Contact: Mayo Clinic in Rochester \u2014 Community Engagement Office\n'
+        + LINE + '\n'
+        + 'CONFIDENTIAL DRAFT. Review with legal and CRA compliance before distribution.\n';
+
+  } else if (type === 'boarddeck') {
+    title = 'Board Executive Summary \u2014 NEMT Program Approval Brief';
+    const conservative = ffsNet + codNet;
+    const baseCase = ffsNet + codNet + tcmNet;
+    const optimistic = totalNet;
+    doc = 'BOARD OF DIRECTORS \u2014 EXECUTIVE SUMMARY\n'
+        + 'FOR APPROVAL: Non-Emergency Medical Transportation Program\n'
+        + LINE + '\n\n'
+        + 'Prepared by: Community Engagement / Finance\n'
+        + 'Date: ' + today + '\n'
+        + 'Requested Action: Approve NEMT pilot program and bank CRA partnership\n\n'
+        + LINE + '\n'
+        + 'THE STRATEGIC CASE\n'
+        + LINE + '\n\n'
+        + 'Transportation barriers are the #1 access-to-care issue identified in the\n'
+        + '2025 Olmsted County CHNA. 34% of county adults delayed care; disability\n'
+        + '(9.7%) and foreign-born status (11.1%) compound transport barriers.\n\n'
+        + 'NEMT directly addresses:\n'
+        + '  \u2022 IRS Schedule H / 501(r) community benefit documentation obligations\n'
+        + '  \u2022 CRA community development partnership opportunity (Rochester MSA AA)\n'
+        + '  \u2022 ACO REACH / Medicare quality performance (Transitions of Care,\n'
+        + '    Diabetes Glycemic Status, BP Control, Colorectal Screening)\n'
+        + '  \u2022 CCM/TCM revenue capture through NEMT-enabled contact windows\n\n'
+        + LINE + '\n'
+        + 'THREE-SCENARIO FINANCIAL ANALYSIS\n'
+        + LINE + '\n\n'
+        + '  Scenario             Annual Value   Net Benefit    ROI\n'
+        + '  \u2500'.repeat(50) + '\n'
+        + '  Conservative (Y1)    ' + fmt(conservative+progCost).padEnd(14) + fmt(conservative).padEnd(14) + (progCost>0?(conservative/progCost).toFixed(2)+'x':'—') + '\n'
+        + '  Base Case [\u2605 ANCHOR]  ' + fmt(baseCase+progCost).padEnd(14)    + fmt(baseCase).padEnd(14)    + (progCost>0?(baseCase/progCost).toFixed(2)+'x':'—') + '\n'
+        + '  Optimistic (Y2+)     ' + fmt(optimistic+progCost).padEnd(14)  + fmt(optimistic).padEnd(14)  + (progCost>0?(optimistic/progCost).toFixed(2)+'x':'—') + '\n\n'
+        + '  Program cost:        ' + fmt(progCost) + '/year\n'
+        + '  Break-even trip:     $' + beTrip + '/round trip\n'
+        + '  Bank CRA offset:     ' + fmt(bankCRA) + '/year (net outlay: ' + fmt(progCost-bankCRA) + ')\n\n'
+        + LINE + '\n'
+        + 'COMPLIANCE & REGULATORY POSTURE\n'
+        + LINE + '\n\n'
+        + '  \u2022 AKS Safe Harbor: Program is structured to meet the 2016 OIG Safe\n'
+        + '    Harbor for transportation of LMI patients. Legal review prior to launch.\n'
+        + '  \u2022 CRA: Bank contribution qualifies as community development activity\n'
+        + '    under OCC 12 CFR 25.23 — LMI health services, Rochester MSA AA.\n'
+        + '  \u2022 Schedule H: NEMT program directly implements CHNA Priority #1 (Access\n'
+        + '    to Care) per 501(r) / IRS Form 990 Schedule H requirements.\n'
+        + '  \u2022 HIPAA/BAA: Full BAA with vendor required before program launch.\n\n'
+        + LINE + '\n'
+        + 'RECOMMENDED MOTION\n'
+        + LINE + '\n\n'
+        + 'The Board approves:\n'
+        + '  (1) NEMT pilot program at ' + Math.round(V).toLocaleString() + ' targeted visits/year;\n'
+        + '  (2) Bank CRA partnership with ' + bank + ' at $' + amount + '/year for ' + term + ' years;\n'
+        + '  (3) Rochester Epidemiology Project study enrollment;\n'
+        + '  (4) Quarterly board reporting on program KPIs and financial performance.\n\n'
+        + 'CONFIDENTIAL DRAFT. Review with legal and finance before distribution.\n';
+
+  } else if (type === 'sla') {
+    title = 'Vendor SLA Template \u2014 NEMT Program';
+    doc = 'NON-EMERGENCY MEDICAL TRANSPORTATION\n'
+        + 'VENDOR SERVICE LEVEL AGREEMENT TEMPLATE\n'
+        + LINE + '\n\n'
+        + 'Client:   Mayo Clinic in Rochester\n'
+        + 'Vendor:   [VENDOR NAME]\n'
+        + 'Effective Date: [DATE]\n'
+        + 'Term: [TERM]\n\n'
+        + LINE + '\n'
+        + 'ARTICLE 1 \u2014 PERFORMANCE STANDARDS\n'
+        + LINE + '\n\n'
+        + '1.1  ON-TIME PICKUP (within 10 minutes of scheduled time)\n'
+        + '     Minimum:    \u226592% of all scheduled trips\n'
+        + '     Warning:    Below 88% triggers 30-day cure notice\n'
+        + '     Termination: Below 85% for any rolling 30-day period\n'
+        + '     Monitoring: Weekly automated report via vendor portal\n\n'
+        + '1.2  TRIP CANCELLATION RATE (vendor-initiated)\n'
+        + '     Minimum:    \u22645% of all scheduled trips\n'
+        + '     Warning:    6\u20138% triggers 14-day cure notice\n'
+        + '     Monitoring: Weekly automated report\n\n'
+        + '1.3  DRIVER NO-SHOW / PATIENT ABANDONMENT\n'
+        + '     Minimum:    \u22642% of scheduled trips\n'
+        + '     Response:   Immediate escalation to account manager\n'
+        + '     Monitoring: Patient-reported via post-ride SMS survey\n\n'
+        + '1.4  SAFETY\n'
+        + '     Standard:   Zero tolerance for injury or accident\n'
+        + '     Response:   Immediate suspension pending investigation\n'
+        + '     Reporting:  Incident report to Mayo within 24 hours\n\n'
+        + '1.5  SERVICE LOG COMPLETENESS\n'
+        + '     Standard:   100% of trips logged with timestamp, pickup, dropoff,\n'
+        + '                 driver ID, and patient confirmation\n'
+        + '     Remedy:     Payment withheld for incomplete log entries\n'
+        + '     Monitoring: Weekly reconciliation against appointment system\n\n'
+        + LINE + '\n'
+        + 'ARTICLE 2 \u2014 HIPAA / DATA SECURITY\n'
+        + LINE + '\n\n'
+        + '2.1  Vendor shall execute a Business Associate Agreement (BAA) prior to\n'
+        + '     first trip. BAA terms comply with 45 CFR Parts 160 and 164.\n'
+        + '2.2  No patient PHI shall be used for marketing, list generation, or any\n'
+        + '     purpose other than trip coordination and compliance documentation.\n'
+        + '2.3  Annual security assessment and attestation required.\n'
+        + '2.4  Data breach notification within 72 hours per 45 CFR 164.412.\n\n'
+        + LINE + '\n'
+        + 'ARTICLE 3 \u2014 DOCUMENTATION & AUDIT RIGHTS\n'
+        + LINE + '\n\n'
+        + '3.1  Vendor shall maintain trip logs for minimum 7 years.\n'
+        + '3.2  Mayo retains right to audit all service logs with 10 business days notice.\n'
+        + '3.3  Monthly invoices must reconcile to service logs; disputes resolved within\n'
+        + '     30 days of invoice date.\n\n'
+        + LINE + '\n'
+        + 'ARTICLE 4 \u2014 ESCALATION & REMEDIES\n'
+        + LINE + '\n\n'
+        + '4.1  Operational issues: Vendor account manager within 4 business hours.\n'
+        + '4.2  SLA breach (below threshold): Formal cure notice; cure plan within 5 days.\n'
+        + '4.3  Safety incident: Immediate program suspension; full review before resuming.\n'
+        + '4.4  Termination for cause: 30-day written notice; 5-day notice for safety.\n\n'
+        + LINE + '\n'
+        + 'Signatures: _________________________  [VENDOR]   Date: ________\n'
+        + '            _________________________  Mayo Clinic Date: ________\n\n'
+        + 'TEMPLATE ONLY. Review with legal and compliance before execution.\n';
+
+  } else if (type === 'rep') {
+    title = 'REP Study Protocol \u2014 Rochester Epidemiology Project';
+    doc = 'ROCHESTER EPIDEMIOLOGY PROJECT (REP)\n'
+        + 'NEMT MATCHED-COHORT STUDY PROTOCOL \u2014 DRAFT\n'
+        + LINE + '\n\n'
+        + 'PI:       [TO BE DESIGNATED \u2014 Suggest: CMO or VP Community Health]\n'
+        + 'Co-I:     [Community Engagement, Biostatistics, Quality]\n'
+        + 'Date:     ' + today + '\n'
+        + 'REP data linkage request to be submitted at program launch\n\n'
+        + LINE + '\n'
+        + 'STUDY RATIONALE\n'
+        + LINE + '\n\n'
+        + 'The Rochester Epidemiology Project provides longitudinal medical\n'
+        + 'record linkage for Olmsted County residents since 1966 \u2014 a resource\n'
+        + 'unmatched by any other U.S. health system. NEMT research anchored\n'
+        + 'to REP data will produce national-quality evidence and is publishable\n'
+        + 'in Tier 1 journals (JAMA, NEJM, Health Affairs).\n\n'
+        + 'The existing evidence gap: Chaiyachati 2018 found no sig. reduction\n'
+        + 'in missed appointments due to low uptake. A REP-linked study can\n'
+        + 'address this by controlling for program design quality, enrollment\n'
+        + 'intensity, and patient-level adherence factors.\n\n'
+        + LINE + '\n'
+        + 'STUDY DESIGN\n'
+        + LINE + '\n\n'
+        + 'Design:        Retrospective matched cohort\n'
+        + 'Population:    Olmsted County LMI ambulatory patients, Mayo Clinic\n'
+        + 'Matching ratio: 1:3 (enrolled : controls)\n'
+        + 'Matching vars: Age (\u00b15 yr), primary diagnosis, insurance type,\n'
+        + '               prior-year no-show rate, distance from clinic\n'
+        + 'Follow-up:     24 months post-enrollment\n'
+        + 'Index date:    Date of first NEMT-enabled appointment\n\n'
+        + LINE + '\n'
+        + 'ENDPOINTS\n'
+        + LINE + '\n\n'
+        + 'PRIMARY (12-18 months):\n'
+        + '  \u2022 Transportation-attributable no-show rate reduction\n'
+        + '    H0: no difference between enrolled and controls\n'
+        + '    Power: 80% to detect 7% absolute reduction; \u03b1=0.05\n\n'
+        + 'SECONDARY (24 months):\n'
+        + '  \u2022 30-day readmission rate (TCM-enrolled subgroup)\n'
+        + '  \u2022 HbA1c control rate (CCM-enrolled diabetic subgroup)\n'
+        + '  \u2022 QPP quality measure closure rates (001, 236, 113)\n'
+        + '  \u2022 SDOH Z75.3 documentation rate\n'
+        + '  \u2022 Patient-reported confidence in keeping appointments\n\n'
+        + LINE + '\n'
+        + 'IRB PATHWAY\n'
+        + LINE + '\n\n'
+        + 'Pathway:       Quality Improvement / Program Evaluation\n'
+        + 'Exemption:     Likely (45 CFR 46.104(d)(4) \u2014 program evaluation)\n'
+        + 'Confirm:       Mayo IRB at program outset\n'
+        + 'REP request:   Submit data linkage application at 90-day launch\n\n'
+        + LINE + '\n'
+        + 'PUBLICATION PLAN\n'
+        + LINE + '\n\n'
+        + 'Target journals: JAMA Network Open, Health Affairs, AJPH, JGIM\n'
+        + 'Timeline:\n'
+        + '  Month 3:   IRB application + REP data request\n'
+        + '  Month 12:  Interim analysis; conference abstract (AHA/NACHC)\n'
+        + '  Month 18:  Primary outcome paper submission\n'
+        + '  Month 24:  Secondary outcomes paper; policy brief to CMMI\n\n'
+        + 'Authorship:    CMO or VP Community Health as lead author;\n'
+        + '               define roles at study design phase\n'
+        + 'Bank acknowledgment: "This study was made possible by the community\n'
+        + 'investment of ' + bank + ' in Olmsted County health equity."\n\n'
+        + LINE + '\n'
+        + 'DRAFT PROTOCOL. Review with IRB and REP administration before submission.\n';
+
+  } else if (type === 'kpi') {
+    title = 'KPI Dashboard & Quarterly Reporting Template';
+    doc = 'NEMT PROGRAM \u2014 QUARTERLY KPI DASHBOARD\n'
+        + 'Mayo Clinic in Rochester / Olmsted County\n'
+        + LINE + '\n\n'
+        + 'Reporting Period: Q___ 20___\n'
+        + 'Report Date: ' + today + '\n'
+        + 'Prepared by: [Program Coordinator]\n\n'
+        + LINE + '\n'
+        + 'SECTION 1 \u2014 ACCESS METRICS\n'
+        + LINE + '\n\n'
+        + '  Metric                           Target       Actual    RAG\n'
+        + '  \u2500'.repeat(58) + '\n'
+        + '  Transport no-show rate           \u226540% red.    ____%     [ ]\n'
+        + '  NEMT utilization rate            \u226588%         ____%     [ ]\n'
+        + '  Enrollment rate (eligible)       \u226540%         ____%     [ ]\n'
+        + '  First-ride completion rate       \u226595%         ____%     [ ]\n'
+        + '  Trips completed (quarter)        ____         ____      [ ]\n'
+        + '  Unduplicated LMI patients served ____         ____      [ ]\n\n'
+        + LINE + '\n'
+        + 'SECTION 2 \u2014 CLINICAL OUTCOMES\n'
+        + LINE + '\n\n'
+        + '  Metric                           Target       Actual    RAG\n'
+        + '  \u2500'.repeat(58) + '\n'
+        + '  30-day readmission (TCM pts)     \u226415%         ____%     [ ]\n'
+        + '  HbA1c control rate (CCM diabetic) \u2191vs baseline ____%     [ ]\n'
+        + '  QPP Msr 001 score delta          \u22655 pts/yr   ____pts   [ ]\n'
+        + '  QPP Msr 236 BP control delta     \u22655 pts/yr   ____pts   [ ]\n'
+        + '  TCM completion rate              \u226570%         ____%     [ ]\n\n'
+        + LINE + '\n'
+        + 'SECTION 3 \u2014 PATIENT-REPORTED OUTCOMES\n'
+        + LINE + '\n\n'
+        + '  Metric                           Target       Actual    RAG\n'
+        + '  \u2500'.repeat(58) + '\n'
+        + '  Post-ride ease of access (1\u201310)   \u22658.0         ____      [ ]\n'
+        + '  Appointment confidence (\u226570%)    70%          ____%     [ ]\n'
+        + '  Driver safety rating (1\u201310)       \u22659.0         ____      [ ]\n'
+        + '  Would recommend program (%)      \u226585%         ____%     [ ]\n\n'
+        + LINE + '\n'
+        + 'SECTION 4 \u2014 FINANCIAL PERFORMANCE\n'
+        + LINE + '\n\n'
+        + '  Metric                           Target       Actual    RAG\n'
+        + '  \u2500'.repeat(58) + '\n'
+        + '  FFS net benefit (quarter)        ' + fmt(ffsNet/4) + '   $____     [ ]\n'
+        + '  Coding uplift (quarter)          ' + fmt(codNet/4) + '   $____     [ ]\n'
+        + '  CCM net revenue (quarter)        ' + fmt(ccmNet/4) + '   $____     [ ]\n'
+        + '  TCM net revenue (quarter)        ' + fmt(tcmNet/4) + '   $____     [ ]\n'
+        + '  Total net benefit (quarter)      ' + fmt(totalNet/4) + '   $____     [ ]\n'
+        + '  Actual vs. projected (within 20%) Within 20%  ____%     [ ]\n'
+        + '  Program cost (quarter)           ' + fmt(progCost/4) + '   $____     [ ]\n\n'
+        + LINE + '\n'
+        + 'SECTION 5 \u2014 COMPLIANCE & DOCUMENTATION\n'
+        + LINE + '\n\n'
+        + '  Metric                           Target       Actual    RAG\n'
+        + '  \u2500'.repeat(58) + '\n'
+        + '  Z75.3 documentation rate         \u226525% (Y1)    ____%     [ ]\n'
+        + '  CCM/TCM doc completeness (audit) 100%         ____%     [ ]\n'
+        + '  Service log reconciliation       100%         ____%     [ ]\n'
+        + '  Vendor SLA: on-time pickup       \u226592%         ____%     [ ]\n'
+        + '  Vendor SLA: cancellation rate    \u22645%          ____%     [ ]\n'
+        + '  BAA attestation current          Yes          ___       [ ]\n\n'
+        + LINE + '\n'
+        + 'SECTION 6 \u2014 QUARTERLY NARRATIVE\n'
+        + LINE + '\n\n'
+        + '  Key achievements this quarter:\n'
+        + '  [FILL IN]\n\n'
+        + '  Issues / corrective actions:\n'
+        + '  [FILL IN]\n\n'
+        + '  REP study status:\n'
+        + '  [FILL IN]\n\n'
+        + '  Next quarter priorities:\n'
+        + '  [FILL IN]\n\n'
+        + LINE + '\n'
+        + 'RAG Key:  [ G ] Green \u2014 on/above target  [ Y ] Yellow \u2014 within 10%  [ R ] Red \u2014 below threshold\n'
+        + LINE + '\n'
+        + 'Report distribution: CMO, CFO, Community Engagement, CRA Bank Partner, Board Quality Committee\n';
+  }
+
+  const titleEl = document.getElementById('mayo_draft_title');
+  const contentEl = document.getElementById('mayo_draft_content');
+  const outEl = document.getElementById('mayo_draft_out');
+  if (titleEl) titleEl.textContent = title;
+  if (contentEl) contentEl.textContent = doc;
+  if (outEl) outEl.style.display = 'block';
+  window._mayoCurrentDraft = { title, doc };
+  if (contentEl) contentEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+window.copyMayoDraft = async function() {
+  const txt = (window._mayoCurrentDraft && window._mayoCurrentDraft.doc) || document.getElementById('mayo_draft_content').textContent || '';
+  try { await navigator.clipboard.writeText(txt); showOk('Draft copied to clipboard.'); }
+  catch(e) { showOk('Select text in the preview and copy manually.'); }
+};
+
+window.downloadMayoDraft = function() {
+  const d = window._mayoCurrentDraft || { title: 'NEMT_Draft', doc: '' };
+  const blob = new Blob([d.doc], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = d.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/_+$/,'') + '.txt';
+  a.click();
+};
+
+</script>
+</body>
+</html>
