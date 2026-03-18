@@ -988,19 +988,26 @@ button.secondary{
             <div style="display:flex;flex-direction:column;gap:12px;min-width:0;flex:1;">
               <!-- ROI reveal panel — shown after Layer 0 confirm -->
               <div id="mayo_roi_reveal" style="display:none;">
-                <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:12px;padding:18px 20px;color:#fff;">
-                  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-                    <!-- Left: ROI number -->
-                    <div style="flex:0 0 auto;text-align:center;min-width:155px;padding-right:16px;border-right:1px solid rgba(255,255,255,.14);">
-                      <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Return on Investment</div>
-                      <div id="mayo_roi_big" style="font-size:48px;font-weight:900;color:#E8C84A;font-family:monospace;line-height:1;">&mdash;</div>
-                      <div id="mayo_net_big" style="font-size:14px;font-family:monospace;color:rgba(167,243,208,.9);margin-top:6px;">&mdash;</div>
-                      <div id="mayo_be_txt" style="font-size:10px;opacity:.6;margin-top:8px;background:rgba(255,255,255,.08);padding:3px 10px;border-radius:999px;display:inline-block;">Break-even: &mdash;</div>
+                <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:12px;padding:16px 18px;color:#fff;">
+                  <!-- Row 1: ROI number + net value + break-even pill -->
+                  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px;">
+                    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+                      <div>
+                        <div style="font-size:9px;opacity:.45;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Return on Investment</div>
+                        <div id="mayo_roi_big" style="font-size:38px;font-weight:900;color:#E8C84A;font-family:monospace;line-height:1;">&mdash;</div>
+                      </div>
+                      <div style="padding-left:14px;border-left:1px solid rgba(255,255,255,.15);">
+                        <div style="font-size:9px;opacity:.45;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Net Annual Value</div>
+                        <div id="mayo_net_big" style="font-size:18px;font-family:monospace;color:rgba(167,243,208,.9);font-weight:700;">&mdash;</div>
+                      </div>
                     </div>
-                    <!-- Right: Bar chart by layer -->
-                    <div style="flex:1;min-width:180px;">
-                      <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;text-align:center;">Value Stack by Layer — Net Annual ($)</div>
-                      <canvas id="mayo_layer_chart" height="130"></canvas>
+                    <div id="mayo_be_txt" style="font-size:10px;opacity:.55;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:999px;white-space:nowrap;margin-left:auto;">Break-even: &mdash;</div>
+                  </div>
+                  <!-- Row 2: compact fixed-height chart -->
+                  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px;">
+                    <div style="font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Value by Layer — Net Annual ($)</div>
+                    <div style="position:relative;height:90px;width:100%;">
+                      <canvas id="mayo_layer_chart" style="position:absolute;inset:0;width:100%!important;height:100%!important;"></canvas>
                     </div>
                   </div>
                 </div>
@@ -2095,13 +2102,13 @@ window.calcMayoROI = function() {
           backgroundColor: colors,
           borderColor: colors.map(c => c.replace(/[\d.]+\)$/, '1)')),
           borderWidth: 1,
-          borderRadius: 4,
+          borderRadius: 3,
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: { duration: 500, easing: 'easeOutQuart' },
+        animation: { duration: 400, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -2112,15 +2119,15 @@ window.calcMayoROI = function() {
         },
         scales: {
           x: {
-            ticks: { color: 'rgba(255,255,255,.65)', font: { size: 9 } },
-            grid: { color: 'rgba(255,255,255,.08)' }
+            ticks: { color: 'rgba(255,255,255,.6)', font: { size: 8 }, maxRotation: 0 },
+            grid: { display: false }
           },
           y: {
             ticks: {
-              color: 'rgba(255,255,255,.55)', font: { size: 9 },
-              callback: v => '$' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
+              color: 'rgba(255,255,255,.45)', font: { size: 8 }, maxTicksLimit: 4,
+              callback: v => v >= 1000000 ? '$'+(v/1000000).toFixed(1)+'M' : v >= 1000 ? '$'+(v/1000).toFixed(0)+'K' : '$'+v
             },
-            grid: { color: 'rgba(255,255,255,.08)' }
+            grid: { color: 'rgba(255,255,255,.07)' }
           }
         }
       }
