@@ -1003,12 +1003,12 @@ button.secondary{
                     </div>
                     <div id="mayo_be_txt" style="font-size:10px;opacity:.55;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:999px;white-space:nowrap;margin-left:auto;">Break-even: &mdash;</div>
                   </div>
-                  <!-- Row 2: compact fixed-height chart -->
-                  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px;">
-                    <div style="font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Value by Layer — Net Annual ($)</div>
-                    <div style="position:relative;height:90px;width:100%;">
-                      <canvas id="mayo_layer_chart" style="position:absolute;inset:0;width:100%!important;height:100%!important;"></canvas>
-                    </div>
+                  <!-- Horizontal stacked waterfall chart -->
+                  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:14px;">
+                    <div style="font-size:9px;opacity:.4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Cumulative Value Stack — Each Layer Added to the One Before</div>
+                    <div id="mayo_stack_chart" style="display:flex;flex-direction:column;gap:7px;"></div>
+                    <!-- Legend -->
+                    <div id="mayo_stack_legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);"></div>
                   </div>
                 </div>
               </div>
@@ -2069,69 +2069,124 @@ window.calcMayoROI = function() {
   // Cache for artifact generation
   window._mayoROICache = { V, n, s, m, r, c, t, o, prevented, gross, margCost, tripCost, overhead, progCost, ffsNet, codNet, ccmNet, tcmNet, vbcNet, bankCRA, totalNet, roi, beTrip, codOn, ccmOn, vbcOn };
 
-  // ── Layer bar chart ──────────────────────────────────────────────────────
+  // ── Horizontal stacked waterfall chart (CSS-based, no canvas) ───────────
   (function() {
-    const canvas = document.getElementById('mayo_layer_chart');
-    if (!canvas) return;
+    const chartEl  = document.getElementById('mayo_stack_chart');
+    const legendEl = document.getElementById('mayo_stack_legend');
+    if (!chartEl) return;
 
-    const layers = [
-      { label: 'L0 FFS', val: ffsNet, active: true, color: 'rgba(201,162,39,.85)' },
-      { label: 'L1 Coding', val: codNet, active: codOn, color: 'rgba(59,130,246,.8)' },
-      { label: 'L2a CCM', val: ccmNet, active: ccmOn, color: 'rgba(13,148,136,.8)' },
-      { label: 'L2b TCM', val: tcmNet, active: ccmOn, color: 'rgba(5,150,105,.8)' },
-      { label: 'L3 VBC', val: vbcNet, active: vbcOn, color: 'rgba(124,58,237,.8)' },
-      { label: 'Bank', val: bankCRA, active: vbcOn && bankCRA > 0, color: 'rgba(180,83,9,.75)' },
-    ];
-
-    const activeData = layers.map(l => l.active && l.val > 0 ? Math.round(l.val) : 0);
-    const colors = layers.map((l, i) => {
-      if (!l.active || l.val <= 0) return 'rgba(148,163,184,.35)';
-      return l.color;
-    });
-
+    // Destroy any old Chart.js instance from a prior render
     if (window._mayoLayerChart && window._mayoLayerChart.destroy) {
       window._mayoLayerChart.destroy();
+      window._mayoLayerChart = null;
     }
 
-    window._mayoLayerChart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: layers.map(l => l.label),
-        datasets: [{
-          data: activeData,
-          backgroundColor: colors,
-          borderColor: colors.map(c => c.replace(/[\d.]+\)$/, '1)')),
-          borderWidth: 1,
-          borderRadius: 3,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 400, easing: 'easeOutQuart' },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => '$' + Math.round(ctx.parsed.y).toLocaleString()
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: 'rgba(255,255,255,.6)', font: { size: 8 }, maxRotation: 0 },
-            grid: { display: false }
-          },
-          y: {
-            ticks: {
-              color: 'rgba(255,255,255,.45)', font: { size: 8 }, maxTicksLimit: 4,
-              callback: v => v >= 1000000 ? '$'+(v/1000000).toFixed(1)+'M' : v >= 1000 ? '$'+(v/1000).toFixed(0)+'K' : '$'+v
-            },
-            grid: { color: 'rgba(255,255,255,.07)' }
-          }
-        }
-      }
+    // All possible segments with brand colors
+    const SEGS = [
+      { key:'ffs',  label:'L0 · FFS Base',       short:'FFS',     color:'#E8C84A', text:'#001533' },
+      { key:'cod',  label:'L1 · Coding / Z-code', short:'Coding',  color:'#60a5fa', text:'#001533' },
+      { key:'ccm',  label:'L2a · CCM',            short:'CCM',     color:'#34d399', text:'#001533' },
+      { key:'tcm',  label:'L2b · TCM',            short:'TCM',     color:'#10b981', text:'#001533' },
+      { key:'vbc',  label:'L3 · VBC Earn-back',   short:'VBC',     color:'#c084fc', text:'#1a1a1a' },
+      { key:'bank', label:'Bank CRA',              short:'Bank',    color:'#fb923c', text:'#1a1a1a' },
+    ];
+
+    // Build active layer list
+    const active = [];
+    if (ffsNet  > 0)                     active.push({ ...SEGS[0], val: ffsNet  });
+    if (codOn   && codNet  > 0)          active.push({ ...SEGS[1], val: codNet  });
+    if (ccmOn   && ccmNet  > 0)          active.push({ ...SEGS[2], val: ccmNet  });
+    if (ccmOn   && tcmNet  > 0)          active.push({ ...SEGS[3], val: tcmNet  });
+    if (vbcOn   && vbcNet  > 0)          active.push({ ...SEGS[4], val: vbcNet  });
+    if (vbcOn   && bankCRA > 0)          active.push({ ...SEGS[5], val: bankCRA });
+
+    const maxTotal = active.reduce((s, l) => s + l.val, 0);
+    if (maxTotal <= 0 || active.length === 0) {
+      chartEl.innerHTML = '';
+      if (legendEl) legendEl.innerHTML = '';
+      return;
+    }
+
+    function fmtK(n) {
+      if (n >= 1e6)  return '$' + (n / 1e6).toFixed(1) + 'M';
+      if (n >= 1e3)  return '$' + Math.round(n / 1e3) + 'K';
+      return '$' + Math.round(n);
+    }
+
+    // Build one row per cumulative stage: row i = layers 0..i stacked
+    // plus a separating "cost" row and final all-in row
+    const rows = active.map(function(seg, i) {
+      const segsInRow   = active.slice(0, i + 1);
+      const runningTotal = segsInRow.reduce((s, l) => s + l.val, 0);
+      const isLast      = i === active.length - 1;
+      return { segs: segsInRow, newSeg: seg, total: runningTotal, isLast };
     });
+
+    chartEl.innerHTML = rows.map(function(row, ri) {
+      const barPct = (row.total / maxTotal * 100).toFixed(2);
+      const isLast = row.isLast;
+
+      // Segment divs — prior segs dimmed, new seg bright
+      const segDivs = row.segs.map(function(seg, si) {
+        const pct    = (seg.val / maxTotal * 100).toFixed(2);
+        const isNew  = si === row.segs.length - 1;
+        const big    = parseFloat(pct) > 9;
+        const border = si < row.segs.length - 1
+          ? 'border-right:1px solid rgba(0,0,0,.2);' : '';
+
+        return `<div style="width:${pct}%;background:${seg.color};
+          opacity:${isNew ? '1' : '0.42'};
+          ${isNew ? '' : 'filter:brightness(.85);'}
+          display:flex;align-items:center;justify-content:center;
+          overflow:hidden;${border}
+          transition:width .55s cubic-bezier(.4,0,.2,1);">
+          ${big && isNew ? `<span style="font-size:9px;font-weight:800;color:${seg.text};
+            padding:0 4px;white-space:nowrap;">${fmtK(seg.val)}</span>` : ''}
+        </div>`;
+      }).join('');
+
+      // Row label (left)
+      const labelHtml = isLast
+        ? `<span style="font-size:9px;font-weight:900;color:#E8C84A;letter-spacing:.03em;">ALL-IN</span>`
+        : `<span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.65);">${row.newSeg.short}</span>`;
+
+      // Running total + increment (right)
+      const incrementHtml = !isLast
+        ? `<span style="font-size:8.5px;color:rgba(255,255,255,.45);margin-left:2px;">+${fmtK(row.newSeg.val)}</span>`
+        : '';
+
+      const totalHtml = `<span style="font-size:${isLast ? '11' : '10'}px;font-family:monospace;
+        font-weight:${isLast ? '900' : '700'};
+        color:${isLast ? '#E8C84A' : 'rgba(255,255,255,.88)'};">${fmtK(row.total)}</span>${incrementHtml}`;
+
+      // Divider before all-in row
+      const divider = isLast && active.length > 1
+        ? `<div style="height:1px;background:rgba(255,255,255,.12);margin:3px 0 3px 79px;"></div>`
+        : '';
+
+      return `${divider}
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div style="width:72px;flex-shrink:0;text-align:right;line-height:1;">${labelHtml}</div>
+          <div style="flex:1;height:${isLast ? '20px' : '15px'};border-radius:4px;overflow:hidden;
+            background:rgba(255,255,255,.07);display:flex;
+            ${isLast ? 'box-shadow:0 0 0 1.5px rgba(232,200,74,.45);' : ''}
+            transition:height .3s ease;">
+            ${segDivs}
+            <div style="flex:1;"></div>
+          </div>
+          <div style="min-width:64px;text-align:left;line-height:1.2;">${totalHtml}</div>
+        </div>`;
+    }).join('');
+
+    // Legend
+    if (legendEl) {
+      legendEl.innerHTML = active.map(s =>
+        `<div style="display:flex;align-items:center;gap:4px;">
+          <div style="width:9px;height:9px;border-radius:2px;background:${s.color};flex-shrink:0;"></div>
+          <span style="font-size:8.5px;color:rgba(255,255,255,.5);white-space:nowrap;">${s.label}</span>
+        </div>`
+      ).join('');
+    }
   })();
 };
 
