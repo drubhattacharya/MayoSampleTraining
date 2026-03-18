@@ -25,10 +25,10 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{height:100%;}
-body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;
+body{margin:0;padding:0;min-height:100vh;display:flex;flex-direction:column;
   background:var(--bg);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.6;color:#1a2332;}
 .demo-hdr{flex-shrink:0;background:linear-gradient(140deg,var(--navy) 0%,var(--blue) 65%,#0A3566 100%);
-  box-shadow:0 2px 24px rgba(0,0,0,.45);position:relative;overflow:hidden;}
+  box-shadow:0 2px 24px rgba(0,0,0,.45);position:sticky;top:0;z-index:500;overflow:hidden;}
 .demo-hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(201,162,39,.4),transparent);}
 .demo-hdr-top{display:flex;align-items:center;gap:16px;padding:16px 28px 12px;}
@@ -42,7 +42,8 @@ body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction
 .demo-tag strong{font-style:normal;background:linear-gradient(120deg,var(--gold),var(--gold2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .demo-rail{display:flex;align-items:stretch;background:rgba(0,0,0,.2);
-  border-top:1px solid rgba(255,255,255,.08);overflow-x:auto;scrollbar-width:none;}
+  border-top:1px solid rgba(255,255,255,.08);overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;}
 .demo-rail::-webkit-scrollbar{display:none}
 .rb{display:flex;align-items:center;gap:8px;padding:10px 20px 12px;background:none;
   border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:inherit;
@@ -58,7 +59,7 @@ body{margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction
 .rl{font-size:12px;font-weight:600;color:rgba(255,255,255,.32);}
 .rb.rb-on .rl{color:#fff;font-weight:700;}
 .rb.rb-done .rl{color:rgba(255,255,255,.55);}
-#wg-content{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+#wg-content{flex:1 1 auto;}
 .step{width:100%;animation:fin .22s ease;}
 @keyframes fin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .story-hdr{display:flex;align-items:flex-start;gap:20px;padding:28px 36px 24px;
@@ -1945,6 +1946,7 @@ function go(t){
   });
   var c=document.getElementById('wg-content');
   if(c) c.scrollTop=0;
+  window.scrollTo(0,0);
   if(t==='roi'&&typeof calcMayoROI==='function') setTimeout(calcMayoROI,80);
 }
 window.mayoNav=function(p){go(p);};
