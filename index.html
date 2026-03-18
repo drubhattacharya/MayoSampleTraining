@@ -6,6 +6,8 @@
 <title>Mayo Clinic NEMT — Aqueduct T360 MATCH</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
@@ -163,6 +165,206 @@ button.secondary{
   border-radius: 7px; font-size: 15px; font-family: monospace;
   color: var(--navy); background: #fff; outline: none; transition: border-color .18s;
 }
+/* ── Document thumbnail cards ──────────────────────────── */
+.doc-thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;margin-bottom:20px;}
+.doc-card{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff;
+  cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;}
+.doc-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,0,0,.13);}
+.doc-card-preview{height:140px;position:relative;padding:12px 10px 8px;display:flex;flex-direction:column;gap:5px;overflow:hidden;}
+.doc-card-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:99px;letter-spacing:.06em;text-transform:uppercase;}
+.doc-badge-xlsx{background:#22c55e;color:#fff;}
+.doc-badge-docx{background:#2563eb;color:#fff;}
+.doc-line{height:4px;border-radius:2px;background:rgba(255,255,255,.45);}
+.doc-line-dk{background:rgba(255,255,255,.65);}
+.doc-cell-row{display:flex;gap:3px;margin-top:1px;}
+.doc-cell{height:10px;border-radius:2px;flex:1;background:rgba(255,255,255,.3);}
+.doc-cell.hdr{background:rgba(255,255,255,.6);}
+.doc-card-footer{padding:10px 12px;border-top:1px solid var(--border);background:#fafafa;flex:1;display:flex;flex-direction:column;justify-content:center;}
+.doc-card-title{font-size:12px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:3px;}
+.doc-card-desc{font-size:10px;color:var(--muted);line-height:1.4;}
+.doc-card-dl{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:10px;font-weight:700;color:var(--teal);}
+/* ROI reveal animation */
+#mayo_roi_reveal{transition:opacity .4s,transform .4s;}
+.roi-reveal-anim{animation:roiReveal .5s ease forwards;}
+@keyframes roiReveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── Document Preview Modal ───────────────────────────────── */
+#doc-preview-modal{
+  position:fixed;inset:0;z-index:8000;display:none;flex-direction:column;
+  background:rgba(0,10,25,.78);backdrop-filter:blur(6px);
+  animation:modalIn .22s ease;
+}
+@keyframes modalIn{from{opacity:0}to{opacity:1}}
+#doc-preview-modal.modal-closing{animation:modalOut .18s ease forwards;}
+@keyframes modalOut{from{opacity:1}to{opacity:0}}
+
+/* Toolbar */
+.dpm-toolbar{
+  flex-shrink:0;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;
+  background:linear-gradient(90deg,#001533,#002455);
+  border-bottom:1px solid rgba(201,162,39,.25);
+}
+.dpm-app-icon{
+  width:32px;height:32px;border-radius:7px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.dpm-app-icon.word{background:#2563EB;}
+.dpm-app-icon.excel{background:#16A34A;}
+.dpm-title{
+  flex:1;min-width:0;
+  font-size:13px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dpm-subtitle{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;}
+.dpm-btn-dl{
+  flex-shrink:0;display:flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,#C9A227,#8A6500);color:#001533;
+  border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:800;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+  box-shadow:0 3px 14px rgba(201,162,39,.4);transition:transform .1s;
+}
+.dpm-btn-dl:hover{transform:translateY(-1px);}
+.dpm-btn-close{
+  flex-shrink:0;width:32px;height:32px;border-radius:6px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .12s;
+}
+.dpm-btn-close:hover{background:rgba(255,255,255,.16);}
+
+/* Ribbon bar (app-style) */
+.dpm-ribbon{
+  flex-shrink:0;display:flex;align-items:center;gap:0;
+  padding:4px 16px;background:#f3f3f3;border-bottom:1px solid #d0d0d0;overflow-x:auto;
+}
+.dpm-ribbon.word-ribbon{background:#f0f4ff;border-bottom:1px solid #c7d2f0;}
+.dpm-ribbon.excel-ribbon{background:#f0fff6;border-bottom:1px solid #b8e8c8;}
+.dpm-rib-group{display:flex;align-items:center;gap:2px;padding:0 10px;border-right:1px solid #d8d8d8;}
+.dpm-rib-group:last-child{border-right:none;}
+.dpm-rib-btn{
+  font-size:11px;padding:3px 8px;border-radius:3px;border:none;
+  background:none;cursor:default;color:#3a3a3a;white-space:nowrap;font-family:inherit;
+}
+.dpm-rib-btn.active{background:rgba(37,99,235,.12);color:#1D4ED8;font-weight:600;}
+
+/* Canvas / scroll area */
+.dpm-canvas{
+  flex:1;overflow-y:auto;overflow-x:auto;
+  background:#c8c8c8;padding:24px;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+.dpm-canvas.excel-bg{background:#e8f0e8;}
+
+/* DOCX page */
+.dpm-page{
+  width:816px;max-width:100%;min-height:1056px;background:#fff;
+  box-shadow:0 4px 32px rgba(0,0,0,.28);
+  padding:72px 80px 80px;
+  font-family:Arial,sans-serif;font-size:12pt;line-height:1.5;color:#1a1a1a;
+  position:relative;flex-shrink:0;
+}
+.dpm-page-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding-bottom:10px;margin-bottom:18px;
+  border-bottom:3px solid #001533;
+}
+.dpm-page-logo{
+  font-size:8pt;font-weight:700;letter-spacing:.08em;color:#001533;text-transform:uppercase;
+}
+.dpm-page-doc-type{
+  font-size:7.5pt;color:#64748B;text-align:right;line-height:1.4;
+}
+.dpm-h1{font-size:16pt;font-weight:700;color:#001533;margin:0 0 4px;line-height:1.2;}
+.dpm-h2{
+  font-size:10pt;font-weight:700;color:#001533;margin:20px 0 6px;
+  padding:5px 8px;background:#f0f4ff;border-left:3px solid #C9A227;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.dpm-h3{font-size:10pt;font-weight:700;color:#334155;margin:12px 0 4px;}
+.dpm-p{font-size:10pt;color:#334155;margin:0 0 8px;line-height:1.6;}
+.dpm-meta{font-size:8.5pt;color:#64748B;margin:2px 0;}
+.dpm-rule{border:none;border-top:1px solid #e2e8f0;margin:14px 0;}
+.dpm-kv{display:flex;gap:8px;margin:3px 0;font-size:10pt;}
+.dpm-kv strong{min-width:190px;flex-shrink:0;color:#1a1a1a;}
+.dpm-kv span{color:#334155;}
+.dpm-bullet{padding-left:20px;margin:3px 0;font-size:10pt;color:#334155;}
+.dpm-bullet::before{content:"• ";color:#C9A227;font-weight:700;}
+.dpm-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:9pt;}
+.dpm-table th{background:#001533;color:#fff;padding:6px 10px;text-align:left;font-weight:700;}
+.dpm-table td{padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#334155;}
+.dpm-table tr:nth-child(even) td{background:#f8faff;}
+.dpm-table tr.total-row td{font-weight:700;background:#f0f4ff;color:#001533;}
+.dpm-scenario-box{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;
+}
+.dpm-scenario-card{
+  border:1px solid #e2e8f0;border-radius:7px;padding:10px 12px;
+}
+.dpm-scenario-card.anchor{border-color:#C9A227;background:#fffbee;}
+.dpm-scenario-label{font-size:8pt;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+.dpm-scenario-val{font-size:14pt;font-weight:800;color:#001533;font-family:monospace;}
+.dpm-scenario-note{font-size:8pt;color:#64748B;margin-top:3px;}
+.dpm-footer{
+  position:absolute;bottom:28px;left:80px;right:80px;
+  display:flex;justify-content:space-between;
+  font-size:7.5pt;color:#94A3B8;border-top:1px solid #e2e8f0;padding-top:6px;
+}
+.dpm-confidential{
+  background:#FEF3C7;border:1px solid #F59E0B;border-radius:4px;
+  padding:5px 12px;font-size:8.5pt;font-weight:700;color:#92400E;
+  display:inline-block;margin-bottom:14px;
+}
+
+/* XLSX spreadsheet */
+.dpm-xl-wrap{
+  width:900px;max-width:100%;background:#fff;
+  box-shadow:0 4px 32px rgba(0,0,0,.28);flex-shrink:0;
+}
+.dpm-xl-tabs{
+  display:flex;background:#e8e8e8;border-bottom:1px solid #ccc;gap:0;padding:0 8px;
+}
+.dpm-xl-tab{
+  font-size:11px;padding:5px 14px;border:1px solid transparent;border-bottom:none;
+  cursor:default;font-family:Arial,sans-serif;color:#333;border-radius:4px 4px 0 0;
+}
+.dpm-xl-tab.active{background:#fff;border-color:#ccc;color:#16A34A;font-weight:700;}
+.dpm-xl-formula-bar{
+  display:flex;align-items:center;gap:8px;padding:4px 10px;
+  background:#f8f8f8;border-bottom:1px solid #ddd;font-family:Arial,sans-serif;font-size:11px;
+}
+.dpm-xl-formula-name{
+  width:60px;flex-shrink:0;border:1px solid #ccc;padding:1px 5px;
+  font-size:11px;color:#333;text-align:center;
+}
+.dpm-xl-formula-val{flex:1;border:1px solid #ccc;padding:1px 8px;font-size:11px;color:#333;background:#fff;}
+.dpm-xl-grid-wrap{overflow:auto;max-height:520px;}
+.dpm-xl-grid{border-collapse:collapse;font-family:Arial,sans-serif;font-size:11px;}
+.dpm-xl-grid .cn{
+  background:#f0f0f0;border:1px solid #ccc;padding:2px 8px;
+  text-align:center;color:#555;font-weight:600;min-width:28px;position:sticky;top:0;z-index:2;
+}
+.dpm-xl-grid .rn{
+  background:#f0f0f0;border:1px solid #ccc;padding:2px 6px;
+  text-align:center;color:#555;font-weight:600;min-width:28px;position:sticky;left:0;z-index:1;
+}
+.dpm-xl-grid td{
+  border:1px solid #d0d0d0;padding:3px 8px;white-space:nowrap;min-width:90px;
+  color:#1a1a1a;
+}
+.dpm-xl-grid .xl-hdr{background:#001533;color:#fff;font-weight:700;}
+.dpm-xl-grid .xl-sec{background:#e8eef8;font-weight:700;color:#001533;font-size:10px;letter-spacing:.04em;}
+.dpm-xl-grid .xl-total{background:#f0f4ff;font-weight:700;color:#001533;}
+.dpm-xl-grid .xl-grand{background:#001533;color:#E8C84A;font-weight:800;}
+.dpm-xl-grid .xl-green{background:#dcfce7;}
+.dpm-xl-grid .xl-yellow{background:#fef9c3;}
+.dpm-xl-grid .xl-red{background:#fee2e2;}
+.dpm-xl-grid .xl-blue{background:#dbeafe;}
+.dpm-xl-grid .xl-num{text-align:right;font-family:monospace;}
+.dpm-xl-grid .xl-pct{text-align:right;font-family:monospace;color:#0369a1;}
+.dpm-xl-grid .xl-bold{font-weight:700;}
+.dpm-xl-grid .xl-input{color:#0000ff;} /* blue = hardcoded input */
+.dpm-xl-grid .xl-formula{color:#000;} /* black = formula */
 .hr{
   border:none;
   border-top:1px solid var(--border);
@@ -520,6 +722,102 @@ button.secondary{
             <div class="kpi"><div class="label">Priority #3 &mdash; Food Security (new 2025)</div><div class="value" style="font-size:26px;color:var(--amber);">33K</div><div class="hint">Channel One Food Bank clients in 2024; 23% Hispanic, 14% Black; co-occurring transport barrier population</div></div>
             <div class="kpi"><div class="label">Disability Population</div><div class="value" style="font-size:26px;color:var(--blue);">9.7%</div><div class="hint">~16,000 residents &mdash; highest NEMT need; documented access barriers per CHNA. Foreign-born: 11.1%.</div></div>
           </div>
+
+          <!-- ── TOP DISPARITIES + NEMT SELECTION LOGIC ─────────────── -->
+          <div style="margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="flex:1;"><strong class="section-title" style="font-size:15px;">Top Documented Disparities — And Why NEMT Rises to the Top</strong>
+              <p class="small" style="margin-top:3px;color:var(--muted);">Transportation barriers cut across every disparity identified in the 2025 CHNA — making NEMT the highest-leverage modifiable intervention in Rochester's LMI population.</p></div>
+            </div>
+            <!-- Disparity ranked list -->
+            <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px;">
+              <div style="display:flex;align-items:stretch;gap:0;border-radius:9px;overflow:hidden;border:1px solid rgba(185,28,28,.25);">
+                <div style="width:5px;background:#B91C1C;flex-shrink:0;"></div>
+                <div style="padding:9px 13px;flex:1;background:rgba(185,28,28,.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="font-size:13px;font-weight:900;color:#B91C1C;min-width:22px;">#1</span>
+                      <div><strong style="font-size:13px;color:#1a2332;">Transportation-Attributable Care Delay</strong>
+                        <div class="small" style="color:var(--muted);">34% of adults delayed care · 51% of prior no-show patients cite transport · Disability (9.7%) + Foreign-born (11.1%) most affected</div></div></div>
+                    <span style="background:#FEE2E2;color:#B91C1C;font-size:10px;font-weight:800;padding:2px 10px;border-radius:99px;white-space:nowrap;">NEMT Directly Solves</span>
+                  </div></div></div>
+              <div style="display:flex;align-items:stretch;gap:0;border-radius:9px;overflow:hidden;border:1px solid rgba(180,83,9,.3);">
+                <div style="width:5px;background:#B45309;flex-shrink:0;"></div>
+                <div style="padding:9px 13px;flex:1;background:rgba(180,83,9,.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="font-size:13px;font-weight:900;color:#B45309;min-width:22px;">#2</span>
+                      <div><strong style="font-size:13px;color:#1a2332;">Disability &amp; Mobility Barrier Population</strong>
+                        <div class="small" style="color:var(--muted);">~16,000 residents (9.7%) with documented mobility limitations · Vehicle ownership gap · Highest per-trip transport cost burden</div></div></div>
+                    <span style="background:#FEF3C7;color:#B45309;font-size:10px;font-weight:800;padding:2px 10px;border-radius:99px;white-space:nowrap;">Core NEMT Target</span>
+                  </div></div></div>
+              <div style="display:flex;align-items:stretch;gap:0;border-radius:9px;overflow:hidden;border:1px solid rgba(29,78,216,.25);">
+                <div style="width:5px;background:#1D4ED8;flex-shrink:0;"></div>
+                <div style="padding:9px 13px;flex:1;background:rgba(29,78,216,.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="font-size:13px;font-weight:900;color:#1D4ED8;min-width:22px;">#3</span>
+                      <div><strong style="font-size:13px;color:#1a2332;">Primary Care Access Gap — LMI Households</strong>
+                        <div class="small" style="color:var(--muted);">~24,700 without a PCP (15% of 164,784) · Improved 22%→15% since 2018, but stalled · Transport cost is primary barrier for Medicaid + uninsured</div></div></div>
+                    <span style="background:#DBEAFE;color:#1D4ED8;font-size:10px;font-weight:800;padding:2px 10px;border-radius:99px;white-space:nowrap;">NEMT Enables PCP Linkage</span>
+                  </div></div></div>
+              <div style="display:flex;align-items:stretch;gap:0;border-radius:9px;overflow:hidden;border:1px solid rgba(13,148,136,.25);">
+                <div style="width:5px;background:#0F766E;flex-shrink:0;"></div>
+                <div style="padding:9px 13px;flex:1;background:rgba(13,148,136,.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="font-size:13px;font-weight:900;color:#0F766E;min-width:22px;">#4</span>
+                      <div><strong style="font-size:13px;color:#1a2332;">Behavioral Health Access — Renters &amp; Disability</strong>
+                        <div class="small" style="color:var(--muted);">37% mental health prevalence · Highest specialty no-show rate of any service line · Renter population = highest transit dependency</div></div></div>
+                    <span style="background:#D1FAE5;color:#0F766E;font-size:10px;font-weight:800;padding:2px 10px;border-radius:99px;white-space:nowrap;">Dual Priority Impact</span>
+                  </div></div></div>
+              <div style="display:flex;align-items:stretch;gap:0;border-radius:9px;overflow:hidden;border:1px solid rgba(124,58,237,.25);">
+                <div style="width:5px;background:#7C3AED;flex-shrink:0;"></div>
+                <div style="padding:9px 13px;flex:1;background:rgba(124,58,237,.04);">
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <span style="font-size:13px;font-weight:900;color:#7C3AED;min-width:22px;">#5</span>
+                      <div><strong style="font-size:13px;color:#1a2332;">Foreign-Born &amp; Language-Barrier Population</strong>
+                        <div class="small" style="color:var(--muted);">11.1% foreign-born · Compounding barriers: language + transport + system navigation · Higher delay rates per CHNA survey</div></div></div>
+                    <span style="background:#EDE9FE;color:#7C3AED;font-size:10px;font-weight:800;padding:2px 10px;border-radius:99px;white-space:nowrap;">Compound Barrier</span>
+                  </div></div></div>
+            </div>
+
+            <!-- NEMT Selection Logic Callout -->
+            <div style="background:linear-gradient(135deg,rgba(0,21,51,.97),#002050);border-radius:12px;padding:16px 20px;color:#fff;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                <div style="width:36px;height:36px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎯</div>
+                <div><strong style="font-size:14px;color:#fff;">The NEMT Selection Logic: One Intervention Addresses All Five</strong>
+                  <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">Why transportation is the highest-ROI modifiable variable in the 2025 CHNA data</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:12px;">
+                <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 11px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px;">37% — Shekelle Meta-Analysis</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;">Reduction in missed appointment odds when NEMT is targeted. Highest-certainty evidence available (12 studies, 3 RCTs).</div>
+                </div>
+                <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 11px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px;">25–51% — Transport-Attributable No-shows</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;">Of missed appointments linked to transport barriers. Higher in Olmsted's LMI + disability + foreign-born segments.</div>
+                </div>
+                <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 11px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px;">32% — Readmission Reduction</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;">Outpatient follow-up within 30 days reduces all-cause readmission risk. NEMT removes the #1 barrier to that follow-up.</div>
+                </div>
+                <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 11px;">
+                  <div style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:4px;">Z75.3 Documentation Chain</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;">NEMT enrollment + ICD-10 Z75.3 creates the SDOH documentation chain for IRS Schedule H and CRA community development credit.</div>
+                </div>
+              </div>
+              <div style="background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.3);border-radius:8px;padding:9px 14px;font-size:12px;color:rgba(255,255,255,.85);line-height:1.6;">
+                <strong style="color:var(--gold2);">Bottom line:</strong> Transportation barriers are the single modifiable factor present across all five disparity categories above. NEMT is not a peripheral program — it is the intervention that unlocks clinical value from CCM, TCM, and VBC quality earn-backs simultaneously. The evidence base, the regulatory pathways, and the financial returns all converge on this selection.
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+              <button class="primary" onclick="mayoNav('linkage')" style="font-size:13px;padding:9px 18px;">See How This Maps to Federal CRA Credit &rarr;</button>
+            </div>
+          </div>
+          <!-- ── EVIDENCE NODES ──────────────────────────────────────── -->
+          <p class="small" style="margin-bottom:10px;font-weight:600;color:var(--navy);">Evidence Nodes — Expand Each Priority:</p>
           <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
             <div class="callout" style="cursor:pointer;border-left:4px solid var(--blue);padding:13px 16px;" onclick="toggleMEN(1)">
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
@@ -688,12 +986,24 @@ button.secondary{
 
             <!-- RIGHT COLUMN: live results -->
             <div style="display:flex;flex-direction:column;gap:12px;min-width:0;flex:1;">
-              <!-- Big ROI display -->
-              <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:12px;padding:20px;text-align:center;color:#fff;">
-                <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Return on Investment</div>
-                <div id="mayo_roi_big" style="font-size:52px;font-weight:900;color:#E8C84A;font-family:monospace;line-height:1;">&mdash;</div>
-                <div id="mayo_net_big" style="font-size:17px;font-family:monospace;color:rgba(167,243,208,.9);margin-top:6px;">&mdash;</div>
-                <div id="mayo_be_txt" style="font-size:11px;opacity:.6;margin-top:8px;background:rgba(255,255,255,.08);padding:4px 14px;border-radius:999px;display:inline-block;">Break-even: &mdash;</div>
+              <!-- ROI reveal panel — shown after Layer 0 confirm -->
+              <div id="mayo_roi_reveal" style="display:none;">
+                <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border-radius:12px;padding:18px 20px;color:#fff;">
+                  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                    <!-- Left: ROI number -->
+                    <div style="flex:0 0 auto;text-align:center;min-width:155px;padding-right:16px;border-right:1px solid rgba(255,255,255,.14);">
+                      <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Return on Investment</div>
+                      <div id="mayo_roi_big" style="font-size:48px;font-weight:900;color:#E8C84A;font-family:monospace;line-height:1;">&mdash;</div>
+                      <div id="mayo_net_big" style="font-size:14px;font-family:monospace;color:rgba(167,243,208,.9);margin-top:6px;">&mdash;</div>
+                      <div id="mayo_be_txt" style="font-size:10px;opacity:.6;margin-top:8px;background:rgba(255,255,255,.08);padding:3px 10px;border-radius:999px;display:inline-block;">Break-even: &mdash;</div>
+                    </div>
+                    <!-- Right: Bar chart by layer -->
+                    <div style="flex:1;min-width:180px;">
+                      <div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;text-align:center;">Value Stack by Layer — Net Annual ($)</div>
+                      <canvas id="mayo_layer_chart" height="130"></canvas>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Live value stack rows — FIXED SPACING -->
@@ -874,46 +1184,155 @@ button.secondary{
         </div></div><div class="step-foot"><p class="step-bridge">You know who to approach and what to say. The last step generates the complete package — seven audit-ready documents that make this program immediately actionable for your team, your board, and your banking partners.</p><button class="step-cont" onclick="go('draft')">Generate your documents →</button></div></section><section id="s_draft" class="step" style="display:none"><div class="story-hdr"><div class="story-num">06</div><div><h2 class="story-hl">In sixty minutes, you’ve built what most health systems spend months on.</h2><p class="story-sub">Seven documents. Each pre-populated with your CHNA data and ROI model outputs. Each saving four to eight hours of preparation. This is what the Aqueduct T360 MATCH platform makes possible — not just analysis, but the complete package your team needs to move from evidence to funded program.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
           <p class="small" style="margin-bottom:14px;">Seven high-value artifacts pre-populated with 2025 Olmsted County CHNA data and your ROI model inputs. Each saves 4&ndash;8 hours of preparation. Generate, review, copy, and adapt. All financial figures pull live from the ROI model.</p>
 
-          <!-- Artifact button grid -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:20px;">
-            <button onclick="generateMayoDraft('proforma')" style="background:linear-gradient(135deg,var(--navy),#1a3a5c);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128200;</div>
-              <div style="font-size:13px;font-weight:700;">3-Year Pro Forma &amp; P&amp;L</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">Full income statement with year-over-year layer maturation, cost ramp, and cumulative ROI</div>
-            </button>
-            <button onclick="generateMayoDraft('memo')" style="background:linear-gradient(135deg,#1D4ED8,#1e40af);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128196;</div>
-              <div style="font-size:13px;font-weight:700;">CRA Justification Memo</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">5-section OCC/FDIC-ready memo with CHNA citations, LMI documentation, and outcome metrics</div>
-            </button>
-            <button onclick="generateMayoDraft('term')" style="background:linear-gradient(135deg,#7A5C00,#B88A00);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128203;</div>
-              <div style="font-size:13px;font-weight:700;">Bank Term Sheet &amp; Pitch Brief</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">Proposed financial structure, reporting cadence, acknowledgment terms, and ROI summary</div>
-            </button>
-            <button onclick="generateMayoDraft('boarddeck')" style="background:linear-gradient(135deg,#7C3AED,#6d28d9);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#127968;</div>
-              <div style="font-size:13px;font-weight:700;">Board Executive Summary</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">One-page board brief: program rationale, three-scenario ROI, compliance posture, ask</div>
-            </button>
-            <button onclick="generateMayoDraft('sla')" style="background:linear-gradient(135deg,#0F766E,#0d6a61);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128221;</div>
-              <div style="font-size:13px;font-weight:700;">Vendor SLA Template</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">Complete SLA with performance metrics, breach consequences, monitoring protocols, and HIPAA/BAA clauses</div>
-            </button>
-            <button onclick="generateMayoDraft('rep')" style="background:linear-gradient(135deg,#B45309,#92400E);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128300;</div>
-              <div style="font-size:13px;font-weight:700;">REP Study Protocol</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">Rochester Epidemiology Project matched-cohort design, IRB pathway, endpoints, publication plan</div>
-            </button>
-            <button onclick="generateMayoDraft('kpi')" style="background:linear-gradient(135deg,#065F46,#047857);color:#fff;border:none;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;font-family:inherit;">
-              <div style="font-size:20px;margin-bottom:6px;">&#128202;</div>
-              <div style="font-size:13px;font-weight:700;">KPI &amp; Reporting Dashboard</div>
-              <div style="font-size:11px;opacity:.7;margin-top:3px;">Quarterly reporting template: access, clinical, PRO, financial, and compliance metrics with targets</div>
-            </button>
+          <!-- Artifact thumbnail grid -->
+          <div class="doc-thumb-grid">
+
+            <!-- 1: Pro Forma (XLSX) -->
+            <div class="doc-card" onclick="previewArtifact('proforma')" title="Preview 3-Year Pro Forma">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#1a3a5c);">
+                <span class="doc-card-badge doc-badge-xlsx">XLSX</span>
+                <div class="doc-line doc-line-dk" style="width:80%;"></div>
+                <div class="doc-line" style="width:60%;"></div>
+                <div class="doc-cell-row">
+                  <div class="doc-cell hdr"></div><div class="doc-cell hdr"></div><div class="doc-cell hdr"></div><div class="doc-cell hdr"></div>
+                </div>
+                <div class="doc-cell-row"><div class="doc-cell"></div><div class="doc-cell"></div><div class="doc-cell"></div><div class="doc-cell"></div></div>
+                <div class="doc-cell-row"><div class="doc-cell"></div><div class="doc-cell"></div><div class="doc-cell"></div><div class="doc-cell"></div></div>
+                <div class="doc-cell-row"><div class="doc-cell" style="background:rgba(201,162,39,.7);"></div><div class="doc-cell" style="background:rgba(201,162,39,.5);"></div><div class="doc-cell" style="background:rgba(201,162,39,.8);"></div><div class="doc-cell"></div></div>
+                <div class="doc-line" style="width:45%;margin-top:6px;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">3-Year Pro Forma &amp; P&amp;L</div>
+                <div class="doc-card-desc">Full income statement · layer maturation · cumulative ROI</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .xlsxamp; Download .xlsx</div>
+              </div>
+            </div>
+
+            <!-- 2: CRA Memo (DOCX) -->
+            <div class="doc-card" onclick="previewArtifact('memo')" title="Preview CRA Justification Memo">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e40af);">
+                <span class="doc-card-badge doc-badge-docx">DOCX</span>
+                <div class="doc-line doc-line-dk" style="width:70%;"></div>
+                <div class="doc-line" style="width:90%;"></div>
+                <div class="doc-line" style="width:85%;"></div>
+                <div class="doc-line" style="width:75%;margin-top:6px;"></div>
+                <div class="doc-line" style="width:90%;"></div>
+                <div class="doc-line" style="width:80%;"></div>
+                <div class="doc-line" style="width:65%;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">CRA Justification Memo</div>
+                <div class="doc-card-desc">5-section OCC/FDIC-ready · CHNA citations · LMI docs</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
+              </div>
+            </div>
+
+            <!-- 3: Term Sheet (DOCX) -->
+            <div class="doc-card" onclick="previewArtifact('term')" title="Preview Bank Term Sheet">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#7A5C00,#B88A00);">
+                <span class="doc-card-badge doc-badge-docx">DOCX</span>
+                <div class="doc-line doc-line-dk" style="width:75%;"></div>
+                <div style="display:flex;gap:4px;margin-top:5px;">
+                  <div style="flex:1;"><div class="doc-line" style="width:100%;margin-bottom:3px;"></div><div class="doc-line" style="width:80%;"></div></div>
+                  <div style="flex:1;"><div class="doc-line" style="width:100%;margin-bottom:3px;"></div><div class="doc-line" style="width:70%;"></div></div>
+                </div>
+                <div class="doc-line" style="width:90%;margin-top:6px;"></div>
+                <div class="doc-line" style="width:70%;"></div>
+                <div class="doc-line" style="width:55%;background:rgba(255,255,255,.65);margin-top:6px;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">Bank Term Sheet &amp; Pitch Brief</div>
+                <div class="doc-card-desc">Financial structure · reporting cadence · ROI summary</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
+              </div>
+            </div>
+
+            <!-- 4: Board Summary (DOCX) -->
+            <div class="doc-card" onclick="previewArtifact('boarddeck')" title="Preview Board Executive Summary">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#7C3AED,#6d28d9);">
+                <span class="doc-card-badge doc-badge-docx">DOCX</span>
+                <div class="doc-line doc-line-dk" style="width:65%;"></div>
+                <div class="doc-cell-row" style="margin-top:7px;">
+                  <div class="doc-cell" style="background:rgba(232,200,74,.6);flex:2;"></div>
+                  <div class="doc-cell" style="background:rgba(255,255,255,.2);flex:1;"></div>
+                </div>
+                <div class="doc-line" style="width:88%;margin-top:5px;"></div>
+                <div class="doc-line" style="width:75%;"></div>
+                <div class="doc-line" style="width:60%;"></div>
+                <div class="doc-line doc-line-dk" style="width:50%;margin-top:6px;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">Board Executive Summary</div>
+                <div class="doc-card-desc">One-page brief · 3-scenario ROI · compliance posture</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
+              </div>
+            </div>
+
+            <!-- 5: Vendor SLA (DOCX) -->
+            <div class="doc-card" onclick="previewArtifact('sla')" title="Preview Vendor SLA Template">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#0F766E,#0d6a61);">
+                <span class="doc-card-badge doc-badge-docx">DOCX</span>
+                <div class="doc-line doc-line-dk" style="width:72%;"></div>
+                <div class="doc-line" style="width:90%;margin-top:5px;"></div>
+                <div class="doc-line" style="width:85%;"></div>
+                <div class="doc-line" style="width:78%;"></div>
+                <div class="doc-line" style="width:90%;margin-top:4px;"></div>
+                <div class="doc-line" style="width:70%;"></div>
+                <div class="doc-line" style="width:82%;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">Vendor SLA Template</div>
+                <div class="doc-card-desc">KPIs · breach terms · monitoring · HIPAA/BAA clauses</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
+              </div>
+            </div>
+
+            <!-- 6: REP Protocol (DOCX) -->
+            <div class="doc-card" onclick="previewArtifact('rep')" title="Preview REP Study Protocol">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#B45309,#92400E);">
+                <span class="doc-card-badge doc-badge-docx">DOCX</span>
+                <div class="doc-line doc-line-dk" style="width:80%;"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;">
+                  <div class="doc-line" style="width:100%;"></div><div class="doc-line" style="width:100%;"></div>
+                  <div class="doc-line" style="width:85%;"></div><div class="doc-line" style="width:90%;"></div>
+                  <div class="doc-line" style="width:70%;"></div><div class="doc-line" style="width:75%;"></div>
+                </div>
+                <div class="doc-line doc-line-dk" style="width:55%;margin-top:6px;"></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">REP Study Protocol</div>
+                <div class="doc-card-desc">Matched-cohort design · IRB pathway · publication plan</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
+              </div>
+            </div>
+
+            <!-- 7: KPI Dashboard (XLSX) -->
+            <div class="doc-card" onclick="previewArtifact('kpi')" title="Preview KPI Dashboard">
+              <div class="doc-card-preview" style="background:linear-gradient(135deg,#065F46,#047857);">
+                <span class="doc-card-badge doc-badge-xlsx">XLSX</span>
+                <div class="doc-line doc-line-dk" style="width:60%;"></div>
+                <div class="doc-cell-row" style="margin-top:6px;">
+                  <div class="doc-cell hdr"></div><div class="doc-cell hdr"></div><div class="doc-cell hdr"></div><div class="doc-cell hdr"></div><div class="doc-cell hdr"></div>
+                </div>
+                <div class="doc-cell-row"><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(167,243,208,.5);"></div><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(252,211,77,.5);"></div><div class="doc-cell" style="background:rgba(252,165,165,.5);"></div></div>
+                <div class="doc-cell-row"><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(167,243,208,.4);"></div><div class="doc-cell"></div><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(167,243,208,.4);"></div></div>
+                <div class="doc-cell-row"><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(252,211,77,.4);"></div><div class="doc-cell"></div><div class="doc-cell" style="background:rgba(167,243,208,.4);"></div><div class="doc-cell"></div></div>
+              </div>
+              <div class="doc-card-footer">
+                <div class="doc-card-title">KPI &amp; Reporting Dashboard</div>
+                <div class="doc-card-desc">Quarterly tracker · RAG status · financial + clinical metrics</div>
+                <div class="doc-card-dl">👁 Preview ⬇ Download .xlsxamp; Download .xlsx</div>
+              </div>
+            </div>
+
+          </div><!-- /doc-thumb-grid -->
+
+          <!-- Toast notification -->
+          <div id="dl_toast" style="display:none;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:16px;border-left:4px solid var(--gold);animation:fin .25s ease;">
+            <span style="font-size:16px;">⬇</span><span id="dl_toast_msg">Generating file…</span>
           </div>
 
-          <!-- Output pane -->
+          <!-- Output pane (legacy text preview, still shown after generation) -->
           <div id="mayo_draft_out" style="display:none;margin-bottom:20px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
               <strong id="mayo_draft_title" class="small" style="text-transform:uppercase;letter-spacing:.06em;color:var(--navy);">Document Preview</strong>
@@ -1059,7 +1478,7 @@ button.secondary{
           </p>
           <div style="font-size:12px;font-weight:700;color:#64748b;padding:8px 12px;
             background:#F0F7FF;border-radius:8px;border:1px solid rgba(0,140,255,.15);">
-            Contact <span style="color:#1D4ED8;">info@aqueducthealth.com</span> to begin your partnership engagement.
+            Contact <span style="color:#1D4ED8;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f69f989099b697878393928395829e93979a829ed895999b">[email&#160;protected]</a></span> to begin your partnership engagement.
           </div>
         </div>
       </div>
@@ -1243,8 +1662,48 @@ button.secondary{
   </div>
 </section>
 
+<!-- ═══ DOCUMENT PREVIEW MODAL ════════════════════════════════════════════ -->
+<div id="doc-preview-modal" role="dialog" aria-modal="true" aria-label="Document Preview">
+
+  <!-- Toolbar -->
+  <div class="dpm-toolbar">
+    <div class="dpm-app-icon" id="dpm-app-icon">📄</div>
+    <div style="flex:1;min-width:0;">
+      <div class="dpm-title" id="dpm-title">Document Preview</div>
+      <div class="dpm-subtitle" id="dpm-subtitle">Mayo Clinic NEMT Program · Aqueduct T360 MATCH</div>
+    </div>
+    <button class="dpm-btn-dl" id="dpm-dl-btn" onclick="dpmDownload()">
+      ⬇ Download File
+    </button>
+    <button class="dpm-btn-close" onclick="closeDPM()" title="Close preview">✕</button>
+  </div>
+
+  <!-- App ribbon -->
+  <div class="dpm-ribbon" id="dpm-ribbon">
+    <div class="dpm-rib-group">
+      <span class="dpm-rib-btn active" id="dpm-ribbon-app">Word</span>
+    </div>
+    <div class="dpm-rib-group">
+      <span class="dpm-rib-btn">Home</span>
+      <span class="dpm-rib-btn">Insert</span>
+      <span class="dpm-rib-btn">Layout</span>
+      <span class="dpm-rib-btn">References</span>
+      <span class="dpm-rib-btn">Mailings</span>
+      <span class="dpm-rib-btn">Review</span>
+    </div>
+    <div class="dpm-rib-group">
+      <span class="dpm-rib-btn" style="color:#64748B;">Arial · 12pt · Normal</span>
+    </div>
+  </div>
+
+  <!-- Content canvas -->
+  <div class="dpm-canvas" id="dpm-canvas">
+    <!-- rendered by JS -->
+  </div>
+
+</div>
 </main>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 
 var ORDER=['about','chna','linkage','roi','cra','banks','draft','training'];
 function go(t){
@@ -1395,6 +1854,20 @@ window.confirmMayoLayer0 = function() {
   const conf = document.getElementById('mayo_l0_confirmed');
   if (btn) { btn.textContent = '↺ Re-confirm'; btn.style.background = 'linear-gradient(135deg,#047857,#065f46)'; }
   if (conf) conf.style.display = 'inline';
+
+  // Reveal ROI panel with animation
+  const revealEl = document.getElementById('mayo_roi_reveal');
+  if (revealEl && revealEl.style.display === 'none') {
+    revealEl.style.display = 'block';
+    revealEl.style.opacity = '0';
+    revealEl.style.transform = 'translateY(14px)';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        revealEl.style.opacity = '1';
+        revealEl.style.transform = 'none';
+      });
+    });
+  }
 
   // Also run the live calc
   calcMayoROI();
@@ -1588,6 +2061,71 @@ window.calcMayoROI = function() {
 
   // Cache for artifact generation
   window._mayoROICache = { V, n, s, m, r, c, t, o, prevented, gross, margCost, tripCost, overhead, progCost, ffsNet, codNet, ccmNet, tcmNet, vbcNet, bankCRA, totalNet, roi, beTrip, codOn, ccmOn, vbcOn };
+
+  // ── Layer bar chart ──────────────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('mayo_layer_chart');
+    if (!canvas) return;
+
+    const layers = [
+      { label: 'L0 FFS', val: ffsNet, active: true, color: 'rgba(201,162,39,.85)' },
+      { label: 'L1 Coding', val: codNet, active: codOn, color: 'rgba(59,130,246,.8)' },
+      { label: 'L2a CCM', val: ccmNet, active: ccmOn, color: 'rgba(13,148,136,.8)' },
+      { label: 'L2b TCM', val: tcmNet, active: ccmOn, color: 'rgba(5,150,105,.8)' },
+      { label: 'L3 VBC', val: vbcNet, active: vbcOn, color: 'rgba(124,58,237,.8)' },
+      { label: 'Bank', val: bankCRA, active: vbcOn && bankCRA > 0, color: 'rgba(180,83,9,.75)' },
+    ];
+
+    const activeData = layers.map(l => l.active && l.val > 0 ? Math.round(l.val) : 0);
+    const colors = layers.map((l, i) => {
+      if (!l.active || l.val <= 0) return 'rgba(148,163,184,.35)';
+      return l.color;
+    });
+
+    if (window._mayoLayerChart && window._mayoLayerChart.destroy) {
+      window._mayoLayerChart.destroy();
+    }
+
+    window._mayoLayerChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: layers.map(l => l.label),
+        datasets: [{
+          data: activeData,
+          backgroundColor: colors,
+          borderColor: colors.map(c => c.replace(/[\d.]+\)$/, '1)')),
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 500, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => '$' + Math.round(ctx.parsed.y).toLocaleString()
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: 'rgba(255,255,255,.65)', font: { size: 9 } },
+            grid: { color: 'rgba(255,255,255,.08)' }
+          },
+          y: {
+            ticks: {
+              color: 'rgba(255,255,255,.55)', font: { size: 9 },
+              callback: v => '$' + (v >= 1000 ? (v/1000).toFixed(0)+'K' : v)
+            },
+            grid: { color: 'rgba(255,255,255,.08)' }
+          }
+        }
+      }
+    });
+  })();
 };
 
 window.updateCRATotal = function() {
@@ -2121,10 +2659,709 @@ window.copyMayoDraft = async function() {
 window.downloadMayoDraft = function() {
   const d = window._mayoCurrentDraft || { title: 'NEMT_Draft', doc: '' };
   const blob = new Blob([d.doc], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = d.title.replace(/[^a-zA-Z0-9]+/g, '_').replace(/_+$/,'') + '.txt';
-  a.click();
+  a.href = url; a.download = (d.title || 'NEMT_Draft').replace(/[^a-z0-9]/gi,'_') + '.txt';
+  a.click(); URL.revokeObjectURL(url);
+};
+
+/* ═══════════════════════════════════════════════════════════
+   DOCUMENT PREVIEW MODAL — open, close, render
+   ══════════════════════════════════════════════════════════ */
+
+window._dpmCurrentType = null;
+
+window.closeDPM = function() {
+  const m = document.getElementById('doc-preview-modal');
+  if (!m) return;
+  m.classList.add('modal-closing');
+  setTimeout(() => { m.style.display = 'none'; m.classList.remove('modal-closing'); }, 180);
+  document.body.style.overflow = '';
+};
+
+// ESC key and click-outside-canvas to close
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDPM(); });
+document.getElementById('doc-preview-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeDPM();
+});
+
+window.dpmDownload = function() {
+  if (window._dpmCurrentType) downloadArtifactFile(window._dpmCurrentType);
+};
+
+window.previewArtifact = function(type) {
+  // Generate the text content so caches are fresh
+  generateMayoDraft(type);
+  const D   = window._mayoROICache || {};
+  const dr  = window._mayoCurrentDraft || {};
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  function fmt(n){ return (n<0?'-$':'$')+Math.abs(Math.round(n||0)).toLocaleString(); }
+
+  const isXlsx = (type === 'proforma' || type === 'kpi');
+  window._dpmCurrentType = type;
+
+  // Configure toolbar
+  const titles = {
+    proforma: '3-Year Pro Forma & P&L.xlsx',
+    kpi:      'NEMT KPI Dashboard.xlsx',
+    memo:     'CRA_Justification_Memo.docx',
+    term:     'Bank_Term_Sheet_Pitch_Brief.docx',
+    boarddeck:'Board_Executive_Summary.docx',
+    sla:      'Vendor_SLA_Template.docx',
+    rep:      'REP_Study_Protocol.docx',
+  };
+  document.getElementById('dpm-title').textContent = titles[type] || 'document';
+  document.getElementById('dpm-dl-btn').textContent = isXlsx ? '⬇ Download .xlsx' : '⬇ Download .docx';
+
+  // App icon + ribbon
+  const iconEl = document.getElementById('dpm-app-icon');
+  const ribbonEl = document.getElementById('dpm-ribbon');
+  const ribbonApp = document.getElementById('dpm-ribbon-app');
+  if (isXlsx) {
+    iconEl.textContent = '📊';
+    iconEl.className = 'dpm-app-icon excel';
+    ribbonEl.className = 'dpm-ribbon excel-ribbon';
+    ribbonApp.textContent = 'Excel';
+    ribbonEl.innerHTML = `
+      <div class="dpm-rib-group"><span class="dpm-rib-btn active" style="color:#16A34A;font-weight:700;">Excel</span></div>
+      <div class="dpm-rib-group">
+        <span class="dpm-rib-btn">Home</span>
+        <span class="dpm-rib-btn">Insert</span>
+        <span class="dpm-rib-btn">Page Layout</span>
+        <span class="dpm-rib-btn">Formulas</span>
+        <span class="dpm-rib-btn">Data</span>
+        <span class="dpm-rib-btn">Review</span>
+        <span class="dpm-rib-btn">View</span>
+      </div>
+      <div class="dpm-rib-group"><span class="dpm-rib-btn" style="color:#64748B;">Arial · 11pt · General</span></div>`;
+  } else {
+    iconEl.textContent = '📝';
+    iconEl.className = 'dpm-app-icon word';
+    ribbonEl.className = 'dpm-ribbon word-ribbon';
+    ribbonEl.innerHTML = `
+      <div class="dpm-rib-group"><span class="dpm-rib-btn active" style="color:#2563EB;font-weight:700;">Word</span></div>
+      <div class="dpm-rib-group">
+        <span class="dpm-rib-btn">Home</span>
+        <span class="dpm-rib-btn">Insert</span>
+        <span class="dpm-rib-btn">Draw</span>
+        <span class="dpm-rib-btn">Design</span>
+        <span class="dpm-rib-btn">Layout</span>
+        <span class="dpm-rib-btn">References</span>
+        <span class="dpm-rib-btn">Mailings</span>
+        <span class="dpm-rib-btn">Review</span>
+      </div>
+      <div class="dpm-rib-group"><span class="dpm-rib-btn" style="color:#64748B;">Arial · 12pt · Normal</span></div>`;
+  }
+
+  // Canvas
+  const canvas = document.getElementById('dpm-canvas');
+  canvas.className = isXlsx ? 'dpm-canvas excel-bg' : 'dpm-canvas';
+
+  // ── Render content ──────────────────────────────────────
+  if (isXlsx) {
+    canvas.innerHTML = buildXlsxPreview(type, D, today, fmt);
+  } else {
+    canvas.innerHTML = buildDocxPreview(type, D, dr, today, fmt);
+  }
+
+  // Show modal
+  const modal = document.getElementById('doc-preview-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  canvas.scrollTop = 0;
+};
+
+// ── XLSX preview builder ──────────────────────────────────
+function buildXlsxPreview(type, D, today, fmt) {
+  const ffs=D.ffsNet||0, cod=D.codNet||0, ccm=D.ccmNet||0, tcm=D.tcmNet||0,
+        vbc=D.vbcNet||0, bank=D.bankCRA||0, cost=D.progCost||0;
+
+  function xlRow(rn, cells, rowClass) {
+    const tds = cells.map(c => {
+      const cls = (c.cls||'') + (c.num?' xl-num':'') + (c.pct?' xl-pct':'') + (c.bold?' xl-bold':'') + (c.input?' xl-input':'') + (c.formula?' xl-formula':'');
+      const style = c.w ? `style="min-width:${c.w}px;"` : '';
+      return `<td class="${cls.trim()}" ${style}>${c.v??''}</td>`;
+    }).join('');
+    return `<tr class="${rowClass||''}"><td class="rn">${rn}</td>${tds}</tr>`;
+  }
+
+  function colHdrRow(cols) {
+    return '<tr>' + ['', ...cols].map(c=>`<th class="cn">${c}</th>`).join('') + '</tr>';
+  }
+
+  let gridHtml = '';
+  let tabs = '';
+  let formulaName = 'A1';
+  let formulaVal = '';
+
+  if (type === 'proforma') {
+    const y1v=ffs+cod*0.57+ccm*0.37+tcm*0.78, y2v=ffs*1.10+cod+ccm+tcm+vbc*0.57, y3v=ffs*1.20+cod*1.15+ccm*1.23+tcm*1.15+vbc;
+    const y1c=cost, y2c=cost*1.07, y3c=cost*1.11;
+    const y1n=y1v-y1c+bank, y2n=y2v-y2c+bank, y3n=y3v-y3c+bank;
+    const cols = ['A','B','C','D','E'];
+    tabs = `<div class="dpm-xl-tabs">
+      <div class="dpm-xl-tab active">Pro Forma</div>
+      <div class="dpm-xl-tab">Sensitivity</div>
+      <div class="dpm-xl-tab">Assumptions</div>
+      <div class="dpm-xl-tab">+</div>
+    </div>`;
+    formulaName = 'B5'; formulaVal = '=prevented_visits*net_rev_per_visit';
+    gridHtml = `<table class="dpm-xl-grid">
+      ${colHdrRow(cols)}
+      ${xlRow(1,[{v:'NEMT PROGRAM — 3-YEAR PRO FORMA',cls:'xl-hdr',bold:true},{v:''},{v:''},{v:''},{v:''}],'xl-hdr')}
+      ${xlRow(2,[{v:`Generated: ${today} · Aqueduct T360 MATCH`,cls:'xl-sec'},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(3,[{v:''},{v:'Year 1'},{v:'Year 2'},{v:'Year 3'},{v:'3-Yr Total'}],'xl-hdr')}
+      ${xlRow(4,[{v:'REVENUE LAYERS',cls:'xl-sec bold'},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(5,[{v:'Layer 0 — FFS Contribution Margin'},{v:fmt(ffs),num:true,input:true},{v:fmt(ffs*1.10),num:true,formula:true},{v:fmt(ffs*1.20),num:true,formula:true},{v:fmt(ffs+ffs*1.10+ffs*1.20),num:true,formula:true}],'xl-blue')}
+      ${xlRow(6,[{v:'Layer 1 — Coding / Z-code Uplift'},{v:fmt(cod*0.57),num:true,input:true},{v:fmt(cod),num:true,formula:true},{v:fmt(cod*1.15),num:true,formula:true},{v:fmt(cod*0.57+cod+cod*1.15),num:true,formula:true}])}
+      ${xlRow(7,[{v:'Layer 2a — CCM Net (incremental)'},{v:fmt(ccm*0.37),num:true,input:true},{v:fmt(ccm),num:true,formula:true},{v:fmt(ccm*1.23),num:true,formula:true},{v:fmt(ccm*0.37+ccm+ccm*1.23),num:true,formula:true}],'xl-blue')}
+      ${xlRow(8,[{v:'Layer 2b — TCM Net'},{v:fmt(tcm*0.78),num:true,input:true},{v:fmt(tcm),num:true,formula:true},{v:fmt(tcm*1.15),num:true,formula:true},{v:fmt(tcm*0.78+tcm+tcm*1.15),num:true,formula:true}])}
+      ${xlRow(9,[{v:'Layer 3 — VBC Quality Earn-back'},{v:'$0',num:true,input:true},{v:fmt(vbc*0.57),num:true,formula:true},{v:fmt(vbc),num:true,formula:true},{v:fmt(vbc*0.57+vbc),num:true,formula:true}],'xl-blue')}
+      ${xlRow(10,[{v:'Bank CRA Contribution'},{v:fmt(bank),num:true,input:true},{v:fmt(bank),num:true,formula:true},{v:fmt(bank),num:true,formula:true},{v:fmt(bank*3),num:true,formula:true}])}
+      ${xlRow(11,[{v:'Total Value',bold:true},{v:fmt(y1v+bank),num:true,bold:true,formula:true},{v:fmt(y2v+bank),num:true,bold:true,formula:true},{v:fmt(y3v+bank),num:true,bold:true,formula:true},{v:fmt(y1v+y2v+y3v+bank*3),num:true,bold:true,formula:true}],'xl-total')}
+      ${xlRow(12,[{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(13,[{v:'PROGRAM COSTS',cls:'xl-sec bold'},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(14,[{v:'Program Operating Cost'},{v:fmt(y1c),num:true,input:true},{v:fmt(y2c),num:true,formula:true},{v:fmt(y3c),num:true,formula:true},{v:fmt(y1c+y2c+y3c),num:true,formula:true}],'xl-red')}
+      ${xlRow(15,[{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(16,[{v:'NET BENEFIT',bold:true},{v:fmt(y1n),num:true,bold:true,formula:true,cls:y1n>=0?'xl-green':'xl-red'},{v:fmt(y2n),num:true,bold:true,formula:true,cls:y2n>=0?'xl-green':'xl-red'},{v:fmt(y3n),num:true,bold:true,formula:true,cls:y3n>=0?'xl-green':'xl-red'},{v:fmt(y1n+y2n+y3n),num:true,bold:true,formula:true}],'xl-total')}
+      ${xlRow(17,[{v:'ROI (Net ÷ Cost)',bold:true},{v:((y1n)/Math.max(cost,1)).toFixed(2)+'×',num:true,formula:true},{v:((y2n)/Math.max(cost*1.07,1)).toFixed(2)+'×',num:true,formula:true},{v:((y3n)/Math.max(cost*1.11,1)).toFixed(2)+'×',num:true,formula:true},{v:''}],'xl-grand')}
+      ${xlRow(18,[{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(19,[{v:'KEY ASSUMPTIONS',cls:'xl-sec bold'},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(20,[{v:'Visits targeted (V)'},{v:D.V||25000,num:true,input:true},{v:'Mitigation rate'},{v:((D.m||0)*100).toFixed(1)+'%',pct:true,input:true},{v:''}])}
+      ${xlRow(21,[{v:'No-show rate'},{v:((D.n||0)*100).toFixed(1)+'%',pct:true,input:true},{v:'Net rev/visit ($)'},{v:D.r||285,num:true,input:true},{v:''}])}
+      ${xlRow(22,[{v:'Transport share'},{v:((D.s||0)*100).toFixed(1)+'%',pct:true,input:true},{v:'Trip cost ($)'},{v:D.t||65,num:true,input:true},{v:''}])}
+      ${xlRow(23,[{v:'Prevented visits'},{v:Math.round(D.prevented||0),num:true,formula:true,bold:true},{v:'Program cost/yr'},{v:fmt(cost),num:true,formula:true,bold:true},{v:''}])}
+    </table>`;
+
+  } else { // KPI
+    tabs = `<div class="dpm-xl-tabs">
+      <div class="dpm-xl-tab active">KPI Dashboard</div>
+      <div class="dpm-xl-tab">Access</div>
+      <div class="dpm-xl-tab">Clinical</div>
+      <div class="dpm-xl-tab">Financial</div>
+      <div class="dpm-xl-tab">+</div>
+    </div>`;
+    formulaName = 'B4'; formulaVal = 'Transport no-show rate reduction';
+    const cols = ['A','B','C','D','E','F'];
+    gridHtml = `<table class="dpm-xl-grid">
+      ${colHdrRow(cols)}
+      ${xlRow(1,[{v:'NEMT PROGRAM — QUARTERLY KPI DASHBOARD',cls:'xl-hdr'},{v:''},{v:''},{v:''},{v:''},{v:''}],'xl-hdr')}
+      ${xlRow(2,[{v:`Mayo Clinic in Rochester · Generated: ${today}`,cls:'xl-sec'},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(3,[{v:'METRIC',bold:true},{v:'TARGET',bold:true},{v:'Q1 Actual',bold:true},{v:'Q2 Actual',bold:true},{v:'Q3 Actual',bold:true},{v:'RAG',bold:true}],'xl-hdr')}
+      ${xlRow(4,[{v:'ACCESS METRICS',cls:'xl-sec',bold:true},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(5,[{v:'Transport no-show rate reduction'},{v:'≥40%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-blue')}
+      ${xlRow(6,[{v:'NEMT utilization rate'},{v:'≥88%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(7,[{v:'Enrollment rate (eligible)'},{v:'≥40%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-blue')}
+      ${xlRow(8,[{v:'First-ride completion rate'},{v:'≥95%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(9,[{v:'CLINICAL OUTCOMES',cls:'xl-sec',bold:true},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(10,[{v:'30-day readmission (TCM pts)'},{v:'≤15%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-green')}
+      ${xlRow(11,[{v:'HbA1c control rate (CCM diabetic)'},{v:'↑ vs baseline',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(12,[{v:'QPP Msr 001 HbA1c poor control'},{v:'≥5 pts/yr',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-green')}
+      ${xlRow(13,[{v:'QPP Msr 236 BP control delta'},{v:'≥5 pts/yr',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(14,[{v:'TCM completion rate'},{v:'≥70%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-green')}
+      ${xlRow(15,[{v:'FINANCIAL PERFORMANCE ($)',cls:'xl-sec',bold:true},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(16,[{v:'FFS net benefit (quarter)'},{v:fmt((D.ffsNet||0)/4),num:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(17,[{v:'Coding uplift (quarter)'},{v:fmt((D.codNet||0)/4),num:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-blue')}
+      ${xlRow(18,[{v:'CCM net revenue (quarter)'},{v:fmt((D.ccmNet||0)/4),num:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(19,[{v:'TCM net revenue (quarter)'},{v:fmt((D.tcmNet||0)/4),num:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-blue')}
+      ${xlRow(20,[{v:'Total net benefit (quarter)',bold:true},{v:fmt((D.totalNet||0)/4),num:true,bold:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-total')}
+      ${xlRow(21,[{v:'Program cost (quarter)'},{v:fmt((D.progCost||0)/4),num:true,formula:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-red')}
+      ${xlRow(22,[{v:'COMPLIANCE & DOCUMENTATION',cls:'xl-sec',bold:true},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+      ${xlRow(23,[{v:'Z75.3 documentation rate'},{v:'≥25% (Y1)',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(24,[{v:'CCM/TCM doc completeness (audit)'},{v:'100%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-yellow')}
+      ${xlRow(25,[{v:'Vendor SLA: on-time pickup'},{v:'≥92%',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}])}
+      ${xlRow(26,[{v:'BAA attestation current'},{v:'Yes',input:true},{v:'',input:true},{v:'',input:true},{v:'',input:true},{v:'G / Y / R',input:true}],'xl-yellow')}
+      ${xlRow(27,[{v:'RAG: G = on/above target · Y = within 10% · R = below threshold',cls:'xl-sec'},{v:''},{v:''},{v:''},{v:''},{v:''}])}
+    </table>`;
+  }
+
+  return `
+    <div class="dpm-xl-wrap">
+      ${tabs}
+      <div class="dpm-xl-formula-bar">
+        <div class="dpm-xl-formula-name">${formulaName}</div>
+        <div style="padding:0 6px;color:#888;font-size:14px;">ƒx</div>
+        <div class="dpm-xl-formula-val">${formulaVal}</div>
+      </div>
+      <div class="dpm-xl-grid-wrap">${gridHtml}</div>
+    </div>
+    <div style="font-size:11px;color:#666;text-align:center;padding:8px 0;">
+      Blue text = hardcoded inputs &nbsp;·&nbsp; Black text = formulas &nbsp;·&nbsp; 
+      <span style="color:#16A34A;font-weight:600;">Green</span> = positive / on target &nbsp;·&nbsp;
+      <span style="color:#CA8A04;font-weight:600;">Yellow</span> = caution &nbsp;·&nbsp;
+      <span style="color:#DC2626;font-weight:600;">Red</span> = cost / below threshold
+    </div>`;
+}
+
+// ── DOCX page preview builder ─────────────────────────────
+function buildDocxPreview(type, D, dr, today, fmt) {
+  const bank    = document.getElementById('cra_bank')?.value    || '[BANK NAME]';
+  const amount  = document.getElementById('cra_amount')?.value  || '75,000';
+  const term    = document.getElementById('cra_term')?.value    || '3';
+  const total   = document.getElementById('cra_total')?.value   || '225,000';
+  const ffs=D.ffsNet||0, cod=D.codNet||0, ccm=D.ccmNet||0, tcm=D.tcmNet||0,
+        vbc=D.vbcNet||0, bk=D.bankCRA||0, totalNet=D.totalNet||0, cost=D.progCost||0;
+  const roi=D.roi||'—';
+
+  function page(bodyHtml) {
+    return `<div class="dpm-page">
+      <div class="dpm-page-header">
+        <div>
+          <div class="dpm-page-logo">Mayo Clinic · Olmsted County NEMT Program</div>
+          <div style="font-size:7.5pt;color:#94A3B8;margin-top:2px;">Aqueduct T360 MATCH Platform · Confidential Draft</div>
+        </div>
+        <div class="dpm-page-doc-type">Generated: ${today}<br>For Finance &amp; Legal Review</div>
+      </div>
+      ${bodyHtml}
+      <div class="dpm-footer">
+        <span>Mayo Clinic NEMT Program — Confidential Draft</span>
+        <span>Aqueduct T360 MATCH · aqueducthealth.com</span>
+        <span>Page 1</span>
+      </div>
+    </div>`;
+  }
+
+  if (type === 'memo') {
+    return page(`
+      <div class="dpm-confidential">⚠ CONFIDENTIAL DRAFT — For Finance and Legal Review</div>
+      <div class="dpm-h1">CRA Community Development Activity<br>Justification Memorandum</div>
+      <div class="dpm-meta">To: ${bank} CRA Officer · From: Mayo Clinic Community Health</div>
+      <div class="dpm-meta">Date: ${today} · Re: Non-Emergency Medical Transportation Program</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">I. Community Need — 2025 CHNA Documentation</div>
+      <p class="dpm-p">The 2025 Olmsted County Community Health Needs Assessment, co-produced by Mayo Clinic in Rochester, Olmsted County Public Health Services, and Olmsted Medical Center, identifies <strong>Access to Care</strong> as the county's highest-significance health priority. Key findings:</p>
+      <div class="dpm-bullet">34% of adults delayed needed medical care in the 2024 survey (N=937)</div>
+      <div class="dpm-bullet">15% (~24,700 residents) lack a primary care provider</div>
+      <div class="dpm-bullet">9.7% of residents have disabilities with documented mobility limitations</div>
+      <div class="dpm-bullet">11.1% are foreign-born with compounding access barriers</div>
+      <div class="dpm-h2">II. CRA Classification &amp; Regulatory Basis</div>
+      <div class="dpm-kv"><strong>Classification:</strong><span>Community Development Services — Healthcare (12 CFR 25.04(c)(3), Topic L)</span></div>
+      <div class="dpm-kv"><strong>Assessment Area:</strong><span>Rochester MSA (all Olmsted + Dodge Counties, MN) — OCC confirmed</span></div>
+      <div class="dpm-kv"><strong>Activity Type:</strong><span>Qualified Charitable Contribution / Grant</span></div>
+      <div class="dpm-kv"><strong>Primary Beneficiaries:</strong><span>LMI individuals (≤80% AMI); Medicaid enrollment as eligibility proxy</span></div>
+      <div class="dpm-h2">III. Program Description</div>
+      <p class="dpm-p">Mayo Clinic will administer a Non-Emergency Medical Transportation program providing round-trip transport for LMI patients attending Mayo Clinic ambulatory appointments in Rochester. SDOH Z75.3 (Transportation Barrier) ICD-10 documentation will be captured for each enrolled encounter, creating an audit trail for both IRS Schedule H and CRA exam files.</p>
+      <div class="dpm-h2">IV. ROI &amp; Financial Summary</div>
+      <table class="dpm-table">
+        <thead><tr><th>Value Layer</th><th>Annual Net Benefit</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Layer 0 — FFS Contribution Margin</td><td>${fmt(ffs)}</td><td>✓ Active</td></tr>
+          <tr><td>Layer 1 — Coding / Z-code Uplift</td><td>${fmt(cod)}</td><td>${cod>0?'✓ Active':'○ Not enabled'}</td></tr>
+          <tr><td>Layer 2 — CCM / TCM Capture</td><td>${fmt(ccm+tcm)}</td><td>${ccm+tcm>0?'✓ Active':'○ Not enabled'}</td></tr>
+          <tr><td>Layer 3 — VBC Quality Earn-back</td><td>${fmt(vbc)}</td><td>${vbc>0?'✓ Active':'○ Not enabled'}</td></tr>
+          <tr><td>Bank CRA Contribution</td><td>${fmt(bk)}</td><td>${bk>0?'✓ Included':'○ Not included'}</td></tr>
+          <tr class="total-row"><td><strong>Total Net Annual Value</strong></td><td><strong>${fmt(totalNet)}</strong></td><td><strong>ROI: ${roi}</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="dpm-h2">V. Proposed Terms &amp; Reporting</div>
+      <div class="dpm-kv"><strong>Annual Contribution:</strong><span>$${Number(amount).toLocaleString()}</span></div>
+      <div class="dpm-kv"><strong>Commitment Term:</strong><span>${term} years (Total: $${Number(total).toLocaleString()})</span></div>
+      <div class="dpm-kv"><strong>Reporting:</strong><span>Quarterly outcomes report with trip counts, LMI patients served, no-show rates, Z75.3 documentation rate</span></div>
+      <div class="dpm-kv"><strong>REP Study:</strong><span>Mayo Clinic REP matched-cohort publication, target Year 2 — bank acknowledged in authorship</span></div>`);
+  }
+
+  if (type === 'term') {
+    return page(`
+      <div class="dpm-confidential">DRAFT TERM SHEET — For Discussion Purposes Only</div>
+      <div class="dpm-h1">NEMT Program Partnership<br>Term Sheet &amp; Pitch Brief</div>
+      <div class="dpm-meta">Proposed Partner: ${bank}</div>
+      <div class="dpm-meta">Program Administrator: Mayo Clinic in Rochester, MN</div>
+      <div class="dpm-meta">Date: ${today}</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">The Opportunity</div>
+      <p class="dpm-p">Mayo Clinic — Olmsted County's largest employer and a globally recognized academic medical center — is establishing a Non-Emergency Medical Transportation program to address Access to Care, the top priority in its 2025 Community Health Needs Assessment. This creates a uniquely credentialed CRA investment opportunity for Rochester MSA banks.</p>
+      <div class="dpm-h2">Financial Structure</div>
+      <table class="dpm-table">
+        <thead><tr><th>Term</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>Annual Contribution</td><td>$${Number(amount).toLocaleString()}</td></tr>
+          <tr><td>Commitment Term</td><td>${term} years</td></tr>
+          <tr><td>Total Commitment</td><td>$${Number(total).toLocaleString()}</td></tr>
+          <tr><td>Structure</td><td>Qualified Charitable Contribution / Community Development Grant</td></tr>
+          <tr><td>CRA Classification</td><td>CD Services — Healthcare (12 CFR 25.04(c)(3))</td></tr>
+          <tr><td>Reporting Frequency</td><td>Quarterly outcomes report + annual audit package</td></tr>
+        </tbody>
+      </table>
+      <div class="dpm-h2">Program ROI — Health System Value Stack</div>
+      <div class="dpm-scenario-box">
+        <div class="dpm-scenario-card">
+          <div class="dpm-scenario-label">Conservative</div>
+          <div class="dpm-scenario-val">${fmt(ffs+cod)}</div>
+          <div class="dpm-scenario-note">FFS + Coding · Year 1 floor</div>
+        </div>
+        <div class="dpm-scenario-card anchor">
+          <div class="dpm-scenario-label">★ Base Case (Board)</div>
+          <div class="dpm-scenario-val">${fmt(ffs+cod+tcm)}</div>
+          <div class="dpm-scenario-note">+ TCM · Recommended anchor</div>
+        </div>
+        <div class="dpm-scenario-card">
+          <div class="dpm-scenario-label">Optimistic</div>
+          <div class="dpm-scenario-val">${fmt(totalNet)}</div>
+          <div class="dpm-scenario-note">All layers active · Year 2+</div>
+        </div>
+      </div>
+      <div class="dpm-h2">Acknowledgment &amp; Recognition</div>
+      <div class="dpm-bullet">Named acknowledgment in all program materials and REP outcomes publications</div>
+      <div class="dpm-bullet">Quarterly outcomes report for CRA exam file (trip counts, LMI patients, Z-code rates)</div>
+      <div class="dpm-bullet">Invitation to Mayo Clinic community benefit presentation at program launch</div>
+      <div class="dpm-bullet">Co-branding on program patient communication materials (optional)</div>`);
+  }
+
+  if (type === 'boarddeck') {
+    return page(`
+      <div class="dpm-h1">Board Executive Summary<br>Non-Emergency Medical Transportation Program</div>
+      <div class="dpm-meta">Prepared for: Board Quality Committee · Mayo Clinic</div>
+      <div class="dpm-meta">Date: ${today} · Status: For Board Consideration</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">Program Rationale</div>
+      <p class="dpm-p">The 2025 Olmsted County CHNA identifies transportation as a modifiable barrier affecting 34% of adults who delayed care. The Shekelle 2022 meta-analysis (BMC Public Health, n=12 studies) establishes a 37% reduction in missed appointment odds with targeted NEMT — the highest-certainty evidence available for a community health intervention.</p>
+      <div class="dpm-h2">Three-Scenario Financial Return</div>
+      <div class="dpm-scenario-box">
+        <div class="dpm-scenario-card">
+          <div class="dpm-scenario-label">Conservative · Year 1 Floor</div>
+          <div class="dpm-scenario-val">${fmt(ffs+cod)}</div>
+          <div class="dpm-scenario-note">FFS + Coding only · High confidence</div>
+        </div>
+        <div class="dpm-scenario-card anchor">
+          <div class="dpm-scenario-label">★ Base Case — Board Recommendation</div>
+          <div class="dpm-scenario-val">${fmt(ffs+cod+tcm)}</div>
+          <div class="dpm-scenario-note">+ TCM · Anchor scenario</div>
+        </div>
+        <div class="dpm-scenario-card">
+          <div class="dpm-scenario-label">Optimistic · Year 2+</div>
+          <div class="dpm-scenario-val">${fmt(totalNet)}</div>
+          <div class="dpm-scenario-note">All layers · ROI: ${roi}</div>
+        </div>
+      </div>
+      <div class="dpm-h2">Compliance Posture</div>
+      <div class="dpm-bullet">Anti-Kickback Statute: Local transportation safe harbor (42 CFR §1001.952(bb)) active — written policy, ≤25 mi urban, no advertising, established patients only</div>
+      <div class="dpm-bullet">CRA: All program activities within Rochester MSA Assessment Area (Olmsted + Dodge Counties)</div>
+      <div class="dpm-bullet">IRS Schedule H: Part I, Line 7e (Community Health Improvement Services) — CHNA-documented</div>
+      <div class="dpm-bullet">Billing compliance: CCM/TCM time must be real, threshold-meeting, non-duplicative; travel time not billable</div>
+      <div class="dpm-h2">Recommended Board Action</div>
+      <div class="dpm-kv"><strong>Motion:</strong><span>Approve pilot NEMT program at Olmsted County ambulatory scale; authorize CMO to execute vendor SLA and approach bank partners for CRA funding</span></div>
+      <div class="dpm-kv"><strong>Investment:</strong><span>Program operating cost: ${fmt(cost)}/year · Break-even trip cost: $${D.beTrip||'—'}/round trip</span></div>
+      <div class="dpm-kv"><strong>Bank ask:</strong><span>$${Number(amount).toLocaleString()}/year · ${term}-year commitment · Qualified charitable contribution</span></div>
+      <div class="dpm-kv"><strong>Study:</strong><span>REP matched-cohort design; IRB at program outset; Year 2 publication target</span></div>`);
+  }
+
+  if (type === 'sla') {
+    return page(`
+      <div class="dpm-confidential">DRAFT — CONFIDENTIAL — For Legal Review Before Execution</div>
+      <div class="dpm-h1">Non-Emergency Medical Transportation<br>Vendor Service Level Agreement</div>
+      <div class="dpm-meta">Between: Mayo Clinic in Rochester, MN ("Health System")</div>
+      <div class="dpm-meta">And: [VENDOR NAME] ("Transportation Provider")</div>
+      <div class="dpm-meta">Effective Date: [DATE] · Term: [TERM]</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">1. Core Performance Standards</div>
+      <table class="dpm-table">
+        <thead><tr><th>Metric</th><th>Minimum Standard</th><th>Preferred Target</th></tr></thead>
+        <tbody>
+          <tr><td>On-time pickup rate</td><td>≥90%</td><td>≥95%</td></tr>
+          <tr><td>Trip cancellation rate (vendor-caused)</td><td>≤8%</td><td>≤5%</td></tr>
+          <tr><td>Driver no-show rate</td><td>≤3%</td><td>≤1%</td></tr>
+          <tr><td>Patient safety incident rate</td><td>0 preventable incidents</td><td>0</td></tr>
+          <tr><td>Ride confirmation lead time</td><td>≤24 hours</td><td>≤4 hours</td></tr>
+          <tr><td>EHR/scheduling system integration</td><td>Real-time API</td><td>Real-time API + alerts</td></tr>
+        </tbody>
+      </table>
+      <div class="dpm-h2">2. HIPAA &amp; BAA Requirements</div>
+      <div class="dpm-bullet">Vendor is a Business Associate under HIPAA (45 CFR §164.502(e))</div>
+      <div class="dpm-bullet">BAA must be executed prior to first patient trip</div>
+      <div class="dpm-bullet">PHI limited to minimum necessary for trip scheduling</div>
+      <div class="dpm-bullet">Breach notification within 60 days per 45 CFR §164.410</div>
+      <div class="dpm-h2">3. Breach Consequences &amp; Remedies</div>
+      <div class="dpm-kv"><strong>Tier 1 (minor):</strong><span>Written corrective action plan within 5 business days</span></div>
+      <div class="dpm-kv"><strong>Tier 2 (material):</strong><span>Financial penalty: [1–3%] of quarterly contract value; CAP required</span></div>
+      <div class="dpm-kv"><strong>Tier 3 (critical):</strong><span>Immediate cure period (30 days); termination for cause if not resolved</span></div>
+      <div class="dpm-h2">4. Reporting &amp; Documentation</div>
+      <div class="dpm-bullet">Monthly trip log: date, patient ID (de-identified), pickup/drop time, disposition</div>
+      <div class="dpm-bullet">Quarterly SLA performance report: all metrics vs. standards</div>
+      <div class="dpm-bullet">Z75.3 documentation support: ride completion confirmation for EHR entry</div>
+      <div class="dpm-bullet">CRA bank reporting package: quarterly LMI patient counts and trip volumes</div>`);
+  }
+
+  if (type === 'rep') {
+    return page(`
+      <div class="dpm-confidential">DRAFT PROTOCOL — Review with IRB and REP Administration Before Submission</div>
+      <div class="dpm-h1">Rochester Epidemiology Project<br>NEMT Outcomes Study Protocol</div>
+      <div class="dpm-meta">PI: [TO BE DESIGNATED] · Suggested: CMO or VP Community Health</div>
+      <div class="dpm-meta">Co-I: Community Engagement, Biostatistics, Quality Department</div>
+      <div class="dpm-meta">Date: ${today} · REP data linkage request: submit at program launch</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">Study Rationale</div>
+      <p class="dpm-p">The Rochester Epidemiology Project provides longitudinal medical record linkage for Olmsted County residents since 1966 — a resource unmatched by any other U.S. health system. NEMT research anchored to REP data will produce national-quality evidence publishable in Tier 1 journals (JAMA Network Open, Health Affairs, AJPH).</p>
+      <p class="dpm-p">Critical evidence gap: Chaiyachati (JAMA Internal Medicine, 2018) found no significant reduction in missed appointments with universal rideshare offering due to low uptake (26%). A REP-linked targeted study controls for program design quality and patient-level barriers.</p>
+      <div class="dpm-h2">Study Design</div>
+      <table class="dpm-table">
+        <thead><tr><th>Element</th><th>Specification</th></tr></thead>
+        <tbody>
+          <tr><td>Design</td><td>Retrospective matched cohort</td></tr>
+          <tr><td>Population</td><td>Olmsted County LMI ambulatory patients, Mayo Clinic</td></tr>
+          <tr><td>Matching ratio</td><td>1:3 (enrolled : controls)</td></tr>
+          <tr><td>Matching variables</td><td>Age (±5 yr), primary diagnosis, insurance type, prior no-show rate, distance from clinic</td></tr>
+          <tr><td>Follow-up period</td><td>24 months post-enrollment</td></tr>
+          <tr><td>Index date</td><td>Date of first NEMT-enabled appointment</td></tr>
+        </tbody>
+      </table>
+      <div class="dpm-h2">Endpoints</div>
+      <div class="dpm-h3">Primary (12–18 months)</div>
+      <div class="dpm-bullet">Transportation-attributable no-show rate reduction · Power: 80% to detect 7% absolute reduction · α=0.05</div>
+      <div class="dpm-h3">Secondary (24 months)</div>
+      <div class="dpm-bullet">30-day readmission rate (TCM-enrolled subgroup)</div>
+      <div class="dpm-bullet">HbA1c control rate (CCM-enrolled diabetic subgroup)</div>
+      <div class="dpm-bullet">QPP quality measure closure rates (Msr 001, 236, 113)</div>
+      <div class="dpm-bullet">SDOH Z75.3 documentation rate</div>
+      <div class="dpm-h2">Publication Plan</div>
+      <div class="dpm-kv"><strong>Target Journals:</strong><span>JAMA Network Open · Health Affairs · AJPH · JGIM</span></div>
+      <div class="dpm-kv"><strong>Month 3:</strong><span>IRB application + REP data linkage request</span></div>
+      <div class="dpm-kv"><strong>Month 12:</strong><span>Interim analysis; conference abstract (AHA/NACHC)</span></div>
+      <div class="dpm-kv"><strong>Month 18:</strong><span>Primary outcome paper submission</span></div>
+      <div class="dpm-kv"><strong>Month 24:</strong><span>Secondary outcomes paper; policy brief to CMMI</span></div>
+      <div class="dpm-kv"><strong>Bank acknowledgment:</strong><span>"This study was made possible by the community investment of ${bank} in Olmsted County health equity."</span></div>`);
+  }
+
+  // default — use raw text nicely formatted
+  return page(`
+    <div class="dpm-h1">${dr.title||'NEMT Document'}</div>
+    <hr class="dpm-rule">
+    <pre style="font-family:Arial,sans-serif;font-size:10pt;line-height:1.7;white-space:pre-wrap;color:#334155;">${(dr.doc||'').substring(0,4000)}</pre>`);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REAL FILE DOWNLOAD — .docx via docx.js CDN / .xlsx via SheetJS
+   ══════════════════════════════════════════════════════════ */
+window.downloadArtifactFile = async function(type) {
+  // First generate the text content so _mayoCurrentDraft and _mayoROICache are fresh
+  generateMayoDraft(type);
+  const D  = window._mayoROICache || {};
+  const dr = window._mayoCurrentDraft || {};
+  const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  function fmt(n){ return (n<0?'-$':'$')+Math.abs(Math.round(n||0)).toLocaleString(); }
+  function showToast(msg,done){
+    const t=document.getElementById('dl_toast'), m=document.getElementById('dl_toast_msg');
+    if(!t||!m) return;
+    m.textContent=msg; t.style.display='flex';
+    if(done) setTimeout(()=>{ t.style.display='none'; },3200);
+  }
+
+  /* ─── XLSX files: Pro Forma & KPI ──────────────────────────── */
+  if(type==='proforma' || type==='kpi'){
+    showToast('Preparing spreadsheet…');
+    try {
+      const XLSX = window.XLSX;
+      if(!XLSX){ showToast('SheetJS not loaded — try again in a moment.', true); return; }
+      const wb = XLSX.utils.book_new();
+
+      if(type==='proforma'){
+        const ffs=D.ffsNet||0, cod=D.codNet||0, ccm=D.ccmNet||0, tcm=D.tcmNet||0, vbc=D.vbcNet||0, bank=D.bankCRA||0, cost=D.progCost||0;
+        const y1v=ffs+cod*0.57+ccm*0.37+tcm*0.78,          y2v=ffs*1.10+cod+ccm+tcm+vbc*0.57,       y3v=ffs*1.20+cod*1.15+ccm*1.23+tcm*1.15+vbc;
+        const y1c=cost, y2c=cost*1.07, y3c=cost*1.11;
+        const y1n=y1v-y1c, y2n=y2v-y2c, y3n=y3v-y3c;
+        const rows=[
+          ['NEMT PROGRAM — 3-YEAR PRO FORMA','Year 1','Year 2','Year 3','3-Yr Total'],
+          ['Generated: '+today,'','','',''],
+          [''],
+          ['REVENUE LAYERS','','','',''],
+          ['Layer 0 — FFS Contribution Margin', Math.round(ffs), Math.round(ffs*1.10), Math.round(ffs*1.20), Math.round(ffs+ffs*1.10+ffs*1.20)],
+          ['Layer 1 — Coding / Z-code Uplift', Math.round(cod*0.57), Math.round(cod), Math.round(cod*1.15), Math.round(cod*0.57+cod+cod*1.15)],
+          ['Layer 2a — CCM Net (incremental)', Math.round(ccm*0.37), Math.round(ccm), Math.round(ccm*1.23), Math.round(ccm*0.37+ccm+ccm*1.23)],
+          ['Layer 2b — TCM Net', Math.round(tcm*0.78), Math.round(tcm), Math.round(tcm*1.15), Math.round(tcm*0.78+tcm+tcm*1.15)],
+          ['Layer 3 — VBC Quality Earn-back', 0, Math.round(vbc*0.57), Math.round(vbc), Math.round(vbc*0.57+vbc)],
+          ['Bank CRA Contribution', Math.round(bank), Math.round(bank), Math.round(bank), Math.round(bank*3)],
+          ['Total Value', Math.round(y1v+bank), Math.round(y2v+bank), Math.round(y3v+bank), Math.round(y1v+y2v+y3v+bank*3)],
+          [''],
+          ['COSTS','','','',''],
+          ['Program Operating Cost', Math.round(y1c), Math.round(y2c), Math.round(y3c), Math.round(y1c+y2c+y3c)],
+          [''],
+          ['NET BENEFIT', Math.round(y1n+bank), Math.round(y2n+bank), Math.round(y3n+bank), Math.round(y1n+y2n+y3n+bank*3)],
+          ['ROI (Net / Cost)', ((y1n+bank)/Math.max(y1c,1)).toFixed(2)+'x', ((y2n+bank)/Math.max(y2c,1)).toFixed(2)+'x', ((y3n+bank)/Math.max(y3c,1)).toFixed(2)+'x',''],
+          [''],
+          ['ASSUMPTIONS','','','',''],
+          ['Annual visits targeted (V)', D.V||25000,'','',''],
+          ['No-show rate', ((D.n||0)*100).toFixed(1)+'%','','',''],
+          ['Transport share of no-shows', ((D.s||0)*100).toFixed(1)+'%','','',''],
+          ['Mitigation rate', ((D.m||0)*100).toFixed(1)+'%','','',''],
+          ['Net revenue per visit ($)', D.r||285,'','',''],
+          ['Marginal clinical cost ($)', D.c||110,'','',''],
+          ['Trip cost per round trip ($)', D.t||65,'','',''],
+          ['Overhead rate', ((D.o||0)*100).toFixed(1)+'%','','',''],
+          ['Prevented visits / year', Math.round(D.prevented||0),'','',''],
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        ws['!cols']=[{wch:42},{wch:14},{wch:14},{wch:14},{wch:14}];
+        XLSX.utils.book_append_sheet(wb, ws, 'Pro Forma');
+
+        // Sensitivity sheet
+        const sensRows=[['SENSITIVITY — FFS Net by Mitigation Rate × Trip Cost','','','','','']];
+        sensRows.push(['Mitigation →','$50/trip','$60/trip','$65/trip','$75/trip','$90/trip']);
+        [0.30,0.40,0.50,0.60,0.70].forEach(mv=>{
+          const row=[Math.round(mv*100)+'%'];
+          [50,60,65,75,90].forEach(tv=>{
+            const prev2=(D.V||25000)*(D.n||0.18)*(D.s||0.28)*mv;
+            const pc2=prev2*tv*(1+(D.o||0.10));
+            row.push(Math.round(prev2*(D.r||285)-prev2*(D.c||110)-pc2));
+          });
+          sensRows.push(row);
+        });
+        const ws2=XLSX.utils.aoa_to_sheet(sensRows);
+        ws2['!cols']=[{wch:16},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14}];
+        XLSX.utils.book_append_sheet(wb, ws2, 'Sensitivity');
+
+      } else { // KPI dashboard
+        const rows=[
+          ['NEMT PROGRAM — QUARTERLY KPI DASHBOARD','','','',''],
+          ['Mayo Clinic in Rochester / Olmsted County | Generated: '+today,'','','',''],
+          [''],
+          ['SECTION 1 — ACCESS METRICS','Target','Q1 Actual','Q2 Actual','Q3 Actual'],
+          ['Transport no-show rate reduction','≥40%','','',''],
+          ['NEMT utilization rate','≥88%','','',''],
+          ['Enrollment rate (eligible patients)','≥40%','','',''],
+          ['First-ride completion rate','≥95%','','',''],
+          ['Trips completed (quarter)','[set target]','','',''],
+          ['Unduplicated LMI patients served','[set target]','','',''],
+          [''],
+          ['SECTION 2 — CLINICAL OUTCOMES','Target','Q1','Q2','Q3'],
+          ['30-day readmission (TCM patients)','≤15%','','',''],
+          ['HbA1c control rate (CCM diabetic)','↑ vs baseline','','',''],
+          ['QPP Measure 001 score delta','≥5 pts/yr','','',''],
+          ['QPP Measure 236 BP control delta','≥5 pts/yr','','',''],
+          ['TCM completion rate','≥70%','','',''],
+          [''],
+          ['SECTION 3 — PATIENT-REPORTED OUTCOMES','Target','Q1','Q2','Q3'],
+          ['Post-ride ease of access (1–10)','≥8.0','','',''],
+          ['Appointment confidence (% ≥70%)','70%','','',''],
+          ['Driver safety rating (1–10)','≥9.0','','',''],
+          ['Would recommend program (%)','≥85%','','',''],
+          [''],
+          ['SECTION 4 — FINANCIAL PERFORMANCE','Target ($)','Q1 Actual','Q2 Actual','Q3 Actual'],
+          ['FFS net benefit (quarter)', Math.round((D.ffsNet||0)/4),'','',''],
+          ['Coding uplift (quarter)', Math.round((D.codNet||0)/4),'','',''],
+          ['CCM net revenue (quarter)', Math.round((D.ccmNet||0)/4),'','',''],
+          ['TCM net revenue (quarter)', Math.round((D.tcmNet||0)/4),'','',''],
+          ['Total net benefit (quarter)', Math.round((D.totalNet||0)/4),'','',''],
+          ['Program cost (quarter)', Math.round((D.progCost||0)/4),'','',''],
+          [''],
+          ['SECTION 5 — COMPLIANCE & DOCUMENTATION','Target','Q1','Q2','Q3'],
+          ['Z75.3 documentation rate','≥25% (Y1)','','',''],
+          ['CCM/TCM doc completeness (audit)','100%','','',''],
+          ['Service log reconciliation','100%','','',''],
+          ['Vendor SLA: on-time pickup','≥92%','','',''],
+          ['Vendor SLA: cancellation rate','≤5%','','',''],
+          ['BAA attestation current','Yes','','',''],
+          [''],
+          ['RAG Key: G=Green (on/above target)  Y=Yellow (within 10%)  R=Red (below threshold)','','','',''],
+        ];
+        const ws=XLSX.utils.aoa_to_sheet(rows);
+        ws['!cols']=[{wch:46},{wch:16},{wch:14},{wch:14},{wch:14}];
+        XLSX.utils.book_append_sheet(wb,'KPI Dashboard','Dashboard');
+      }
+
+      const fname = type==='proforma' ? 'NEMT_3Year_ProForma.xlsx' : 'NEMT_KPI_Dashboard.xlsx';
+      XLSX.writeFile(wb, fname);
+      showToast('✓ ' + fname + ' downloaded!', true);
+
+    } catch(e){ showToast('Error generating spreadsheet: '+e.message, true); console.error(e); }
+    return;
+  }
+
+  /* ─── DOCX files ─────────────────────────────────────────── */
+  showToast('Building Word document…');
+  try {
+    // Use the raw text content we already generated
+    const rawText = dr.doc || '';
+    const rawTitle = dr.title || 'NEMT Document';
+
+    // Build a clean DOCX using the docx CDN library
+    const docxLib = window.docx;
+    if(!docxLib){ showToast('docx library not loaded — downloading as .txt instead.', true);
+      const blob=new Blob([rawText],{type:'text/plain'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url;
+      a.download=rawTitle.replace(/[^a-z0-9]/gi,'_')+'.txt'; a.click();
+      URL.revokeObjectURL(url); return; }
+
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType, ShadingType } = docxLib;
+
+    // Parse the raw text into structured paragraphs
+    const lines = rawText.split('\n');
+    const children = [];
+
+    // Title block
+    children.push(new Paragraph({
+      children:[new TextRun({text:'MAYO CLINIC NEMT PROGRAM',bold:true,size:28,color:'001533',font:'Arial'})],
+      alignment:AlignmentType.CENTER,
+      spacing:{after:100}
+    }));
+    children.push(new Paragraph({
+      children:[new TextRun({text:rawTitle,bold:true,size:24,color:'003A7A',font:'Arial'})],
+      alignment:AlignmentType.CENTER,
+      spacing:{after:80}
+    }));
+    children.push(new Paragraph({
+      children:[new TextRun({text:'Generated: '+today+' · Aqueduct T360 MATCH Platform',size:18,color:'64748B',font:'Arial'})],
+      alignment:AlignmentType.CENTER,
+      spacing:{after:360},
+    }));
+
+    // Process body lines
+    let inTable=false;
+    lines.forEach(line=>{
+      const trimmed=line.trim();
+      if(!trimmed || trimmed.match(/^━+$/) || trimmed.match(/^─+/)) {
+        children.push(new Paragraph({children:[],spacing:{after:60}})); return;
+      }
+      // Section headers (all caps lines)
+      if(trimmed===trimmed.toUpperCase() && trimmed.length>6 && !trimmed.includes('$') && !trimmed.match(/^\d/)){
+        children.push(new Paragraph({
+          children:[new TextRun({text:trimmed,bold:true,size:22,color:'001533',font:'Arial'})],
+          heading:HeadingLevel.HEADING_2,
+          spacing:{before:280,after:100},
+          border:{bottom:{style:BorderStyle.SINGLE,size:4,color:'C9A227',space:2}}
+        }));
+      } else if(trimmed.startsWith('•')||trimmed.startsWith('\u2022')){
+        children.push(new Paragraph({
+          children:[new TextRun({text:trimmed.replace(/^[•\u2022]\s*/,''),size:20,font:'Arial'})],
+          bullet:{level:0},
+          spacing:{after:60}
+        }));
+      } else if(line.match(/^[A-Z][a-z]+\s*:/)){
+        const colon=line.indexOf(':');
+        children.push(new Paragraph({
+          children:[
+            new TextRun({text:line.substring(0,colon+1),bold:true,size:20,font:'Arial'}),
+            new TextRun({text:line.substring(colon+1),size:20,font:'Arial'})
+          ],spacing:{after:60}
+        }));
+      } else {
+        children.push(new Paragraph({
+          children:[new TextRun({text:line,size:20,font:'Arial'})],
+          spacing:{after:60}
+        }));
+      }
+    });
+
+    const doc = new Document({
+      sections:[{
+        properties:{ page:{ size:{width:12240,height:15840}, margin:{top:1080,right:1080,bottom:1080,left:1080} } },
+        children
+      }]
+    });
+
+    const buffer = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(buffer);
+    const fname = rawTitle.replace(/[^a-z0-9\s]/gi,'').replace(/\s+/g,'_').substring(0,50)+'.docx';
+    const a = document.createElement('a'); a.href=url; a.download=fname; a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ '+fname+' downloaded!', true);
+
+  } catch(e){ showToast('Error: '+e.message+' — downloading .txt fallback.', true);
+    const blob=new Blob([dr.doc||''],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url;
+    a.download=(dr.title||'NEMT_Doc').replace(/[^a-z0-9]/gi,'_')+'.txt'; a.click();
+    URL.revokeObjectURL(url); console.error(e); }
 };
 
 </script>
