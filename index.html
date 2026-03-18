@@ -485,23 +485,23 @@ button.secondary{
   transition:transform .2s,border-color .2s;
 }
 .lm-rung:hover{transform:translateY(-3px);border-color:rgba(201,162,39,.28);}
-.lm-rung-tier{
-  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  margin-bottom:8px;display:block;opacity:.65;
+.lm-rung-tier{text-align:center;
+  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:10px;display:block;opacity:1;
 }
-.lm-rung-icon{font-size:22px;margin-bottom:9px;display:block;}
+.lm-rung-icon{font-size:28px;margin-bottom:10px;display:block;text-align:center;}
 .lm-rung-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:7px;line-height:1.3;}
 .lm-rung-desc{font-size:13px;color:rgba(255,255,255,.48);line-height:1.68;}
 
 /* Rung color themes */
 .lm-rung-diy{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.09);}
-.lm-rung-diy .lm-rung-tier{color:#94a3b8;}
+.lm-rung-diy .lm-rung-tier{text-align:center;color:#cbd5e1;}
 .lm-rung-guided{background:rgba(201,162,39,.07);border-color:rgba(201,162,39,.2);}
-.lm-rung-guided .lm-rung-tier{color:#C9A227;}
+.lm-rung-guided .lm-rung-tier{text-align:center;color:#E8C84A;}
 .lm-rung-partner{background:rgba(0,105,210,.1);border-color:rgba(0,140,255,.22);}
 .lm-rung-partner .lm-rung-title{background:linear-gradient(120deg,#60a5fa,#93c5fd);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.lm-rung-partner .lm-rung-tier{color:#60a5fa;}
+.lm-rung-partner .lm-rung-tier{text-align:center;color:#93c5fd;}
 
 /* CTA button */
 .lm-btn{
@@ -654,15 +654,18 @@ button.secondary{
 
     <!-- Wordmark -->
     <div class="lm-wm">
-      <div class="lm-wm-mark">AQ</div>
+      <img src="data:image/png;base64,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" alt="Aqueduct" style="height:34px;background:#fff;border-radius:8px;padding:5px 10px;">
       <div>
-        <div class="lm-wm-name">Aqueduct</div>
-        <div class="lm-wm-sub">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
+        <div class="lm-wm-sub" style="font-size:14px;font-weight:600;color:rgba(255,255,255,.82);margin-top:3px;">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
       </div>
     </div>
 
-    <!-- Divider rule -->
-    <div class="lm-rule"><span class="lm-rule-text">Community Health Evidence → Funded Program</span></div>
+
+    <!-- FSS tagline -->
+    <p style="font-family:Georgia,serif;font-size:clamp(13px,1.2vw,15px);font-style:italic;
+      color:#C9A227;letter-spacing:.02em;margin:0 0 18px;opacity:.85;text-align:center;">
+      Identifying Fundable, Sustainable, and Scalable Implementation Strategies
+    </p>
 
     <!-- Headline -->
     <h1 class="lm-h">Your community's health data already<br>makes <em>the case for what comes next.</em></h1>
@@ -675,33 +678,33 @@ button.secondary{
         <span class="lm-rung-tier">Tier 1 · Self-Directed</span>
         <span class="lm-rung-icon">🗺️</span>
         <div class="lm-rung-title">Do It Yourself</div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>CHNA evidence mapped to federal CRA investment criteria</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Live 4-layer ROI model calibrated to your population</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>7 audit-ready artifacts generated with your inputs</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Bank engagement strategy by institution CRA rating</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>CHNA evidence mapped to federal CRA investment criteria</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Live 4-layer ROI model calibrated to your population</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>7 audit-ready artifacts generated with your inputs</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Bank engagement strategy by institution CRA rating</span></div>
         </div>
       </div>
       <div class="lm-rung lm-rung-guided">
         <span class="lm-rung-tier">Tier 2 · Executive Training</span>
         <span class="lm-rung-icon">🎓</span>
         <div class="lm-rung-title">Guided Mastery</div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>5 scored modules: regulation, revenue, engagement, ops, sustainability</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>IRS 501(r) &amp; Schedule H compliance benchmarking</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>CDC PHI best practice framework alignment scoring</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Board-ready simulation exercises built on your ROI model</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>5 scored modules: regulation, revenue, engagement, ops, sustainability</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Executive Workbook with simulation exercises, case studies &amp; evidence base</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>In-depth explanations of regulatory, financial &amp; clinical frameworks</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#C9A227;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Board-ready simulation exercises built on your ROI model</span></div>
         </div>
       </div>
       <div class="lm-rung lm-rung-partner">
         <span class="lm-rung-tier">Tier 3 · White-Glove Partnership</span>
         <span class="lm-rung-icon">🤝</span>
         <div class="lm-rung-title">We Build It With You</div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Full program package assembled for bank CRA review</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Fundable, sustainable &amp; scalable SDOH strategy design</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>Executive communication &amp; board presentation guidance</span></div>
-          <div style="display:flex;align-items:flex-start;gap:7px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:1px;">✓</span><span>End-to-end support from evidence to funded program launch</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px;">
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Full program package assembled for bank CRA review</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Fundable, sustainable &amp; scalable SDOH strategy design</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>Executive communication &amp; board presentation guidance</span></div>
+          <div style="display:flex;align-items:flex-start;gap:7px;font-size:14px;color:rgba(255,255,255,.78);line-height:1.6;"><span style="color:#60a5fa;font-weight:700;flex-shrink:0;margin-top:2px;">✓</span><span>End-to-end support from evidence to funded program launch</span></div>
         </div>
       </div>
     </div>
@@ -715,9 +718,9 @@ button.secondary{
 
 <header class="demo-hdr">
   <div class="demo-hdr-top">
-    <div class="demo-logo">AQ</div>
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAA5AJwDASIAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAcBBgQFCAID/8QANhAAAQMDAwIEAwgCAQUAAAAAAQIDBAAFEQYHIRIxCBNBYRQiURUWIzJxgZGhQlIkY3KiseH/xAAZAQACAwEAAAAAAAAAAAAAAAAAAQIDBQT/xAAhEQACAgEFAAMBAAAAAAAAAAAAAQIRAwQSEyExBUFhof/aAAwDAQACEQMRAD8A6dNFFBwOcitIxzW6lvULT1il3m4KKY8VsrUE8qUfQD3J4FZkCWxOgsTYriXWH20uNrSchSSMg/wa5r8QmvBqC8fd62PBVsgOZcWlXD7w4J9wnsPfJ+lWDw2a6CR9zrm6OSVW9as+vKmv/ZH7j6V3S0Mlg5Pslt6sfY5oqDRXCRJyKiiigAoqDUUUBJqKKKYie9RRn3ooAnNRRRQFBRRUelIZNRRRQB6zSr8QGvvu7Z/sK1vdN0nI/EUhXzR2vU8dlHsP3NM6ZIaiQn5TyglpltTiyfRKRkn+q4n1ZfJeo9RzrxNWVOSnSsD0Qn/FI9gMCu/4/T8s7fiJRVs1wSpSgkAqV2HHetva7ZcW3mpTLvwrrawttYUUqSRyCMdjTC2R21OpWJF6ukr7PtcYfivkDOcZwnPrjkn0yOOaY0TRG2l6kC12m9XNiaoENOOgFLh/QpH8cGtPNr8WOTg03XvQss5eRosm1+qfvLYUiWtsXOMAmSlPZX0WPY/0c+1W00l4tuTtxqRy4XCe7GjxEq+MUcFCmsZJ4GT9R65GKrkHdvdzX0qZJ2z0VBFljOlCJU9Q6nsemVLQnPqUpz05GTWJqYwjO4eMp0+TlT/DorIoNJnZveG46k1ZM0PrSyJsWp4wJQ0nIQ+E8qACiSFY+YYJBGSDxWbtRuXe9Xbm6x0tcIMBiLYnloYcYCw4sB1SPmyojsM8AVRZ0bGNipIpT7t7mXnR+4mjNOwIMB6JfZAakOPpWVoHmIR8uFAdl+oNY26e7d5t2t2dv9vbC1ftSqT1yC6T5MYEZAVgjnBBJKgBkd88Fi2NjgoJxSBc3a3J0HebazuvpW3s2ee75YuFuOfKPvhagcd+k4JGSM4q3777sx9vIcCHbIAvF9unMKKkko6c4Cz08nJOAByr9qA2MYl1fcj2yU+0cLbZWpJIzyEkilZ4W9e6h1/o653PUr8d6VHuBYbLTKWx0eWhXYe6jVUvOu99rDp6RetW6EtjlkW2RITEXh+MhQPzEBxRAA75HHriqJsXrO46C8O+pdR2yNFkymb602lEgKKCFobB/KQf7p+E1B7WdiUCtDt/eZOodDWO/S2mmpFwgMyXENZCEqWgKIGSTjn60t9nd5JWpLBq696tYt9uhaedwXIyVjqbwonIUo5V8oAAxknFJlaixzHNfGXIjxIr0uU82xHYQpx1xxQSlCEjJUSeAABnNc9WfdPenX5k3Tb3RduasbLpQ05MUOp7Hp1LWkE/XpHGcZrIv+tN1NUbM6hKtBIt0+P58O5mSS2j4UsL81xpK1pPUnj/AGBzxnkAJ8bsedjvFpvsAXCy3KLcYhUUB6O4FoJHcZHGazs1zP4Pp+4CLBb4Mex29ejVypCnp6nQJCF9PYJ6+3UE/wCPqea6W5oRGcdro1WvIz0vRF8ixwS87b30IA9SW1cVx7ZrWt1YfkNkNDkBQ/N/8rtwjIwaTeqNBItV4dlxkdcR1ZW0VHIbzz049vT2rU+NzxxtxZzanM8OO0b7b+O/P2MnWyAn/mIkFbjY/MR1JVnHflI/qsDSdrkKvMSPFQv4jzUkr6cFABzn2xio0vLmWCQZEF4pcVjzAR8qgPQirLL1xdnmFNstRoy1D5nG0Hq/bPaq8iyRlNQ7UjInq8OZxlOTTj/Su+MC0yH9D3R6KhRccgAkp7kIcClf+JNfHwn3Kyz9l7NDt7jKZEBK2pbAUOtDnmElRHf5sg59/ar5YpU+8wI6bsw2tiMcturTlbnGMe4+v1pXaj8NGjbjenbjZrpdLAl4kuRoqkqa579ORlIP0yQPQY4rPdxSi/o28Eo5FKUek+ynbhXS2TPGXpE2l9p5yL5EaW40oEBZLmUkj1CVAH+K2Gwshm2eJXci2T3UMSZUh1bDbh6VOAPFXyg9/lUDx6c1Wb9oqw7feJbb+xafS/5RSw888+51OPOFxwFSvQcAcAAcU5d19lNLbg3JF3kvTLXd0pCVS4ahl1I4HWkjBIHqMH3oro6W66Yv/ETIjXHxCbaWqE6h+XElNuPtoOSgKeQRnHbhCj+lUdFo1AnxR6rtEXWX3QuE551xiU40F/EoWpK0NpyQOU4I/wC3HenvtTshpTQN2N7afl3e74IblTCPwgQQehIHBIJGTk/TGTW03X2m0luMhpy8NPxrgwnoanRVBLqU8npOQQoZJOCOMnBFIaml0KzX21GqLnbotq1tvbHVEfkJ8hqbFSjzHcHATlYycE/zWl3Eba0L4g9t5GpZIk2uFa48T4xxHSgLR1t+Yc5x0qUhZ+mRV5034a9I2+8s3O93e7aiMfBaYmLAb47dQHJA+mQPqDTI3G0Np7X1hNn1FEL7SVFbLqFdLrC8fmQr0P8AR9QaEhb0mfTXt/sdr0HdLtcpkX7P+CdGfMSUvZQQEJ/2Ks4AHfNcmacstwT4PNSTTHcDT18aebPT+ZtBaQpf6BWRn2NNW3eFrSbM1pc/UV8nQm19QiKWhAIz2KgOx9cYNO6LYLPH00NNNW5hFn+HMb4Pp/D8ojBTj3yc+vOadEVJR8Kjspe7WdktNT1To6Y8S0tNyHC4AGlNoCVhX0wUmuZ9CQJ108PW6MqAy6ttyew6OlJ+ZDawtf8ACSCfam9cfC3o9+4uuQ9QXyFAdX1GGhaFpH0AUoZx+uTTg0jpOwaU0wzpyzQENW5sEKbV8xdKvzKWT+Yn1J/TtQwUlHsofhevlmm7M2OPAlR/NgsliWyFgKacC1ElQ7jOerPvVr1deLXfdudWfZFxi3DyrbMZcMd1LnS4GVgpOOxpban8MWirjdXZtoud0saHjlcZhSVtD6hIUMgexJFX3bDbDTG3tmft9kZddXKAEuRJX1uP98A4AASMngAfvTE6Tuyn+DV9hzZlppDrZcbuMgOIB+ZJ+U9v0Oac1KnRmxWk9I7gp1fZZtyZUguFuCpaVMI60lJA46sAHjJ/emtSoU2m7R9a8OoQ4hTbiQtChhQUMg169aimuiDVo0krS9reV1IQ4wf+mrj+69w9OWuMpKi0p9Q7F05/rtW4oNWcs6qznWlwp3tQJ4AAwAOAPSgfrQKBVZeUDVe19s1BuhZNfSLlNZmWlDaW47aUltwIUpQySM/5HtV/qD3qTQSbbCiiigQUUUUAGKB2ooHagQUUVBoFYUUCigCDUVJqKBn/2Q==" alt="Aqueduct" style="height:26px;background:#fff;border-radius:6px;padding:4px 9px;flex-shrink:0;">
     <div>
-      <div class="demo-brand">Aqueduct <span class="demo-brand-sub">&middot; Mayo Clinic &middot; Rochester, MN</span></div>
+      <div class="demo-brand"><span class="demo-brand-sub" style="font-size:13px;font-weight:600;color:rgba(255,255,255,.82);">Mayo Clinic &middot; Rochester, MN &middot; Executive Decision Platform</span></div>
       <p class="demo-tag">Your CHNA data already makes <strong>the case for bank funding.</strong></p>
     </div>
   </div>
@@ -1595,22 +1598,13 @@ button.secondary{
     <!-- Wordmark + headline -->
     <div style="position:relative;z-index:1;max-width:860px;">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
-        <div style="width:48px;height:48px;border-radius:11px;flex-shrink:0;
-          background:linear-gradient(135deg,#C9A227,#8A6500);
-          display:flex;align-items:center;justify-content:center;
-          font-weight:900;font-size:15px;color:#fff;
-          box-shadow:0 4px 24px rgba(201,162,39,.45);">AQ</div>
+        <img src="data:image/png;base64,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" alt="Aqueduct" style="height:30px;background:#fff;border-radius:7px;padding:4px 10px;flex-shrink:0;">
         <div>
-          <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.9);">Aqueduct</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
+          <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.82);margin-top:3px;">Mayo Clinic · Rochester, MN · Executive Decision Platform</div>
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
-        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.25),transparent);"></div>
-        <span style="font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,162,39,.55);white-space:nowrap;">Community Health Evidence → Funded Program</span>
-        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.25));"></div>
-      </div>
+
 
       <h2 style="font-family:Georgia,serif;font-size:clamp(24px,3.2vw,40px);font-weight:400;
         font-style:italic;color:#fff;line-height:1.22;margin:0 0 18px;">
@@ -1671,8 +1665,8 @@ button.secondary{
         <div style="padding:16px 20px 20px;background:#fff;">
           <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px;">
             <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>5 scored modules: regulation, revenue, engagement, ops, sustainability</span></div>
-            <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>IRS 501(r) &amp; Schedule H compliance benchmarking</span></div>
-            <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>CDC PHI best practice framework alignment scoring</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>Executive Workbook with simulation exercises, case studies &amp; evidence base</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>In-depth explanations of regulatory, financial &amp; clinical frameworks</span></div>
             <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#4a5568;line-height:1.5;"><span style="color:#C9A227;font-weight:800;flex-shrink:0;">✓</span><span>Board-ready simulations built on your live ROI inputs</span></div>
           </div>
           <button onclick="go('training')" style="background:linear-gradient(135deg,#C9A227,#8A6500);
