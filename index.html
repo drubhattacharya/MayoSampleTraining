@@ -3986,104 +3986,116 @@ window.forgetFunderKey = function() {
 })();
 
 window.runFunderResearch = async function() {
-  const query = (document.getElementById('fi_query')?.value||'').trim();
-  if (!query) { document.getElementById('fi_query')?.focus(); return; }
+  var queryEl = document.getElementById('fi_query');
+  var query = queryEl ? queryEl.value.trim() : '';
+  if (!query) { if (queryEl) queryEl.focus(); return; }
 
-  const apiKey = document.getElementById('fi_apikey')?.value?.trim()
-    || localStorage.getItem('aq_fi_key') || '';
+  var keyEl = document.getElementById('fi_apikey');
+  var apiKey = (keyEl ? keyEl.value.trim() : '') || localStorage.getItem('aq_fi_key') || '';
 
-  if (!apiKey || !apiKey.startsWith('sk-ant')) {
-    const resultsEl = document.getElementById('fi_results');
-    const resultsBody = document.getElementById('fi_results_body');
-    if (resultsEl) resultsEl.style.display = 'block';
-    if (resultsBody) resultsBody.textContent = '⚠ Please enter your Anthropic API key above (starts with sk-ant-…) to activate live research. You can get one at console.anthropic.com.';
-    document.getElementById('fi_apikey')?.focus();
+  if (!apiKey || apiKey.indexOf('sk-ant') !== 0) {
+    var rEl = document.getElementById('fi_results');
+    var rbEl = document.getElementById('fi_results_body');
+    if (rEl) rEl.style.display = 'block';
+    if (rbEl) rbEl.textContent = 'Please enter your Anthropic API key above (starts with sk-ant-) to activate live research. Get one at console.anthropic.com';
+    if (keyEl) keyEl.focus();
     return;
   }
 
-  const D = window._mayoROICache || {};
-  const paymodel = document.getElementById('mr_paymodel')?.value||'ffs';
-  const cptavail = document.getElementById('mr_cptavail')?.value||'yes';
-  const mode = window._funderMode;
+  var D = window._mayoROICache || {};
+  var paymodel = (document.getElementById('mr_paymodel') || {}).value || 'ffs';
+  var cptavail = (document.getElementById('mr_cptavail') || {}).value || 'yes';
+  var mode = window._funderMode || 'bank';
 
-  const loadEl=document.getElementById('fi_loading');
-  const loadMsg=document.getElementById('fi_loading_msg');
-  const resultsEl=document.getElementById('fi_results');
-  const resultsBody=document.getElementById('fi_results_body');
-  const sourcesEl=document.getElementById('fi_sources');
-  const runBtn=document.getElementById('fi_run_btn');
+  var loadEl = document.getElementById('fi_loading');
+  var loadMsg = document.getElementById('fi_loading_msg');
+  var resultsEl = document.getElementById('fi_results');
+  var resultsBody = document.getElementById('fi_results_body');
+  var sourcesEl = document.getElementById('fi_sources');
+  var runBtn = document.getElementById('fi_run_btn');
 
-  if(loadEl) loadEl.style.display='block';
-  if(resultsEl) resultsEl.style.display='none';
-  if(runBtn){runBtn.disabled=true;runBtn.textContent='\u23f3 Searching\u2026';}
+  if (loadEl) loadEl.style.display = 'block';
+  if (resultsEl) resultsEl.style.display = 'none';
+  if (runBtn) { runBtn.disabled = true; runBtn.textContent = 'Searching...'; }
 
-  let msgIdx=0;
-  const msgInt=setInterval(()=>{
-    msgIdx=(msgIdx+1)%FUNDER_LOAD_MSGS.length;
-    if(loadMsg) loadMsg.textContent=FUNDER_LOAD_MSGS[msgIdx];
-  },1800);
+  var msgIdx = 0;
+  var msgs = ['Searching public grant databases...','Reviewing foundation 990 filings...','Checking federal NOFA registry...','Scanning CRA exam public records...','Analyzing community benefit reports...'];
+  var msgInt = setInterval(function() {
+    msgIdx = (msgIdx + 1) % msgs.length;
+    if (loadMsg) loadMsg.textContent = msgs[msgIdx];
+  }, 1800);
 
-  const systemPrompt=`You are a healthcare funding intelligence specialist. Use web search to research the user's query against publicly available documents: foundation 990s, grants.gov, HRSA/CMMI/SAMHSA NOFAs, OCC/FDIC CRA exam reports, state Medicaid waiver databases, and community benefit benchmark reports.
+  var payLabel = paymodel === 'ffs' ? 'Fee-for-Service' : 'Capitated/Value-Based';
+  var cptLabel = cptavail === 'yes' ? 'Available' : 'Not available - using benchmarks';
+  var valueLabel = D.totalNet ? '$' + Math.round(D.totalNet).toLocaleString() : 'TBD';
+  var modeLabel = mode;
 
-Context: Health system in Rochester MN (Olmsted County). Program: NEMT as CHIP implementation strategy. Priorities: Access to Care, Mental Health, Food Security. Payment model: ${paymodel==='ffs'?'FFS':'Capitated'}. CPT data: ${cptavail==='yes'?'Available':'Not available'}. Program value: ${D.totalNet?'$'+Math.round(D.totalNet).toLocaleString():'TBD'}. Funder mode: ${mode}.
+  var sysPrompt = 'You are a healthcare funding intelligence specialist. Use web search to research the query against publicly available documents including: foundation 990 tax filings, grants.gov, HRSA/CMMI/SAMHSA NOFAs, OCC and FDIC CRA exam reports, state Medicaid waiver databases, and community benefit benchmark reports. Context about this health system: Location is Rochester MN in Olmsted County. Program is Non-Emergency Medical Transportation as a CHIP implementation strategy. CHIP priorities are Access to Care, Mental Health, and Food Security. Payment model is ' + payLabel + '. CPT data availability is ' + cptLabel + '. Estimated program value is ' + valueLabel + '. Funder research mode is ' + modeLabel + '. Provide specific named organizations, programs, current status, typical award amounts, eligibility requirements, and direct URLs. Be concrete and actionable.';
 
-Provide specific named organizations, programs, current status, typical award amounts, eligibility requirements, and direct URLs. Be concrete and actionable.`;
+  var requestBody = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1500,
+    system: sysPrompt,
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    messages: [{ role: 'user', content: query }]
+  };
 
   try {
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
       },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1500,
-        system:systemPrompt,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:query}]
-      })
+      body: JSON.stringify(requestBody)
     });
+
     clearInterval(msgInt);
-    const data=await resp.json();
+    var data = await resp.json();
 
     if (data.error) {
-      if (loadEl) loadEl.style.display='none';
-      if (resultsEl) resultsEl.style.display='block';
-      if (resultsBody) resultsBody.textContent = `API error (${data.error.type}): ${data.error.message}\n\nIf you see "authentication_error", double-check your API key. If you see "permission_error", ensure your key has web search access.`;
-      if (runBtn){runBtn.disabled=false;runBtn.textContent='\uD83D\uDD0D Research Now';}
+      if (loadEl) loadEl.style.display = 'none';
+      if (resultsEl) resultsEl.style.display = 'block';
+      if (resultsBody) resultsBody.textContent = 'API error (' + data.error.type + '): ' + data.error.message;
+      if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
       return;
     }
 
-    let text='';
-    const urls=[];
-    if(data.content&&Array.isArray(data.content)){
-      for(const b of data.content){
-        if(b.type==='text') text+=b.text;
-        if(b.type==='tool_result'&&Array.isArray(b.content)){
-          b.content.forEach(c=>{ if(c.text){const u=c.text.match(/https?:\/\/[^\s)>\]"]+/g)||[];urls.push(...u.slice(0,2));}});
+    var text = '';
+    var urls = [];
+    if (data.content && Array.isArray(data.content)) {
+      for (var bi = 0; bi < data.content.length; bi++) {
+        var blk = data.content[bi];
+        if (blk.type === 'text') text += blk.text;
+        if (blk.type === 'tool_result' && Array.isArray(blk.content)) {
+          blk.content.forEach(function(c) {
+            if (c.text) {
+              var found = c.text.match(/https?:\/\/[^\s)>\]"]+/g) || [];
+              urls = urls.concat(found.slice(0, 2));
+            }
+          });
         }
       }
     }
-    if(loadEl) loadEl.style.display='none';
-    if(resultsEl) resultsEl.style.display='block';
-    if(resultsBody) {
-      resultsBody.style.whiteSpace = 'pre-wrap';
-      resultsBody.textContent=text||'No results returned. Try rephrasing your query.';
+
+    if (loadEl) loadEl.style.display = 'none';
+    if (resultsEl) resultsEl.style.display = 'block';
+    if (resultsBody) { resultsBody.style.whiteSpace = 'pre-wrap'; resultsBody.textContent = text || 'No results returned. Try rephrasing your query.'; }
+    if (sourcesEl && urls.length) {
+      var unique = urls.filter(function(u, i) { return urls.indexOf(u) === i; }).slice(0, 5);
+      sourcesEl.innerHTML = '<strong style="color:#6b21a8;">Sources:</strong> ' + unique.map(function(u) { return '<a href="' + u + '" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">' + u + '</a>'; }).join(' | ');
     }
-    if(sourcesEl&&urls.length){
-      const unique=[...new Set(urls)].slice(0,5);
-      sourcesEl.innerHTML='<strong style="color:#6b21a8;">Sources found:</strong> '+unique.map(u=>`<a href="${u}" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">${u}</a>`).join(' \u00b7 ');
-    }
-  } catch(err){
+
+  } catch (err) {
     clearInterval(msgInt);
-    if(loadEl) loadEl.style.display='none';
-    if(resultsEl) resultsEl.style.display='block';
-    if(resultsBody) resultsBody.textContent=`Network error: ${err.message}\n\nThis usually means a CORS or connectivity issue. Ensure you are loading this file over HTTPS (not file://) or from a local server. You can use: npx serve . and open http://localhost:3000`;
+    if (loadEl) loadEl.style.display = 'none';
+    if (resultsEl) resultsEl.style.display = 'block';
+    if (resultsBody) resultsBody.textContent = 'Error: ' + err.message + '\n\nIf this says "Failed to fetch", your GitHub Pages site should work fine. Make sure you are accessing via https:// not file://';
   }
-  if(runBtn){runBtn.disabled=false;runBtn.textContent='\uD83D\uDD0D Research Now';}
+
+  if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
 };
 
 // Re-init funder context when switching to banks or roi tab
