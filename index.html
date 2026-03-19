@@ -3946,8 +3946,9 @@ window.clearFunderResults = function() {
 };
 
 window.saveFunderKey = function(val) {
-  if (val && val.startsWith('sk-ant')) {
-    localStorage.setItem('aq_fi_key', val);
+  var clean = val.replace(/[^\x20-\x7E]/g, '').trim();
+  if (clean && clean.indexOf('sk-ant') === 0) {
+    localStorage.setItem('aq_fi_key', clean);
     const s = document.getElementById('fi_key_status');
     if (s) { s.textContent = '✓ Key saved permanently in this browser'; s.style.color = '#047857'; }
   } else {
@@ -3991,7 +3992,15 @@ window.runFunderResearch = async function() {
   if (!query) { if (queryEl) queryEl.focus(); return; }
 
   var keyEl = document.getElementById('fi_apikey');
-  var apiKey = (keyEl ? keyEl.value.trim() : '') || localStorage.getItem('aq_fi_key') || '';
+  // Always prioritise localStorage (saved clean) over raw field value
+  var rawKey = localStorage.getItem('aq_fi_key') || (keyEl ? keyEl.value : '') || '';
+  // Strip ALL non-printable-ASCII chars (zero-width spaces, smart quotes, BOM, etc.)
+  var apiKey = rawKey.replace(/[^\x20-\x7E]/g, '').trim();
+  // Re-save the cleaned value so it's always clean going forward
+  if (apiKey && apiKey.indexOf('sk-ant') === 0) {
+    localStorage.setItem('aq_fi_key', apiKey);
+    if (keyEl) keyEl.value = apiKey;
+  }
 
   if (!apiKey || apiKey.indexOf('sk-ant') !== 0) {
     var rEl = document.getElementById('fi_results');
@@ -4000,6 +4009,13 @@ window.runFunderResearch = async function() {
     if (rbEl) rbEl.textContent = 'Please enter your Anthropic API key above (starts with sk-ant-) to activate live research. Get one at console.anthropic.com';
     if (keyEl) keyEl.focus();
     return;
+  }
+
+  // Show key debug info so user can verify what is actually being sent
+  var keyStatus = document.getElementById('fi_key_status');
+  if (keyStatus) {
+    keyStatus.textContent = 'Using key: ' + apiKey.substring(0, 14) + '...' + apiKey.slice(-4) + ' (' + apiKey.length + ' chars, all ASCII: ' + /^[\x20-\x7E]+$/.test(apiKey) + ')';
+    keyStatus.style.color = '#047857';
   }
 
   var D = window._mayoROICache || {};
@@ -4041,13 +4057,19 @@ window.runFunderResearch = async function() {
   };
 
   try {
+    // Build header strings explicitly to guarantee ASCII purity
+    var hContentType = 'application/json';
+    var hApiKey = apiKey;
+    var hVersion = '2023-06-01';
+    var hBrowserAccess = 'true';
+
     var resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'content-type': hContentType,
+        'x-api-key': hApiKey,
+        'anthropic-version': hVersion,
+        'anthropic-dangerous-direct-browser-access': hBrowserAccess
       },
       body: JSON.stringify(requestBody)
     });
