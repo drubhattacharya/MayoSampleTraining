@@ -4056,68 +4056,64 @@ window.runFunderResearch = async function() {
     messages: [{ role: 'user', content: query }]
   };
 
-  try {
-    // Build header strings explicitly to guarantee ASCII purity
-    var hContentType = 'application/json';
-    var hApiKey = apiKey;
-    var hVersion = '2023-06-01';
-    var hBrowserAccess = 'true';
+  // Use XMLHttpRequest instead of fetch - avoids browser header encoding bugs
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://api.anthropic.com/v1/messages', true);
+  xhr.setRequestHeader('content-type', 'application/json');
+  xhr.setRequestHeader('x-api-key', apiKey);
+  xhr.setRequestHeader('anthropic-version', '2023-06-01');
+  xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
 
-    var resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': hContentType,
-        'x-api-key': hApiKey,
-        'anthropic-version': hVersion,
-        'anthropic-dangerous-direct-browser-access': hBrowserAccess
-      },
-      body: JSON.stringify(requestBody)
-    });
-
+  xhr.onload = function() {
     clearInterval(msgInt);
-    var data = await resp.json();
-
-    if (data.error) {
-      if (loadEl) loadEl.style.display = 'none';
-      if (resultsEl) resultsEl.style.display = 'block';
-      if (resultsBody) resultsBody.textContent = 'API error (' + data.error.type + '): ' + data.error.message;
-      if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
-      return;
-    }
-
-    var text = '';
-    var urls = [];
-    if (data.content && Array.isArray(data.content)) {
-      for (var bi = 0; bi < data.content.length; bi++) {
-        var blk = data.content[bi];
-        if (blk.type === 'text') text += blk.text;
-        if (blk.type === 'tool_result' && Array.isArray(blk.content)) {
-          blk.content.forEach(function(c) {
-            if (c.text) {
-              var found = c.text.match(/https?:\/\/[^\s)>\]"]+/g) || [];
-              urls = urls.concat(found.slice(0, 2));
-            }
-          });
+    if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
+    try {
+      var data = JSON.parse(xhr.responseText);
+      if (data.error) {
+        if (loadEl) loadEl.style.display = 'none';
+        if (resultsEl) resultsEl.style.display = 'block';
+        if (resultsBody) resultsBody.textContent = 'API error (' + data.error.type + '): ' + data.error.message;
+        return;
+      }
+      var text = '';
+      var urls = [];
+      if (data.content && Array.isArray(data.content)) {
+        for (var bi = 0; bi < data.content.length; bi++) {
+          var blk = data.content[bi];
+          if (blk.type === 'text') text += blk.text;
+          if (blk.type === 'tool_result' && Array.isArray(blk.content)) {
+            blk.content.forEach(function(c) {
+              if (c.text) {
+                var found = c.text.match(/https?:\/\/[^\s)>\]"]+/g) || [];
+                urls = urls.concat(found.slice(0, 2));
+              }
+            });
+          }
         }
       }
+      if (loadEl) loadEl.style.display = 'none';
+      if (resultsEl) resultsEl.style.display = 'block';
+      if (resultsBody) { resultsBody.style.whiteSpace = 'pre-wrap'; resultsBody.textContent = text || 'No results returned. Try rephrasing your query.'; }
+      if (sourcesEl && urls.length) {
+        var unique = urls.filter(function(u, i) { return urls.indexOf(u) === i; }).slice(0, 5);
+        sourcesEl.innerHTML = '<strong style="color:#6b21a8;">Sources:</strong> ' + unique.map(function(u) { return '<a href="' + u + '" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">' + u + '</a>'; }).join(' | ');
+      }
+    } catch(e) {
+      if (loadEl) loadEl.style.display = 'none';
+      if (resultsEl) resultsEl.style.display = 'block';
+      if (resultsBody) resultsBody.textContent = 'Parse error: ' + e.message + '\nRaw response: ' + xhr.responseText.substring(0, 200);
     }
+  };
 
-    if (loadEl) loadEl.style.display = 'none';
-    if (resultsEl) resultsEl.style.display = 'block';
-    if (resultsBody) { resultsBody.style.whiteSpace = 'pre-wrap'; resultsBody.textContent = text || 'No results returned. Try rephrasing your query.'; }
-    if (sourcesEl && urls.length) {
-      var unique = urls.filter(function(u, i) { return urls.indexOf(u) === i; }).slice(0, 5);
-      sourcesEl.innerHTML = '<strong style="color:#6b21a8;">Sources:</strong> ' + unique.map(function(u) { return '<a href="' + u + '" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">' + u + '</a>'; }).join(' | ');
-    }
-
-  } catch (err) {
+  xhr.onerror = function() {
     clearInterval(msgInt);
     if (loadEl) loadEl.style.display = 'none';
     if (resultsEl) resultsEl.style.display = 'block';
-    if (resultsBody) resultsBody.textContent = 'Error: ' + err.message + '\n\nIf this says "Failed to fetch", your GitHub Pages site should work fine. Make sure you are accessing via https:// not file://';
-  }
+    if (resultsBody) resultsBody.textContent = 'Network error — ensure you are on https:// (GitHub Pages) not file://. Status: ' + xhr.status;
+    if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
+  };
 
-  if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Research Now'; }
+  xhr.send(JSON.stringify(requestBody));
 };
 
 // Re-init funder context when switching to banks or roi tab
