@@ -1472,7 +1472,7 @@ button.secondary{
               </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button onclick="setFunderMode('bank')" id="fmode_bank" class="fmode-btn fmode-active">🏦 Banks / CRA</button>
-                <button onclick="setFunderMode('philanthropy')" id="fmode_phil" class="fmode-btn">🌱 Philanthropy</button>
+                <button onclick="setFunderMode('philanthropy')" id="fmode_phil" class="fmode-btn">📋 CB Alignment</button>
                 <button onclick="setFunderMode('federal')" id="fmode_fed" class="fmode-btn">🏛 Federal / Grants</button>
                 <button onclick="setFunderMode('custom')" id="fmode_cust" class="fmode-btn">✏ Custom</button>
               </div>
@@ -1505,6 +1505,50 @@ button.secondary{
 
               <!-- Context summary pulled from model -->
               <div id="fi_context" style="font-size:11px;color:#6b21a8;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15);border-radius:7px;padding:7px 11px;margin-bottom:12px;line-height:1.6;"></div>
+
+              <!-- CB Alignment: org lookup row (shown only in philanthropy mode) -->
+              <div id="fi_org_row" style="display:none;margin-bottom:12px;">
+                <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:10px 13px;">
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:7px;">Community Benefit Alignment — Organization Lookup</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                    <div>
+                      <label style="font-size:11px;font-weight:600;color:#6b21a8;display:block;margin-bottom:3px;">Organization name</label>
+                      <input id="fi_org_name" type="text" placeholder="e.g. Mayo Clinic"
+                        style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:#1a1a1a;"/>
+                    </div>
+                    <div>
+                      <label style="font-size:11px;font-weight:600;color:#6b21a8;display:block;margin-bottom:3px;">EIN (optional — improves 990 lookup)</label>
+                      <input id="fi_org_ein" type="text" placeholder="e.g. 41-6011702"
+                        style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:monospace;background:#fff;color:#1a1a1a;"/>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;margin-bottom:8px;">
+                    <div>
+                      <label style="font-size:11px;font-weight:600;color:#6b21a8;display:block;margin-bottom:3px;">State</label>
+                      <input id="fi_org_state" type="text" placeholder="e.g. MN" maxlength="2"
+                        style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:#1a1a1a;"/>
+                    </div>
+                    <div>
+                      <label style="font-size:11px;font-weight:600;color:#6b21a8;display:block;margin-bottom:3px;">Most recent fiscal year</label>
+                      <input id="fi_org_year" type="number" placeholder="e.g. 2023" value="2023"
+                        style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:#1a1a1a;"/>
+                    </div>
+                    <div>
+                      <label style="font-size:11px;font-weight:600;color:#6b21a8;display:block;margin-bottom:3px;">CHNA priority focus</label>
+                      <select id="fi_org_priority" style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;background:#fff;color:#1a1a1a;">
+                        <option value="all">All CHIP priorities</option>
+                        <option value="access">Access to Care</option>
+                        <option value="mental">Mental Health</option>
+                        <option value="food">Food Security</option>
+                        <option value="transportation">Transportation / NEMT</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="font-size:10px;color:#6b21a8;line-height:1.5;font-style:italic;">
+                    The tool will retrieve the organization's most recent IRS Form 990 Schedule H from ProPublica Nonprofit Explorer or IRS TEOS, extract reported community benefit outlays by category, map them against documented CHNA priorities, identify gaps, and surface philanthropic funders specifically calibrated to those gaps.
+                  </div>
+                </div>
+              </div>
 
               <!-- Query builder -->
               <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
@@ -3886,10 +3930,10 @@ const FUNDER_PRESETS = {
     'CRA community development investment examples in healthcare transportation'
   ],
   philanthropy: [
-    'Health foundations with active grant cycles funding SDOH or transportation access 2025-2026',
-    'Community foundation grants for access to care in Minnesota or Olmsted County',
-    'Robert Wood Johnson, Kresge, or CommonSpirit Foundation grants for NEMT or healthcare access',
-    'United Way and local foundation funding for non-emergency medical transportation'
+    'Run full Schedule H gap analysis and identify philanthropic funders for underfunded CHIP priorities',
+    'What foundations are currently funding healthcare transportation or NEMT programs in Minnesota?',
+    'Identify Schedule H Line 7 categories where our community benefit spending is below peer hospitals',
+    'Which national health foundations have active grant cycles aligned to SDOH and access to care 2025-2026?'
   ],
   federal: [
     'Current CMMI AHEAD model opportunities for SDOH interventions 2025-2026',
@@ -3915,6 +3959,9 @@ window.setFunderMode = function(mode) {
   });
   const active = document.getElementById('fmode_'+(map[mode]||'bank'));
   if (active) active.classList.add('fmode-active');
+  // Show org row only in CB Alignment mode
+  const orgRow = document.getElementById('fi_org_row');
+  if (orgRow) orgRow.style.display = mode === 'philanthropy' ? 'block' : 'none';
   const presetsEl = document.getElementById('fi_presets');
   if (!presetsEl) return;
   const presets = FUNDER_PRESETS[mode] || [];
@@ -3935,7 +3982,7 @@ window.updateFunderContext = function() {
   const paymodel = document.getElementById('mr_paymodel')?.value || 'ffs';
   const cptavail = document.getElementById('mr_cptavail')?.value || 'yes';
   const mode = window._funderMode;
-  const modeLabel = {bank:'CRA Bank Funding',philanthropy:'Philanthropic Funding',federal:'Federal / Grant Funding',custom:'Custom Research'}[mode]||mode;
+  const modeLabel = {bank:'CRA Bank Funding',philanthropy:'Community Benefit Alignment',federal:'Federal / Grant Funding',custom:'Custom Research'}[mode]||mode;
   ctx.textContent = `Model context \u2014 Payment: ${paymodel==='ffs'?'FFS':'Capitated'} \u00b7 CPT data: ${cptavail==='yes'?'Available':'Benchmarks'} \u00b7 Net value: ${D.totalNet?'$'+Math.round(D.totalNet).toLocaleString():'not yet set'} \u00b7 Mode: ${modeLabel} \u00b7 Location: Rochester MN \u00b7 CHIP: Access, Mental Health, Food Security`;
 };
 
@@ -4035,7 +4082,9 @@ window.runFunderResearch = async function() {
   if (runBtn) { runBtn.disabled = true; runBtn.textContent = 'Searching...'; }
 
   var msgIdx = 0;
-  var msgs = ['Searching public grant databases...','Reviewing foundation 990 filings...','Checking federal NOFA registry...','Scanning CRA exam public records...','Analyzing community benefit reports...'];
+  var msgs = mode === 'philanthropy'
+    ? ['Retrieving Schedule H from IRS/ProPublica...','Extracting community benefit line items...','Comparing against CHNA priority gaps...','Identifying targeted philanthropic funders...','Matching funder priorities to Schedule H gaps...']
+    : ['Searching public grant databases...','Reviewing foundation 990 filings...','Checking federal NOFA registry...','Scanning CRA exam public records...','Analyzing community benefit reports...'];
   var msgInt = setInterval(function() {
     msgIdx = (msgIdx + 1) % msgs.length;
     if (loadMsg) loadMsg.textContent = msgs[msgIdx];
@@ -4044,9 +4093,24 @@ window.runFunderResearch = async function() {
   var payLabel = paymodel === 'ffs' ? 'Fee-for-Service' : 'Capitated/Value-Based';
   var cptLabel = cptavail === 'yes' ? 'Available' : 'Not available - using benchmarks';
   var valueLabel = D.totalNet ? '$' + Math.round(D.totalNet).toLocaleString() : 'TBD';
-  var modeLabel = mode;
 
-  var sysPrompt = 'You are a healthcare funding intelligence specialist. Use web search to research the query against publicly available documents including: foundation 990 tax filings, grants.gov, HRSA/CMMI/SAMHSA NOFAs, OCC and FDIC CRA exam reports, state Medicaid waiver databases, and community benefit benchmark reports. Context about this health system: Location is Rochester MN in Olmsted County. Program is Non-Emergency Medical Transportation as a CHIP implementation strategy. CHIP priorities are Access to Care, Mental Health, and Food Security. Payment model is ' + payLabel + '. CPT data availability is ' + cptLabel + '. Estimated program value is ' + valueLabel + '. Funder research mode is ' + modeLabel + '. Provide specific named organizations, programs, current status, typical award amounts, eligibility requirements, and direct URLs. Be concrete and actionable.';
+  var sysPrompt;
+
+  if (mode === 'philanthropy') {
+    // CB Alignment mode: Schedule H gap analysis then targeted funder matching
+    var orgName = (document.getElementById('fi_org_name') || {}).value || 'Mayo Clinic';
+    var orgEIN  = (document.getElementById('fi_org_ein')  || {}).value || '';
+    var orgYear = (document.getElementById('fi_org_year') || {}).value || '2023';
+    var orgPri  = (document.getElementById('fi_org_priority') || {}).value || 'all';
+
+    sysPrompt = 'You are a healthcare community benefit compliance and philanthropic funding specialist. Your task has three sequential steps. ' +
+      'STEP 1 - SCHEDULE H RETRIEVAL: Search for the most recent IRS Form 990 Schedule H filing for ' + orgName + (orgEIN ? ' (EIN: ' + orgEIN + ')' : '') + ' for fiscal year ' + orgYear + '. Use ProPublica Nonprofit Explorer at projects.propublica.org/nonprofits, IRS Tax Exempt Organization Search at apps.irs.gov/app/eos, or direct 990 databases. Extract the dollar amounts reported on Schedule H Part I for each community benefit category: Line 1 (Financial Assistance), Line 2 (Unreimbursed Medicaid), Line 3 (Unreimbursed other means-tested), Line 7a (Physician clinical training), Line 7b (Nursing/allied health training), Line 7c (Health professions education), Line 7d (Subsidized health services), Line 7e (Community health improvement services - note if transportation is listed), Line 7f (Physical improvements), Line 7g (Social and community building), Line 7h (Community health education), Line 7i (Contributions to community groups), Line 7j (Cash/in-kind contributions), Line 7k (Community benefit operations). Also note the total community benefit as a percentage of total expenses. ' +
+      'STEP 2 - GAP ANALYSIS: Compare the reported Schedule H outlays against the organization documented CHNA priorities: Access to Care, Mental Health, and Food Security' + (orgPri !== 'all' ? ' with particular focus on ' + orgPri : '') + '. Identify: (a) which CHNA priorities have ZERO or minimal Schedule H documentation, (b) which Schedule H categories are underrepresented relative to peer nonprofit hospitals nationally (national median is approximately 7-9% of expenses for total community benefit), (c) whether transportation/NEMT appears anywhere in Line 7e or elsewhere, and (d) whether the IRS 501(r) community input requirements appear to be documented. ' +
+      'STEP 3 - TARGETED FUNDER MATCHING: Based specifically on the gaps identified in Step 2, identify philanthropic funders whose current grant priorities directly address those gaps. For each funder provide: organization name, grant program name, current funding cycle status (open/upcoming/perennial), typical award range, specific eligibility requirements, alignment to the identified Schedule H gap, and direct URL. Prioritize foundations with active Minnesota or Midwest presence, health equity focus, or explicit SDOH/transportation grantmaking. Include Robert Wood Johnson Foundation, Kresge Foundation, CommonSpirit Health Foundation, local Rochester/Olmsted community foundations, and United Way of Southeast Minnesota where relevant. ' +
+      'Format your response with clear headers for each step. Be specific about dollar amounts, percentages, and named grant programs. If the 990 is not findable, say so explicitly and proceed to Step 3 using the CHNA priorities as the gap proxy.';
+  } else {
+    sysPrompt = 'You are a healthcare funding intelligence specialist. Use web search to research the query against publicly available documents including: foundation 990 tax filings, grants.gov, HRSA/CMMI/SAMHSA NOFAs, OCC and FDIC CRA exam reports, state Medicaid waiver databases, and community benefit benchmark reports. Context about this health system: Location is Rochester MN in Olmsted County. Program is Non-Emergency Medical Transportation as a CHIP implementation strategy. CHIP priorities are Access to Care, Mental Health, and Food Security. Payment model is ' + payLabel + '. CPT data availability is ' + cptLabel + '. Estimated program value is ' + valueLabel + '. Funder research mode is ' + mode + '. Provide specific named organizations, programs, current status, typical award amounts, eligibility requirements, and direct URLs. Be concrete and actionable.';
+  }
 
   var requestBody = {
     model: 'claude-sonnet-4-20250514',
