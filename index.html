@@ -1057,13 +1057,54 @@ button.secondary{
             <!-- LEFT COLUMN: all inputs -->
             <div style="display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden;width:380px;flex-shrink:0;">
 
+              <!-- PAYMENT MODEL SELECTOR -->
+              <div style="background:linear-gradient(135deg,rgba(201,162,39,.1),rgba(201,162,39,.04));border:1px solid rgba(201,162,39,.35);border-radius:10px;padding:12px 14px;">
+                <div style="font-size:11px;font-weight:800;color:#7A5C00;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">⚙ Payment Model Configuration</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                  <div>
+                    <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">Layer 0 payment model</label>
+                    <select id="mr_paymodel" onchange="togglePayModel();calcMayoROI();" style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff;">
+                      <option value="ffs">Fee-for-Service (FFS)</option>
+                      <option value="capitated">Capitated / Value-Based</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="small" style="font-weight:700;display:block;margin-bottom:4px;">CPT data available?</label>
+                    <select id="mr_cptavail" onchange="toggleCPTMode();calcMayoROI();" style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff;">
+                      <option value="yes">Yes — enter actual rates</option>
+                      <option value="no">No — use national benchmarks</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- Capitated fields (hidden by default) -->
+                <div id="mr_cap_fields" style="display:none;border-top:1px solid rgba(201,162,39,.2);padding-top:10px;margin-top:2px;">
+                  <div style="font-size:10px;font-weight:700;color:#7A5C00;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Capitated: Avoided Cost Inputs</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">ED visit cost avoided ($)</label><input id="mr_ed_cost" type="number" value="2800" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">ED avoidance rate (%)</label><input id="mr_ed_rate" type="number" value="8" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Readmission cost avoided ($)</label><input id="mr_ra_cost" type="number" value="15000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Readmission reduction (%)</label><input id="mr_ra_rate" type="number" value="12" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Chronic escalation cost ($)</label><input id="mr_ch_cost" type="number" value="4200" oninput="calcMayoROI()" class="mayo-input"/></div>
+                    <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Escalation reduction (%)</label><input id="mr_ch_rate" type="number" value="15" step="1" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  </div>
+                  <div style="margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5;background:rgba(201,162,39,.06);border-radius:5px;padding:6px 9px;">
+                    Defaults: ED cost from HCUP 2023 ($2,800 mean); readmission from CMS ($15K avg); chronic escalation from ASPE NEMT study. All adjustable.
+                  </div>
+                </div>
+                <!-- CPT benchmark notice (shown when no CPT data) -->
+                <div id="mr_cpt_bench_notice" style="display:none;border-top:1px solid rgba(201,162,39,.2);padding-top:8px;margin-top:2px;font-size:10px;color:#7A5C00;line-height:1.5;background:rgba(255,251,235,.6);border-radius:5px;padding:7px 10px;">
+                  <strong>Benchmark mode active.</strong> CPT uplift estimated from MGMA 2024 benchmarks: Z75.3 capture 18–28% of SDOH-flagged encounters; CPT improvement 12–18%. Using conservative midpoints. Replace with actuals when data is available.
+                </div>
+              </div>
+
               <!-- LAYER 0: FFS BASE -->
               <div class="callout" style="border-left:4px solid var(--navy);">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                  <strong class="small" style="color:var(--navy);">&#9312; Layer 0 &mdash; FFS Contribution Margin Base</strong>
+                  <strong class="small" style="color:var(--navy);" id="l0_label">&#9312; Layer 0 &mdash; FFS Contribution Margin Base</strong>
                   <span class="badge" style="background:var(--navy);color:#fff;font-size:10px;padding:2px 7px;border-radius:99px;">Always Active</span>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <!-- FFS inputs -->
+                <div id="mr_ffs_inputs" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Annual visits targeted (V)</label><input id="mr_v" type="number" value="25000" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">No-show rate (n)</label><input id="mr_n" type="number" value="0.18" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Transport share of no-shows (s)</label><input id="mr_s" type="number" value="0.28" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
@@ -1072,6 +1113,10 @@ button.secondary{
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Marginal clinical cost ($c)</label><input id="mr_c" type="number" value="110" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Trip cost per round trip ($t)</label><input id="mr_t" type="number" value="65" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Overhead rate (o)</label><input id="mr_o" type="number" value="0.10" step="0.01" oninput="calcMayoROI()" class="mayo-input"/></div>
+                </div>
+                <!-- Capitated summary (shown in cap mode) -->
+                <div id="mr_cap_summary" style="display:none;font-size:12px;color:var(--muted);padding:6px 0;line-height:1.6;">
+                  Capitated mode: Layer 0 calculates total cost of care reduction from avoided ED visits, readmissions, and chronic disease escalation for NEMT-enabled patients.
                 </div>
                 <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
                   <button onclick="confirmMayoLayer0()" id="mayo_l0_btn" style="background:linear-gradient(135deg,var(--navy),#1a3a5c);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.03em;">&#10003; Confirm Layer 0 Inputs</button>
@@ -1085,9 +1130,9 @@ button.secondary{
                 </div>
                 <p class="small" style="margin:0 0 6px;color:var(--muted);">Z-code (Z75.3) documentation uplift + CPT capture improvement on NEMT-enabled visits.</p>
                 <div id="mr_cod_box" style="display:none;margin-top:8px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Z-code capture rate (%)</label><input id="mr_zrate" type="number" value="25" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div id="mr_zrate_wrap"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Z-code capture rate (%)</label><input id="mr_zrate" type="number" value="25" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">$ uplift per Z-coded encounter</label><input id="mr_zupl" type="number" value="20" oninput="calcMayoROI()" class="mayo-input"/></div>
-                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">CPT capture rate (%)</label><input id="mr_cptrate" type="number" value="15" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div id="mr_cptrate_wrap"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">CPT capture rate (%)</label><input id="mr_cptrate" type="number" value="15" min="0" max="100" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">$ uplift per CPT-captured encounter</label><input id="mr_cptupl" type="number" value="15" oninput="calcMayoROI()" class="mayo-input"/></div>
                 </div></div>
               </div>
@@ -1417,7 +1462,74 @@ button.secondary{
               <div class="callout" style="padding:8px 12px;border-left:3px solid var(--red);"><strong style="color:var(--red);font-size:12px;">Step 4 &mdash; Confirm with counsel</strong><p class="small" style="margin-top:3px;">Verify activities qualify with OCC or Federal Reserve bank counsel before executing agreements.</p></div>
             </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('cra')">&larr; Back to Application</button><button class="primary" onclick="mayoNav('draft')">Generate Complete Draft &rarr;</button></div>
+          <!-- ══ FUNDER INTELLIGENCE — Live Research Panel ══════════════ -->
+          <div style="margin-top:20px;border:1px solid rgba(124,58,237,.3);border-radius:12px;overflow:hidden;">
+            <div style="background:linear-gradient(135deg,#3b0764,#4c1d95);padding:13px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <span style="font-size:20px;">🔍</span>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:800;color:#fff;">Funder Intelligence — Live Research</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:1px;">Searches publicly available documents in real time: foundation 990s, federal NOFAs, state Medicaid waivers, CRA exam reports, and community benefit benchmarks</div>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button onclick="setFunderMode('bank')" id="fmode_bank" class="fmode-btn fmode-active">🏦 Banks / CRA</button>
+                <button onclick="setFunderMode('philanthropy')" id="fmode_phil" class="fmode-btn">🌱 Philanthropy</button>
+                <button onclick="setFunderMode('federal')" id="fmode_fed" class="fmode-btn">🏛 Federal / Grants</button>
+                <button onclick="setFunderMode('custom')" id="fmode_cust" class="fmode-btn">✏ Custom</button>
+              </div>
+            </div>
+
+            <div style="padding:14px 16px;background:#faf5ff;">
+              <!-- Context summary pulled from model -->
+              <div id="fi_context" style="font-size:11px;color:#6b21a8;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15);border-radius:7px;padding:7px 11px;margin-bottom:12px;line-height:1.6;"></div>
+
+              <!-- Query builder -->
+              <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:200px;">
+                  <textarea id="fi_query" rows="2"
+                    style="width:100%;padding:8px 10px;border:1px solid rgba(124,58,237,.25);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;background:#fff;color:#1a1a1a;"
+                    placeholder="Describe what you're looking for, or click a preset below…"></textarea>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+                  <button onclick="runFunderResearch()" id="fi_run_btn"
+                    style="background:linear-gradient(135deg,#7C3AED,#6d28d9);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+                    🔍 Research Now
+                  </button>
+                  <button onclick="clearFunderResults()"
+                    style="background:none;border:1px solid rgba(124,58,237,.25);border-radius:8px;padding:6px 12px;font-size:11px;color:#6b21a8;cursor:pointer;font-family:inherit;">
+                    ✕ Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Preset query chips -->
+              <div id="fi_presets" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+
+              <!-- Results area -->
+              <div id="fi_results" style="display:none;">
+                <div style="font-size:10px;font-weight:700;color:#6b21a8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Research Results</div>
+                <div id="fi_results_body" style="font-size:13px;color:#1a1a1a;line-height:1.7;background:#fff;border:1px solid rgba(124,58,237,.15);border-radius:8px;padding:14px;max-height:480px;overflow-y:auto;white-space:pre-wrap;"></div>
+                <div id="fi_sources" style="margin-top:8px;font-size:11px;color:#6b21a8;"></div>
+              </div>
+
+              <!-- Loading state -->
+              <div id="fi_loading" style="display:none;text-align:center;padding:24px;">
+                <div style="font-size:13px;color:#6b21a8;font-style:italic;" id="fi_loading_msg">Searching public documents…</div>
+                <div style="margin-top:10px;display:flex;justify-content:center;gap:6px;" id="fi_dots">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#7C3AED;animation:fidot 1.2s .0s ease-in-out infinite;"></div>
+                  <div style="width:8px;height:8px;border-radius:50%;background:#7C3AED;animation:fidot 1.2s .2s ease-in-out infinite;"></div>
+                  <div style="width:8px;height:8px;border-radius:50%;background:#7C3AED;animation:fidot 1.2s .4s ease-in-out infinite;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <style>
+            .fmode-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);border-radius:6px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+            .fmode-btn:hover{background:rgba(255,255,255,.18);}
+            .fmode-active{background:rgba(255,255,255,.22)!important;color:#fff!important;border-color:rgba(255,255,255,.4)!important;}
+            @keyframes fidot{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-6px);opacity:1}}
+          </style>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;"><button class="secondary" onclick="mayoNav('cra')">&larr; Back to Application</button><button class="primary" onclick="mayoNav('draft')">Generate Complete Draft &rarr;</button></div>
         </div></div><div class="step-foot"><p class="step-bridge">You know who to approach and what to say. The last step generates the complete package — seven audit-ready documents that make this program immediately actionable for your team, your board, and your banking partners.</p><button class="step-cont" onclick="go('draft')">Generate your documents →</button></div></section><section id="s_draft" class="step" style="display:none"><div class="story-hdr"><div class="story-num">06</div><div><h2 class="story-hl">In sixty minutes, you’ve built what most health systems spend months on.</h2><p class="story-sub">Seven documents. Each pre-populated with your CHNA data and ROI model outputs. Each saving four to eight hours of preparation. This is what the Aqueduct platform makes possible — not just analysis, but the complete package your team needs to move from evidence to funded program.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
           <p class="small" style="margin-bottom:14px;">Seven high-value artifacts pre-populated with 2025 Olmsted County CHNA data and your ROI model inputs. Each saves 4&ndash;8 hours of preparation. Generate, review, copy, and adapt. All financial figures pull live from the ROI model.</p>
 
@@ -3664,4 +3776,232 @@ window.downloadArtifactFile = async function(type) {
 
 </script>
 </body>
-</html>
+</html><script>
+/* ═══ Payment model toggle ═══════════════════════════════════════════════ */
+window.togglePayModel = function() {
+  const cap = document.getElementById('mr_paymodel')?.value === 'capitated';
+  const capFields = document.getElementById('mr_cap_fields');
+  const ffsInputs = document.getElementById('mr_ffs_inputs');
+  const capSummary = document.getElementById('mr_cap_summary');
+  const l0label = document.getElementById('l0_label');
+  if (capFields) capFields.style.display = cap ? 'block' : 'none';
+  if (ffsInputs) ffsInputs.style.display = cap ? 'none' : 'grid';
+  if (capSummary) capSummary.style.display = cap ? 'block' : 'none';
+  if (l0label) l0label.textContent = cap
+    ? '\u2460 Layer 0 \u2014 Total Cost of Care Reduction (Capitated)'
+    : '\u2460 Layer 0 \u2014 FFS Contribution Margin Base';
+};
+
+window.toggleCPTMode = function() {
+  const noCPT = document.getElementById('mr_cptavail')?.value === 'no';
+  const notice = document.getElementById('mr_cpt_bench_notice');
+  if (notice) notice.style.display = noCPT ? 'block' : 'none';
+  const zrate = document.getElementById('mr_zrate');
+  const cptrate = document.getElementById('mr_cptrate');
+  if (noCPT) {
+    if (zrate) { zrate.value = 23; zrate.readOnly = true; zrate.style.background = '#f8fafc'; }
+    if (cptrate) { cptrate.value = 15; cptrate.readOnly = true; cptrate.style.background = '#f8fafc'; }
+  } else {
+    if (zrate) { zrate.readOnly = false; zrate.style.background = '#fff'; }
+    if (cptrate) { cptrate.readOnly = false; cptrate.style.background = '#fff'; }
+  }
+  if (typeof calcMayoROI === 'function') calcMayoROI();
+};
+
+/* Also patch calcMayoROI to handle capitated Layer 0 */
+const _origCalc = window.calcMayoROI;
+window.calcMayoROI = function() {
+  const paymodel = document.getElementById('mr_paymodel')?.value || 'ffs';
+  if (paymodel === 'capitated') {
+    function gv(id) { const el = document.getElementById(id); return el ? (parseFloat(el.value)||0) : 0; }
+    function norm(v) { return v > 1 ? v/100 : v; }
+    function fmt(n) { return (n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString(); }
+    const V=gv('mr_v'), n=norm(gv('mr_n')), s=norm(gv('mr_s')), m=norm(gv('mr_m'));
+    const t=gv('mr_t'), o=norm(gv('mr_o'));
+    const prevented = V*n*s*m;
+    const tripCost = prevented*t;
+    const overhead = tripCost*o;
+    const progCost = tripCost+overhead;
+    const edCost=gv('mr_ed_cost'), edRate=norm(gv('mr_ed_rate'));
+    const raCost=gv('mr_ra_cost'), raRate=norm(gv('mr_ra_rate'));
+    const chCost=gv('mr_ch_cost'), chRate=norm(gv('mr_ch_rate'));
+    const avoidedED = prevented * edRate * edCost;
+    const avoidedRA = prevented * raRate * raCost;
+    const avoidedCH = prevented * chRate * chCost;
+    const capNet = avoidedED + avoidedRA + avoidedCH - progCost;
+    const summEl = document.getElementById('mr_cap_summary');
+    if (summEl) summEl.innerHTML = `<div style="font-size:11px;color:#047857;margin-top:6px;line-height:1.7;">
+      Avoided ED: <strong>${fmt(avoidedED)}</strong> &nbsp;|&nbsp;
+      Avoided readmissions: <strong>${fmt(avoidedRA)}</strong> &nbsp;|&nbsp;
+      Avoided escalations: <strong>${fmt(avoidedCH)}</strong><br>
+      Program cost: <strong>${fmt(-progCost)}</strong> &nbsp;&rarr;&nbsp;
+      <strong style="color:#001533;">Net Layer 0: ${fmt(capNet)}</strong>
+    </div>`;
+    // Temporarily override ffsNet for downstream calc
+    window._capOverride = capNet;
+  } else {
+    window._capOverride = null;
+  }
+  if (typeof _origCalc === 'function') _origCalc();
+  if (window._capOverride !== null && typeof window._mayoROICache !== 'undefined') {
+    window._mayoROICache.ffsNet = window._capOverride;
+    const roi_el = document.getElementById('mayo_roi_big');
+    const net_el = document.getElementById('mayo_net_big');
+    const D = window._mayoROICache;
+    const totalNet = window._capOverride + (D.codNet||0) + (D.ccmNet||0) + (D.tcmNet||0) + (D.vbcNet||0) + (D.bankCRA||0);
+    if (net_el) net_el.textContent = fmt(totalNet) + ' net annual value (capitated)';
+  }
+};
+
+/* ═══ Funder Intelligence ════════════════════════════════════════════════ */
+window._funderMode = 'bank';
+const FUNDER_PRESETS = {
+  bank: [
+    'CRA exam ratings for banks in Rochester MSA with community development opportunities',
+    'Recent OCC and FDIC CRA public evaluations for Outstanding-rated Minnesota banks',
+    'CRA community development investment examples in healthcare transportation'
+  ],
+  philanthropy: [
+    'Health foundations with active grant cycles funding SDOH or transportation access 2025-2026',
+    'Community foundation grants for access to care in Minnesota or Olmsted County',
+    'Robert Wood Johnson, Kresge, or CommonSpirit Foundation grants for NEMT or healthcare access',
+    'United Way and local foundation funding for non-emergency medical transportation'
+  ],
+  federal: [
+    'Current CMMI AHEAD model opportunities for SDOH interventions 2025-2026',
+    'HRSA grant opportunities for community health center transportation programs 2025-2026',
+    'SAMHSA block grant or CCBHC funding for behavioral health transportation access',
+    'HHS NOFA database NEMT or healthcare access grants open or upcoming',
+    'Minnesota Medicaid SDOH pilot programs or 1115 waiver transportation benefits'
+  ],
+  custom: []
+};
+const FUNDER_LOAD_MSGS = [
+  'Searching public grant databases\u2026','Reviewing foundation 990 filings\u2026',
+  'Checking federal NOFA registry\u2026','Scanning CRA exam public records\u2026',
+  'Analyzing community benefit reports\u2026'
+];
+
+window.setFunderMode = function(mode) {
+  window._funderMode = mode;
+  const map = {bank:'bank',philanthropy:'phil',federal:'fed',custom:'cust'};
+  Object.values(map).forEach(id => {
+    const b = document.getElementById('fmode_'+id);
+    if (b) b.classList.remove('fmode-active');
+  });
+  const active = document.getElementById('fmode_'+(map[mode]||'bank'));
+  if (active) active.classList.add('fmode-active');
+  const presetsEl = document.getElementById('fi_presets');
+  if (!presetsEl) return;
+  const presets = FUNDER_PRESETS[mode] || [];
+  if (mode === 'custom') {
+    presetsEl.innerHTML = '<span style="font-size:11px;color:#6b21a8;font-style:italic;">Enter any research query above.</span>';
+  } else {
+    presetsEl.innerHTML = presets.map(p =>
+      `<button onclick="document.getElementById('fi_query').value=this.dataset.q;runFunderResearch();" data-q="${p.replace(/"/g,'&quot;')}" style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#4c1d95;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;text-align:left;line-height:1.4;">${p}</button>`
+    ).join('');
+  }
+  window.updateFunderContext();
+};
+
+window.updateFunderContext = function() {
+  const ctx = document.getElementById('fi_context');
+  if (!ctx) return;
+  const D = window._mayoROICache || {};
+  const paymodel = document.getElementById('mr_paymodel')?.value || 'ffs';
+  const cptavail = document.getElementById('mr_cptavail')?.value || 'yes';
+  const mode = window._funderMode;
+  const modeLabel = {bank:'CRA Bank Funding',philanthropy:'Philanthropic Funding',federal:'Federal / Grant Funding',custom:'Custom Research'}[mode]||mode;
+  ctx.textContent = `Model context \u2014 Payment: ${paymodel==='ffs'?'FFS':'Capitated'} \u00b7 CPT data: ${cptavail==='yes'?'Available':'Benchmarks'} \u00b7 Net value: ${D.totalNet?'$'+Math.round(D.totalNet).toLocaleString():'not yet set'} \u00b7 Mode: ${modeLabel} \u00b7 Location: Rochester MN \u00b7 CHIP: Access, Mental Health, Food Security`;
+};
+
+window.clearFunderResults = function() {
+  ['fi_results','fi_loading'].forEach(id => { const e=document.getElementById(id); if(e) e.style.display='none'; });
+  ['fi_results_body','fi_sources'].forEach(id => { const e=document.getElementById(id); if(e) e.textContent=''; });
+  const q=document.getElementById('fi_query'); if(q) q.value='';
+};
+
+window.runFunderResearch = async function() {
+  const query = (document.getElementById('fi_query')?.value||'').trim();
+  if (!query) { document.getElementById('fi_query')?.focus(); return; }
+  const D = window._mayoROICache || {};
+  const paymodel = document.getElementById('mr_paymodel')?.value||'ffs';
+  const cptavail = document.getElementById('mr_cptavail')?.value||'yes';
+  const mode = window._funderMode;
+
+  const loadEl=document.getElementById('fi_loading');
+  const loadMsg=document.getElementById('fi_loading_msg');
+  const resultsEl=document.getElementById('fi_results');
+  const resultsBody=document.getElementById('fi_results_body');
+  const sourcesEl=document.getElementById('fi_sources');
+  const runBtn=document.getElementById('fi_run_btn');
+
+  if(loadEl) loadEl.style.display='block';
+  if(resultsEl) resultsEl.style.display='none';
+  if(runBtn){runBtn.disabled=true;runBtn.textContent='\u23f3 Searching\u2026';}
+
+  let msgIdx=0;
+  const msgInt=setInterval(()=>{
+    msgIdx=(msgIdx+1)%FUNDER_LOAD_MSGS.length;
+    if(loadMsg) loadMsg.textContent=FUNDER_LOAD_MSGS[msgIdx];
+  },1800);
+
+  const systemPrompt=`You are a healthcare funding intelligence specialist. Use web search to research the user's query against publicly available documents: foundation 990s, grants.gov, HRSA/CMMI/SAMHSA NOFAs, OCC/FDIC CRA exam reports, state Medicaid waiver databases, and community benefit benchmark reports.
+
+Context: Health system in Rochester MN (Olmsted County). Program: NEMT as CHIP implementation strategy. Priorities: Access to Care, Mental Health, Food Security. Payment model: ${paymodel==='ffs'?'FFS':'Capitated'}. CPT data: ${cptavail==='yes'?'Available':'Not available'}. Program value: ${D.totalNet?'$'+Math.round(D.totalNet).toLocaleString():'TBD'}. Funder mode: ${mode}.
+
+Provide specific named organizations, programs, current status, typical award amounts, eligibility requirements, and direct URLs. Be concrete and actionable.`;
+
+  try {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        system:systemPrompt,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:query}]
+      })
+    });
+    clearInterval(msgInt);
+    const data=await resp.json();
+    let text='';
+    const urls=[];
+    if(data.content&&Array.isArray(data.content)){
+      for(const b of data.content){
+        if(b.type==='text') text+=b.text;
+        if(b.type==='tool_result'&&Array.isArray(b.content)){
+          b.content.forEach(c=>{ if(c.text){const u=c.text.match(/https?:\/\/[^\s)>\]"]+/g)||[];urls.push(...u.slice(0,2));}});
+        }
+      }
+    }
+    if(!text&&data.error) text=`Error: ${data.error.message}`;
+    if(loadEl) loadEl.style.display='none';
+    if(resultsEl) resultsEl.style.display='block';
+    if(resultsBody) resultsBody.textContent=text||'No results returned. Try rephrasing.';
+    if(sourcesEl&&urls.length){
+      const unique=[...new Set(urls)].slice(0,5);
+      sourcesEl.innerHTML='<strong style="color:#6b21a8;">Sources:</strong> '+unique.map(u=>`<a href="${u}" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">${u}</a>`).join(' \u00b7 ');
+    }
+  } catch(err){
+    clearInterval(msgInt);
+    if(loadEl) loadEl.style.display='none';
+    if(resultsEl) resultsEl.style.display='block';
+    if(resultsBody) resultsBody.textContent=`Connection error: ${err.message}`;
+  }
+  if(runBtn){runBtn.disabled=false;runBtn.textContent='\uD83D\uDD0D Research Now';}
+};
+
+// Re-init funder context when switching to banks or roi tab
+document.addEventListener('DOMContentLoaded',()=>{
+  const origGo=window.go;
+  if(origGo){
+    window.go=function(t){
+      origGo(t);
+      if(t==='banks') setTimeout(()=>{window.setFunderMode(window._funderMode||'bank');window.updateFunderContext();},80);
+      if(t==='roi') setTimeout(window.updateFunderContext,200);
+    };
+  }
+});
+</script>
