@@ -40,6 +40,11 @@ body{margin:0;padding:0;min-height:100vh;display:flex;flex-direction:column;
   justify-content:center;font-weight:900;font-size:13px;color:var(--navy);}
 .demo-brand{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);}
 .demo-brand-sub{color:rgba(255,255,255,.4);font-weight:400}
+
+.fpm-btn{background:rgba(0,21,51,.07);border:1px solid rgba(0,21,51,.18);color:var(--navy);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.fpm-btn:hover{background:rgba(0,21,51,.13);}
+.fpm-active{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important;}
+.fp-map-panel{}
 .demo-tag{font-family:Georgia,serif;font-size:clamp(15px,1.5vw,19px);font-style:italic;
   color:rgba(255,255,255,.82);margin:2px 0 0;line-height:1.2;}
 .demo-tag strong{font-style:normal;background:linear-gradient(120deg,var(--gold),var(--gold2));
@@ -738,7 +743,7 @@ button.secondary{
       <p class="demo-tag">Your CHNA data already makes <strong>the case for bank funding.</strong></p>
     </div>
   </div>
-  <nav class="demo-rail" role="tablist"><button class="rb" id="rb_about" onclick="go('about')" style="border-right:1px solid rgba(255,255,255,.12);margin-right:4px;padding-right:22px;"><span class="rn" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:14px;">⬡</span><span class="rl" style="color:rgba(255,255,255,.5);">About</span></button><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">CHNA → CRA Map</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">CRA Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.12);margin-left:6px;"><span class="rn" style="background:rgba(201,162,39,.18);color:#E8C84A;">07</span><span class="rl" style="color:rgba(232,200,74,.75);">Executive Training</span></button></nav>
+  <nav class="demo-rail" role="tablist"><button class="rb" id="rb_about" onclick="go('about')" style="border-right:1px solid rgba(255,255,255,.12);margin-right:4px;padding-right:22px;"><span class="rn" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);font-size:14px;">⬡</span><span class="rl" style="color:rgba(255,255,255,.5);">About</span></button><button class="rb rb-on" id="rb_chna" onclick="go('chna')"><span class="rn">01</span><span class="rl">CHNA Evidence</span></button><button class="rb" id="rb_linkage" onclick="go('linkage')"><span class="rn">02</span><span class="rl">Funding Pathway</span></button><button class="rb" id="rb_roi" onclick="go('roi')"><span class="rn">03</span><span class="rl">ROI at Scale</span></button><button class="rb" id="rb_cra" onclick="go('cra')"><span class="rn">04</span><span class="rl">Funding Application</span></button><button class="rb" id="rb_banks" onclick="go('banks')"><span class="rn">05</span><span class="rl">Bank Strategy</span></button><button class="rb" id="rb_draft" onclick="go('draft')"><span class="rn">06</span><span class="rl">Generate Docs</span></button><button class="rb" id="rb_training" onclick="go('training')" style="border-left:1px solid rgba(255,255,255,.12);margin-left:6px;"><span class="rn" style="background:rgba(201,162,39,.18);color:#E8C84A;">07</span><span class="rl" style="color:rgba(232,200,74,.75);">Executive Training</span></button></nav>
 </header>
 <main id="wg-content">
 <section id="s_chna" class="step" style="display:block"><div class="story-hdr"><div class="story-num">01</div><div><h2 class="story-hl">Your community’s need is already documented.</h2><p class="story-sub">Most health systems have CHNA data sitting in a PDF. Mayo has something rare: three documented priorities, a county-wide survey of 937 residents, and the Rochester Epidemiology Project — 56 million patient records stretching back to 1966. The evidence for a funded NEMT program already exists. This step shows you exactly what it says.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">2025 Olmsted County CHNA &mdash; Three Priorities, Four Evidence Nodes</div>
@@ -1030,26 +1035,144 @@ button.secondary{
             <button class="primary" onclick="mayoNav('linkage')">Map CHNA &rarr; CRA Opportunities &rarr;</button>
             <button class="secondary" onclick="window.open('https://storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210','_blank')">Open CHNA StoryMap &#8599;</button>
           </div>
-        </div></div><div class="step-foot"><p class="step-bridge">You’ve seen the evidence. The next question every CFO asks is: <em>which federal regulation turns community health need into bank-eligible investment?</em> The answer is specific, citable, and already established.</p><button class="step-cont" onclick="go('linkage')">See how this becomes fundable →</button></div></section><section id="s_linkage" class="step" style="display:none"><div class="story-hdr"><div class="story-num">02</div><div><h2 class="story-hl">Federal regulation turns your CHNA into a bankable investment.</h2><p class="story-sub">12 CFR 25.04(c)(3) is the regulation that makes this possible. It allows banks to receive Community Reinvestment Act credit for funding healthcare transportation for low-income populations. Mayo’s three CHNA priorities map directly to this criterion — the translation that most health systems never make.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">CHNA Priority &rarr; NEMT Program &rarr; CRA Activity Mapping</div>
-          <p class="small" style="margin-bottom:16px;">Maps each 2025 CHNA priority to program elements, CRA classification, and Schedule H pathway &mdash; the evidence chain you present to banks. Rochester MSA Assessment Area = all of Olmsted County + all of Dodge County (confirmed by OCC examinations).</p>
-          <div style="overflow-x:auto;margin-bottom:18px;">
-            <table class="tbl" style="min-width:860px;font-size:13px;">
-              <thead><tr><th>2025 CHNA Priority</th><th>Key Data</th><th>NEMT Program Element</th><th>CRA Classification</th><th>Schedule H Activity</th><th>Confidence</th></tr></thead>
-              <tbody>
-                <tr><td><strong>Access to Care #1</strong><br><span class="small" style="color:var(--muted);">34% delayed; 15% no PCP</span></td><td class="small">Transport barrier for disability (9.7%) and foreign-born (11.1%)</td><td class="small">Round-trip NEMT to primary care, specialty &amp; preventive appointments for LMI/disability patients</td><td><span class="badge b-strong">CD Services &mdash; Healthcare</span><br><span class="small" style="color:var(--muted);">12 CFR 25.04(c)(3) Topic L</span></td><td class="small">Responding to CHNA #1; LMI-targeted; Z-code outcomes documentation</td><td><span class="badge b-strong">High</span></td></tr>
-                <tr><td><strong>Mental Health #2</strong><br><span class="small" style="color:var(--muted);">37% prevalence; exceeds MN + U.S.</span></td><td class="small">Higher delay rates among renters + disability &mdash; transport-dependent groups</td><td class="small">NEMT to behavioral health appointments; SERCC transport; psychiatric medication pickup</td><td><span class="badge b-mod">CD Services &mdash; Mental Health</span><br><span class="small" style="color:var(--muted);">Enhanced CD credit eligible</span></td><td class="small">Dual-priority: Access (#1) + Mental Health (#2) from single program</td><td><span class="badge b-mod">Medium</span></td></tr>
-                <tr><td><strong>Food Security #3</strong><br><span class="small" style="color:var(--muted);">33K clients; declining trend</span></td><td class="small">23% Hispanic, 14% Black &mdash; overlapping transport-barrier population</td><td class="small">NEMT trip bundling: healthcare + Channel One food bank stop where clinically safe</td><td><span class="badge b-mod">CD Services &mdash; Basic Needs</span><br><span class="small" style="color:var(--muted);">Three-priority documentation</span></td><td class="small">CHNA food + access combination; novel Schedule H framing</td><td><span class="badge b-weak">Low-Med</span></td></tr>
-                <tr><td><strong>REP Research Benefit</strong><br><span class="small" style="color:var(--muted);">Mayo-only</span></td><td class="small">Rochester Epidemiology Project enables propensity-matched attribution studies</td><td class="small">Peer-reviewed NEMT outcomes publication using REP linked records; national evidence generation</td><td><span class="badge b-strong">CD &mdash; Research Benefit</span></td><td class="small">Publication advances national NEMT evidence; IRS Schedule H research benefit</td><td><span class="badge b-strong">High (Research)</span></td></tr>
-                <tr style="background:rgba(13,148,136,.05);"><td colspan="2"><strong>Combined Multi-Priority Value</strong></td><td class="small">NEMT addressing all three 2025 CHNA priorities simultaneously</td><td colspan="2"><strong>Maximum CRA narrative strength &mdash; multi-priority, LMI-targeted, REP-validated</strong></td><td><span class="badge b-strong">Strongest Available</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="grid grid-2" style="margin-bottom:16px;">
-            <div class="callout" style="border-left:4px solid var(--amber);"><strong style="color:var(--amber);">&#9889; Why This Is Different for Mayo</strong><p class="small" style="margin-top:6px;">Most health systems have one CHNA priority connecting to NEMT. Mayo has three &mdash; and uniquely holds the Rochester Epidemiology Project to generate attribution evidence that turns a transportation program into a peer-reviewed publication. The bank funds the program; Mayo generates national-level evidence.</p></div>
-            <div class="callout" style="border-left:4px solid var(--blue);"><strong style="color:var(--blue);">&#127963; Assessment Area Confirmed</strong><p class="small" style="margin-top:6px;">The Rochester MSA CRA Assessment Area covers <strong>all of Olmsted County and all of Dodge County</strong> (OCC-confirmed). All three CHNA priorities are documented county-wide. A Mayo-anchored NEMT program sits squarely within every Rochester-branch bank&rsquo;s Assessment Area.</p></div>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('chna')">&larr; Back to CHNA</button><button class="primary" onclick="mayoNav('roi')">Build Financial Model &rarr;</button></div>
-        </div></div><div class="step-foot"><p class="step-bridge">The regulatory pathway is confirmed. Now the question becomes: <em>what is this actually worth at Mayo’s scale?</em> The ROI model is built around your real numbers — 59,000 patients, four revenue layers, board-ready scenario framing.</p><button class="step-cont" onclick="go('roi')">Build the financial model →</button></div></section><section id="s_roi" class="step" style="display:none"><div class="story-hdr"><div class="story-num">03</div><div><h2 class="story-hl">The financial case is stronger than most boards expect.</h2><p class="story-sub">An NEMT program at Mayo’s scale isn’t just a cost — it’s a revenue recovery mechanism. Kept appointments generate contribution margin. SDOH documentation creates coding uplift. CCM/TCM billing layers add incremental revenue. VBC quality earn-backs close the loop. Enable each layer below and watch the ROI build in real time.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">Full ROI Model &mdash; Mayo Clinic / Olmsted County Scale</div>
+        </div></div><div class="step-foot"><p class="step-bridge">You’ve seen the evidence. The next question every CFO asks is: <em>which federal regulation turns community health need into bank-eligible investment?</em> The answer is specific, citable, and already established.</p><button class="step-cont" onclick="go('linkage')">See how this becomes fundable →</button></div></section><section id="s_linkage" class="step" style="display:none">
+<div class="story-hdr">
+  <div class="story-num">02</div>
+  <div>
+    <h2 class="story-hl">Your CHNA evidence maps to multiple funding pathways.</h2>
+    <p class="story-sub">Each funding source has its own eligibility criteria, documentation requirements, and application logic. Select a pathway below to see exactly how your CHNA priorities translate into fundable program criteria — and what each funder needs to see.</p>
+  </div>
+</div>
+<div class="tool-body">
+
+  <!-- Pathway selector -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);">Select funding pathway:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;" id="fp_map_tabs">
+      <button onclick="setMapPathway('cra')"    id="fpm_cra"    class="fpm-btn fpm-active">🏦 Bank / CRA</button>
+      <button onclick="setMapPathway('phil')"   id="fpm_phil"   class="fpm-btn">🌱 Philanthropy</button>
+      <button onclick="setMapPathway('fed')"    id="fpm_fed"    class="fpm-btn">🏛 Federal / Grants</button>
+      <button onclick="setMapPathway('state')"  id="fpm_state"  class="fpm-btn">🏥 State Medicaid</button>
+      <button onclick="setMapPathway('employ')" id="fpm_employ" class="fpm-btn">🏢 Employer / Coalition</button>
+    </div>
+  </div>
+
+  <!-- CRA pathway -->
+  <div id="fp_map_cra" class="fp-map-panel">
+    <div class="section-title" style="font-size:15px;margin-bottom:4px;">CHNA Priority &rarr; CRA Activity Mapping <span class="badge b-strong" style="font-size:10px;margin-left:6px;">12 CFR 25.04(c)(3)</span></div>
+    <p class="small" style="margin-bottom:14px;">Maps each CHNA priority to CRA community development classification and Schedule H pathway. Rochester MSA Assessment Area = all of Olmsted + Dodge Counties (OCC-confirmed).</p>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="tbl" style="min-width:820px;font-size:13px;">
+        <thead><tr><th>CHNA Priority</th><th>NEMT Program Element</th><th>CRA Classification</th><th>Schedule H</th><th>Confidence</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Access to Care #1</strong><br><span class="small" style="color:var(--muted);">34% delayed; 15% no PCP</span></td><td class="small">Round-trip NEMT to primary, specialty &amp; preventive for LMI/disability patients</td><td><span class="badge b-strong">CD Services — Healthcare</span><br><span class="small">12 CFR 25.04(c)(3) Topic L</span></td><td class="small">LMI-targeted; Z75.3 documentation</td><td><span class="badge b-strong">High</span></td></tr>
+          <tr><td><strong>Mental Health #2</strong><br><span class="small" style="color:var(--muted);">37% prevalence</span></td><td class="small">NEMT to behavioral health; psychiatric medication pickup</td><td><span class="badge b-mod">CD Services — Mental Health</span><br><span class="small">Enhanced CD credit eligible</span></td><td class="small">Dual-priority documentation</td><td><span class="badge b-mod">Medium</span></td></tr>
+          <tr><td><strong>Food Security #3</strong><br><span class="small" style="color:var(--muted);">33K clients</span></td><td class="small">Trip bundling: healthcare + Channel One food bank stop</td><td><span class="badge b-mod">CD Services — Basic Needs</span></td><td class="small">Three-priority framing</td><td><span class="badge b-weak">Low-Med</span></td></tr>
+          <tr><td><strong>REP Research</strong></td><td class="small">Propensity-matched outcomes publication using REP records</td><td><span class="badge b-strong">CD — Research Benefit</span></td><td class="small">Schedule H research benefit</td><td><span class="badge b-strong">High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid grid-2">
+      <div class="callout" style="border-left:4px solid var(--amber);"><strong style="color:var(--amber);">Why This Is Strongest for Mayo</strong><p class="small" style="margin-top:6px;">Three CHNA priorities map to CRA simultaneously, plus the REP research benefit — a combination most health systems cannot match. The bank funds the program; Mayo generates national-level evidence.</p></div>
+      <div class="callout" style="border-left:4px solid var(--blue);"><strong style="color:var(--blue);">Assessment Area Confirmed</strong><p class="small" style="margin-top:6px;">All of Olmsted + Dodge Counties. Every Rochester-branch bank has a CRA obligation here — making this the fastest pathway to multi-funder consortium funding.</p></div>
+    </div>
+  </div>
+
+  <!-- Philanthropy pathway -->
+  <div id="fp_map_phil" class="fp-map-panel" style="display:none">
+    <div class="section-title" style="font-size:15px;margin-bottom:4px;">CHNA Priority &rarr; Philanthropic Foundation Mapping</div>
+    <p class="small" style="margin-bottom:14px;">Maps each CHNA priority to foundation grant criteria, IRS Schedule H community benefit documentation, and the narrative framing that resonates with health-focused philanthropies.</p>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="tbl" style="min-width:820px;font-size:13px;">
+        <thead><tr><th>CHNA Priority</th><th>Foundation Criteria Alignment</th><th>Key Funders</th><th>Schedule H Category</th><th>Typical Award</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Access to Care #1</strong></td><td class="small">SDOH / health equity focus; transportation as access barrier; LMI population targeting; evidence-based intervention</td><td class="small"><strong>RWJF</strong> Health Equity program<br><strong>Kresge</strong> Health program<br><strong>MN Health Foundation</strong></td><td class="small">Part I Line 7e — Community Health Improvement Services</td><td><span class="badge b-strong">$50K–$500K</span></td></tr>
+          <tr><td><strong>Mental Health #2</strong></td><td class="small">Behavioral health access; transportation as barrier to mental health services; integrated care models</td><td class="small"><strong>Otto Bremer Trust</strong> (MN)<br><strong>Blue Cross MN Foundation</strong><br><strong>Margaret A. Cargill</strong></td><td class="small">Part I Line 7e — dual-priority documentation</td><td><span class="badge b-mod">$25K–$250K</span></td></tr>
+          <tr><td><strong>Food Security #3</strong></td><td class="small">Social determinants bundling; food + healthcare access intersection; Channel One partnership narrative</td><td class="small"><strong>United Way SE MN</strong><br><strong>Rochester Area Foundation</strong><br><strong>Hunger Solutions MN</strong></td><td class="small">Part I Line 7i — contributions to community groups</td><td><span class="badge b-mod">$10K–$100K</span></td></tr>
+          <tr><td><strong>REP Research</strong></td><td class="small">Evidence generation; publishable outcomes; national model replication; AMC-scale rigor</td><td class="small"><strong>PCORI</strong> (peer-reviewed)<br><strong>AHA Foundation</strong><br><strong>NIH Community Engagement</strong></td><td class="small">Part I Line 7k — community benefit research</td><td><span class="badge b-strong">$100K–$2M</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="border-left:4px solid #7C3AED;margin-bottom:0;">
+      <strong style="color:#4c1d95;">Schedule H Accountability Framing</strong>
+      <p class="small" style="margin-top:6px;">Foundations increasingly require that nonprofit hospital grantees demonstrate alignment between Schedule H community benefit outlays and documented CHNA priorities. Use the CB Alignment tool in Tab 05 to retrieve your Schedule H data and show funders exactly where gaps exist — this is a stronger application than a narrative alone.</p>
+    </div>
+  </div>
+
+  <!-- Federal pathway -->
+  <div id="fp_map_fed" class="fp-map-panel" style="display:none">
+    <div class="section-title" style="font-size:15px;margin-bottom:4px;">CHNA Priority &rarr; Federal Program Mapping</div>
+    <p class="small" style="margin-bottom:14px;">Federal funding through CMMI innovation models, HRSA health center programs, SAMHSA behavioral health grants, and HHS SDOH initiatives. Each has specific eligibility criteria and application cycles.</p>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="tbl" style="min-width:820px;font-size:13px;">
+        <thead><tr><th>CHNA Priority</th><th>Federal Program</th><th>Eligibility Hook</th><th>Cycle / Status</th><th>Award Range</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Access to Care #1</strong></td><td class="small"><strong>CMMI AHEAD Model</strong><br>State-based total cost of care<br><strong>HRSA Health Center Fund</strong></td><td class="small">NEMT as SDOH intervention reducing avoidable utilization; value-based care alignment; LMI population</td><td class="small">AHEAD: state applications ongoing<br>HRSA: annual cycle (Feb-Apr)</td><td><span class="badge b-strong">$500K–$5M</span></td></tr>
+          <tr><td><strong>Mental Health #2</strong></td><td class="small"><strong>SAMHSA CCBHC</strong><br>Certified Community Behavioral Health<br><strong>SAMHSA Block Grant</strong></td><td class="small">Transportation as barrier to behavioral health engagement; CCBHC transportation benefit requirement</td><td class="small">CCBHC: rolling applications<br>Block grant: state-allocated</td><td><span class="badge b-mod">$250K–$2M</span></td></tr>
+          <tr><td><strong>Food Security #3</strong></td><td class="small"><strong>USDA Community Facilities</strong><br><strong>HHS ACF Healthy Food</strong></td><td class="small">Healthcare-food bundled delivery; LMI geography; channel One partnership as community anchor</td><td class="small">USDA: rolling<br>ACF: annual</td><td><span class="badge b-mod">$50K–$500K</span></td></tr>
+          <tr><td><strong>Multi-Priority</strong></td><td class="small"><strong>HRSA Rural Health Care</strong><br><strong>ARC / USDA Rural Dev.</strong></td><td class="small">Rural service area in Olmsted/Dodge; multi-sector partnership (Mayo + Channel One + SERCC)</td><td class="small">Annual NOFAs — check grants.gov</td><td><span class="badge b-strong">$300K–$3M</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="border-left:4px solid #1D4ED8;">
+      <strong style="color:#1D4ED8;">Federal Application Note</strong>
+      <p class="small" style="margin-top:6px;">Federal applications typically require SF-424 cover forms, program narrative, logic model, budget justification, and evaluation plan. Use the Funding Application Builder (Tab 04) set to Federal mode to generate the SF-424 aligned narrative pre-populated with your CHNA data.</p>
+    </div>
+  </div>
+
+  <!-- State Medicaid pathway -->
+  <div id="fp_map_state" class="fp-map-panel" style="display:none">
+    <div class="section-title" style="font-size:15px;margin-bottom:4px;">CHNA Priority &rarr; State Medicaid / Waiver Mapping</div>
+    <p class="small" style="margin-bottom:14px;">Minnesota DHS administers several SDOH pilot programs, 1115 waiver authorities, and value-based care initiatives that explicitly cover non-medical transportation as a covered benefit or community investment.</p>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="tbl" style="min-width:820px;font-size:13px;">
+        <thead><tr><th>CHNA Priority</th><th>MN Program / Authority</th><th>Mechanism</th><th>Documentation Required</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Access to Care #1</strong></td><td class="small"><strong>MN SNBC Waiver</strong> (Special Needs Basic Care)<br><strong>MN DHS NEMT Benefit</strong> (existing MA benefit)</td><td class="small">Medicaid NEMT is an existing covered benefit for MA enrollees — billing mechanism already in statute. SNBC waiver expands to dual-eligibles.</td><td class="small">ICD-10 Z75.3 transport barrier documentation; prior authorization per DHS protocol</td><td><span class="badge b-strong">Active benefit</span></td></tr>
+          <tr><td><strong>Mental Health #2</strong></td><td class="small"><strong>MN BH SDOH Pilot</strong><br><strong>MN CCBHC State Plan</strong></td><td class="small">State plan amendment funds transportation to behavioral health services as SDOH intervention; CCBHC transportation benefit</td><td class="small">CHNA priority documentation; LMI census tract data; clinical necessity</td><td><span class="badge b-mod">Pilot stage</span></td></tr>
+          <tr><td><strong>Multi-Priority</strong></td><td class="small"><strong>MN 1115 Waiver SDOH</strong><br><strong>MA Value-Based Arrangements</strong></td><td class="small">1115 waiver SDOH reinvestment funds; managed care organization investments in SDOH as per DHS contract requirements</td><td class="small">Waiver documentation; MCO contract alignment; CHNA as supporting evidence</td><td><span class="badge b-mod">Pending CMS approval</span></td></tr>
+          <tr><td><strong>ACO / VBC</strong></td><td class="small"><strong>MN MAPCP / MHCP ACO</strong></td><td class="small">ACO shared savings reinvestment in SDOH; NEMT as qualifying ACO community investment under MN MHCP ACO contracts</td><td class="small">ACO contract; quality measure documentation; NEMT trip-to-outcome linkage</td><td><span class="badge b-strong">Active ACOs</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="border-left:4px solid #047857;">
+      <strong style="color:#047857;">MN Medicaid NEMT is Already a Covered Benefit</strong>
+      <p class="small" style="margin-top:6px;">Unlike CRA or philanthropy, Medicaid NEMT reimbursement is an existing statutory benefit for Medical Assistance enrollees in Minnesota. The opportunity here is ensuring Mayo's LMI patients are accessing this benefit — and layering SDOH waiver funding on top for non-Medicaid patients with documented transport barriers.</p>
+    </div>
+  </div>
+
+  <!-- Employer/Coalition pathway -->
+  <div id="fp_map_employ" class="fp-map-panel" style="display:none">
+    <div class="section-title" style="font-size:15px;margin-bottom:4px;">CHNA Priority &rarr; Employer / Coalition Mapping</div>
+    <p class="small" style="margin-bottom:14px;">Self-insured employers and employer health coalitions increasingly fund SDOH interventions as direct investments in workforce productivity and healthcare cost reduction. Mayo is both a major regional employer and a healthcare provider — a unique dual position.</p>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="tbl" style="min-width:820px;font-size:13px;">
+        <thead><tr><th>CHNA Priority</th><th>Employer Mechanism</th><th>Business Case</th><th>Key Partners</th><th>Funding Range</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Access to Care #1</strong></td><td class="small">Employer self-funded health plan SDOH benefit; employee transportation assistance program (ETAP)</td><td class="small">Reduced absenteeism from missed appointments; lower emergency utilization for chronic conditions; workforce retention</td><td class="small">Mayo as employer-sponsor<br>IBM, Benchmark Electronics<br>Rochester community employers</td><td><span class="badge b-mod">$25K–$200K/yr</span></td></tr>
+          <tr><td><strong>Mental Health #2</strong></td><td class="small">Employee Assistance Program (EAP) transportation benefit; behavioral health access investment</td><td class="small">Mental health access gaps cost employers $2,000–$5,000/employee/yr in productivity loss; transportation is documented barrier</td><td class="small">Rochester Area Chamber<br>SE MN Employer Coalition<br>Mayo HR as internal champion</td><td><span class="badge b-mod">$10K–$100K/yr</span></td></tr>
+          <tr><td><strong>Multi-Priority</strong></td><td class="small">Rochester Compact / community investment consortium; employer coalition pooled fund</td><td class="small">Community health investment as talent attraction and retention differentiator; ESG reporting; workforce pipeline from LMI communities</td><td class="small">Rochester Area Economic Development<br>Destination Medical Center Corp<br>Mayo Anchor Institution strategy</td><td><span class="badge b-strong">$100K–$1M pooled</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="border-left:4px solid #C9A227;">
+      <strong style="color:#7A5C00;">Mayo's Anchor Institution Advantage</strong>
+      <p class="small" style="margin-top:6px;">Mayo Clinic is Rochester's largest employer and healthcare anchor. An NEMT program positioned as a community workforce investment — not just a clinical benefit — opens doors to Destination Medical Center Corporation funding, Rochester Area Economic Development investment, and the Compact framework that already exists for community collaboration.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="secondary" onclick="mayoNav('chna')">&larr; Back to CHNA</button>
+    <button class="primary" onclick="mayoNav('roi')">Build Financial Model &rarr;</button>
+  </div>
+</div>
+</div>
+<div class="step-foot">
+  <p class="step-bridge">The regulatory and funding pathway is confirmed. Now the question becomes: <em>what is this actually worth at scale?</em> The ROI model works for every funding pathway — the four revenue layers are internal to the health system regardless of who provides external support.</p>
+  <button class="step-cont" onclick="go('roi')">Build the financial model &rarr;</button>
+</div>
+</section>
+<section id="s_roi" class="step" style="display:none"><div class="story-hdr"><div class="story-num">03</div><div><h2 class="story-hl">The financial case is stronger than most boards expect.</h2><p class="story-sub">An NEMT program at Mayo’s scale isn’t just a cost — it’s a revenue recovery mechanism. Kept appointments generate contribution margin. SDOH documentation creates coding uplift. CCM/TCM billing layers add incremental revenue. VBC quality earn-backs close the loop. Enable each layer below and watch the ROI build in real time.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">Full ROI Model &mdash; Mayo Clinic / Olmsted County Scale</div>
           <p class="small" style="margin-bottom:4px;">59,421 Olmsted County patients in 2024 · 42,103 inpatient admissions · 84,800 ER visits · REP longitudinal population data since 1966. Defaults calibrated to Mayo's ambulatory pilot scale. Enable all layers to build the complete value stack.</p>
           <div id="mayo_l0_summary" style="margin-bottom:14px;display:none;background:rgba(201,162,39,.07);border-left:3px solid #C9A227;border-radius:8px;padding:10px 14px;"></div>
 
@@ -1182,7 +1305,7 @@ button.secondary{
                   <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Projected score with NEMT</label><input id="mr_proj" type="number" value="81" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div id="mr_cliff_row1" style="display:none;"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Threshold score for bonus</label><input id="mr_thresh" type="number" value="77" oninput="calcMayoROI()" class="mayo-input"/></div>
                   <div id="mr_cliff_row2" style="display:none;"><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Bonus amount if threshold met ($)</label><input id="mr_cliffbonus" type="number" value="300000" oninput="calcMayoROI()" class="mayo-input"/></div>
-                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">Bank CRA contribution ($/yr)</label><input id="mr_bank" type="number" value="75000" oninput="calcMayoROI()" class="mayo-input"/></div>
+                  <div><label class="small" style="font-weight:700;display:block;margin-bottom:3px;">External funding contribution ($/yr)</label><input id="mr_bank" type="number" value="75000" oninput="calcMayoROI()" class="mayo-input"/></div>
                 </div></div>
               </div>
             </div>
@@ -1345,7 +1468,20 @@ button.secondary{
             <button class="primary" onclick="mayoNav('cra')">Build CRA Application &rarr;</button>
             <button onclick="mayoNav('draft')" style="background:linear-gradient(135deg,#7A5C00,#B88A00);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128196; Generate Artifacts &rarr;</button>
           </div>
-        </div></div><div class="step-foot"><p class="step-bridge">You have the financial case. Now build the document a bank’s CRA officer needs to see — a five-section justification memo that qualifies this program as a community development activity in their exam file.</p><button class="step-cont" onclick="go('cra')">Build the bank application →</button></div></section><section id="s_cra" class="step" style="display:none"><div class="story-hdr"><div class="story-num">04</div><div><h2 class="story-hl">Every bank with a Rochester branch has a CRA obligation here.</h2><p class="story-sub">The Rochester MSA CRA Assessment Area covers all of Olmsted and Dodge counties, confirmed by OCC examinations. Any bank with branches here must demonstrate community reinvestment activity. Your program, documented against Mayo’s 2025 CHNA, is exactly what their compliance officer needs.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">CRA Activity Justification Builder &mdash; Five Sections</div>
+        </div></div><div class="step-foot"><p class="step-bridge">You have the financial case. Now build the document a bank’s CRA officer needs to see — a five-section justification memo that qualifies this program as a community development activity in their exam file.</p><button class="step-cont" onclick="go('cra')">Build the bank application →</button></div></section><section id="s_cra" class="step" style="display:none"><div class="story-hdr"><div class="story-num">04</div><div><h2 class="story-hl">Every bank with a Rochester branch has a CRA obligation here.</h2><p class="story-sub">The Rochester MSA CRA Assessment Area covers all of Olmsted and Dodge counties, confirmed by OCC examinations. Any bank with branches here must demonstrate community reinvestment activity. Your program, documented against Mayo’s 2025 CHNA, is exactly what their compliance officer needs.</p></div></div><div class="tool-body"><!-- Funder selector -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);">Application type:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;" id="fa_tabs">
+      <button onclick="setAppPathway('cra')"    id="fat_cra"    class="fpm-btn fpm-active">🏦 Bank / CRA</button>
+      <button onclick="setAppPathway('phil')"   id="fat_phil"   class="fpm-btn">🌱 Philanthropy / LOI</button>
+      <button onclick="setAppPathway('fed')"    id="fat_fed"    class="fpm-btn">🏛 Federal SF-424</button>
+      <button onclick="setAppPathway('state')"  id="fat_state"  class="fpm-btn">🏥 State / Medicaid</button>
+    </div>
+  </div>
+
+  <!-- CRA panel (existing content) -->
+  <div id="fa_panel_cra">
+  <div class="section-title" style="font-size:17px;margin-bottom:4px;">CRA Activity Justification Builder &mdash; Five Sections</div>
           <p class="small" style="margin-bottom:16px;">Pre-populated with 2025 Olmsted County CHNA data and Rochester MSA Assessment Area confirmation. Customize each field, then generate the draft document.</p>
           <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
             <div style="background:linear-gradient(135deg,var(--navy),#1a3a5c);padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;font-weight:900;color:#E8C84A;min-width:26px;">1</span><div><div style="font-size:13px;font-weight:700;color:#fff;">CHNA Citation &amp; Community Health Need</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;">Required for IRS Schedule H and CRA community development credit</div></div></div>
@@ -1403,7 +1539,91 @@ button.secondary{
               </div>
             </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="secondary" onclick="mayoNav('roi')">&larr; Back to ROI</button><button class="secondary" onclick="mayoNav('banks')">Identify Banks &rarr;</button><button class="primary" onclick="mayoNav('draft')">Generate Full Draft &rarr;</button></div>
+  </div><!-- /fa_panel_cra -->
+
+  <!-- Philanthropy LOI panel -->
+  <div id="fa_panel_phil" style="display:none">
+    <div class="section-title" style="font-size:17px;margin-bottom:12px;">Letter of Intent (LOI) Builder &mdash; Five Sections</div>
+    <p class="small" style="margin-bottom:16px;color:var(--muted);">Foundation LOIs typically run 2-3 pages and must demonstrate: organizational credibility, community need, program design, evidence base, and evaluation plan. Each section below is pre-populated from your CHNA data and ROI model.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="callout" style="border-left:4px solid #7C3AED;">
+        <strong style="color:#4c1d95;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Section 1 — Organizational Credibility</strong>
+        <p class="small" style="margin-top:6px;">Mayo Clinic is a 501(c)(3) nonprofit hospital system with a 2025 CHNA documenting community health needs across Olmsted and Dodge Counties. Mayo meets all three IRS 501(r)(3) community input requirements — placing it in the top 10.5% of U.S. nonprofit hospitals for CHNA process rigor (Burns et al., JAMA Network Open, 2026). The Rochester Epidemiology Project provides a 56-million-record longitudinal database enabling publication-quality outcomes attribution.</p>
+        <div class="small" style="color:#6b21a8;margin-top:4px;font-style:italic;">Customize: Insert total community benefit as % of expenses from your most recent Schedule H Part I.</div>
+      </div>
+      <div class="callout" style="border-left:4px solid #7C3AED;">
+        <strong style="color:#4c1d95;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Section 2 — Community Need</strong>
+        <p class="small" style="margin-top:6px;">The 2025 Olmsted County CHNA documents that 34% of adults delayed medical care, with transportation identified as the primary barrier. 15% lack a primary care provider; 9.7% have a disability with documented access barriers. These rates disproportionately affect LMI residents, foreign-born populations (11.1%), and renters — the same demographics served by non-emergency medical transportation. The Shekelle meta-analysis (BMC Public Health, 2022; n=12 studies) demonstrates a 37% reduction in missed appointment odds with targeted NEMT, with HIGH certainty evidence.</p>
+        <div class="small" style="color:#6b21a8;margin-top:4px;font-style:italic;">Customize: Insert county-specific LMI percentage and foundation-relevant demographic data from your CHNA.</div>
+      </div>
+      <div class="callout" style="border-left:4px solid #7C3AED;">
+        <strong style="color:#4c1d95;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Section 3 — Program Design</strong>
+        <p class="small" style="margin-top:6px;">The proposed program provides coordinated non-emergency medical transportation to LMI patients with documented transportation barriers (ICD-10 Z75.3) across Mayo Clinic's Olmsted County service area. Year 1 pilot: 200-400 targeted trips/month via vendor SLA (Uber Health / LogistiCare). Patient identification via EHR-integrated FindHelp social needs screening. Trip authorization integrated into care coordination workflow. Vendor performance tracked against KPI dashboard (show rate, on-time performance, patient satisfaction).</p>
+        <div class="small" style="color:#6b21a8;margin-top:4px;font-style:italic;">Customize: Insert your vendor selection and EHR platform name.</div>
+      </div>
+      <div class="callout" style="border-left:4px solid #7C3AED;">
+        <strong style="color:#4c1d95;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Section 4 — Evaluation Plan</strong>
+        <p class="small" style="margin-top:6px;">Primary outcome: appointment show rate (intervention vs. matched control, propensity-scored using REP records). Secondary outcomes: HbA1c and blood pressure control at 12 months; 30-day readmission rate; ED utilization. Study design: difference-in-differences with inverse probability weighting. Estimated sample: 400 intervention / 800 matched controls. Publication target: Journal of General Internal Medicine or Health Services Research. Timeline: enrollment months 1-6; analysis months 7-12; submission month 14.</p>
+        <div class="small" style="color:#6b21a8;margin-top:4px;font-style:italic;">This REP-based evaluation design is a key differentiator — most transportation programs cannot offer peer-reviewed attribution evidence.</div>
+      </div>
+      <div class="callout" style="border-left:4px solid #7C3AED;">
+        <strong style="color:#4c1d95;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Section 5 — Budget Narrative</strong>
+        <p class="small" style="margin-top:6px;">Year 1 total request: $[grant amount]. Trip costs: $65/round trip &times; 3,600 trips = $234,000 (70% of budget). Program coordination (0.5 FTE care coordinator at $55K fully loaded): $27,500. Data and evaluation (REP linkage fee + analyst time): $18,500. Total direct: $280,000. Overhead at 10%: $28,000. Grand total Year 1: $308,000. Sustainability: program transitions to FFS contribution margin positive (Layer 0 ROI) in Year 2; external funding covers Year 1 scale-up costs only.</p>
+        <div class="small" style="color:#6b21a8;margin-top:4px;font-style:italic;">Customize: Adjust trip volume and staff costs to your actual model inputs from Tab 03.</div>
+      </div>
+    </div>
+  </div><!-- /fa_panel_phil -->
+
+  <!-- Federal SF-424 panel -->
+  <div id="fa_panel_fed" style="display:none">
+    <div class="section-title" style="font-size:17px;margin-bottom:12px;">Federal Application Builder &mdash; SF-424 Aligned</div>
+    <p class="small" style="margin-bottom:16px;color:var(--muted);">Federal applications follow Standard Form 424 (SF-424) cover sheet requirements. Core sections: cover information, project narrative, logic model, budget justification, and assurances. Pre-populated below for HRSA Health Center Fund / CMMI AHEAD alignment.</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="callout" style="border-left:4px solid #1D4ED8;">
+        <strong style="color:#1D4ED8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">SF-424 Cover Information</strong>
+        <p class="small" style="margin-top:6px;"><strong>Applicant Organization:</strong> Mayo Clinic &nbsp;|&nbsp; <strong>EIN:</strong> [Insert] &nbsp;|&nbsp; <strong>DUNS/UEI:</strong> [Insert] &nbsp;|&nbsp; <strong>Congressional District:</strong> MN-01 &nbsp;|&nbsp; <strong>Project Title:</strong> Community Non-Emergency Medical Transportation Program — Olmsted County SDOH Access Initiative &nbsp;|&nbsp; <strong>Project Period:</strong> 36 months &nbsp;|&nbsp; <strong>Federal Agency:</strong> HRSA / CMMI &nbsp;|&nbsp; <strong>CFDA Number:</strong> [Insert per NOFA]</p>
+      </div>
+      <div class="callout" style="border-left:4px solid #1D4ED8;">
+        <strong style="color:#1D4ED8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Project Narrative — Statement of Need</strong>
+        <p class="small" style="margin-top:6px;">The 2025 Olmsted County Community Health Needs Assessment documents transportation as the primary barrier to care access, affecting 34% of adults. Federal data confirms 5.8 million Americans delayed medical care due to transportation in 2017 (Wolfe, McDonald &amp; Holmes, AJPH 2020), with disproportionate impact on Medicaid, LMI, and disability populations — the exact populations served by this program. Mayo Clinic's proposed intervention addresses HRSA Health Equity priorities and CMMI's AHEAD model SDOH investment criteria through a targeted, evidence-based NEMT program aligned to three documented CHNA priorities.</p>
+      </div>
+      <div class="callout" style="border-left:4px solid #1D4ED8;">
+        <strong style="color:#1D4ED8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Logic Model</strong>
+        <p class="small" style="margin-top:6px;"><strong>Inputs:</strong> Federal award, Mayo care coordination staff, vendor NEMT contracts, EHR screening workflow, REP database &nbsp;→&nbsp; <strong>Activities:</strong> Social needs screening, transportation barrier identification (Z75.3), trip coordination, outcome tracking &nbsp;→&nbsp; <strong>Outputs:</strong> 3,600 NEMT trips/yr, 400 patients enrolled, Z-code documentation rate &gt;80% &nbsp;→&nbsp; <strong>Short-term Outcomes:</strong> 25% no-show reduction, HbA1c improvement in diabetic cohort &nbsp;→&nbsp; <strong>Long-term Outcomes:</strong> Reduced ED utilization, lower 30-day readmissions, peer-reviewed publication</p>
+      </div>
+      <div class="callout" style="border-left:4px solid #1D4ED8;">
+        <strong style="color:#1D4ED8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Budget Justification</strong>
+        <p class="small" style="margin-top:6px;">See LOI Section 5 above for line-item budget. Federal indirect cost rate: [Insert negotiated rate or use 10% de minimis]. Match requirement: Mayo Clinic provides in-kind match through care coordination staff time (0.5 FTE), EHR integration, and REP database access — estimated value $85,000/year. Federal request covers direct trip costs and evaluation expenses only.</p>
+      </div>
+    </div>
+  </div><!-- /fa_panel_fed -->
+
+  <!-- State Medicaid panel -->
+  <div id="fa_panel_state" style="display:none">
+    <div class="section-title" style="font-size:17px;margin-bottom:12px;">State Program Application &mdash; MN Medicaid / Waiver Aligned</div>
+    <p class="small" style="margin-bottom:16px;color:var(--muted);">Minnesota DHS applications for SDOH investments, SNBC waiver, and ACO community reinvestment funds require demonstration of Medicaid population need, clinical evidence, and sustainability plan. Pre-populated below.</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="callout" style="border-left:4px solid #047857;">
+        <strong style="color:#047857;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Medicaid Population Need Documentation</strong>
+        <p class="small" style="margin-top:6px;">Mayo Clinic serves a Medicaid population in Olmsted County where transportation barriers are documented at 34% overall and are disproportionately higher among MA enrollees. ICD-10 Z75.3 screening is integrated into Mayo's EHR-based social needs workflow via FindHelp. Olmsted County MA enrollment: [Insert current count from DHS]. Estimated transportation-barrier MA patients: [Insert = MA enrollment × 0.34 × 0.28].</p>
+      </div>
+      <div class="callout" style="border-left:4px solid #047857;">
+        <strong style="color:#047857;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Clinical Evidence &amp; SDOH Alignment</strong>
+        <p class="small" style="margin-top:6px;">NEMT is an existing MN Medicaid covered benefit under MN Statutes 256B.0625. This application requests supplemental SDOH investment funding for non-MA patients with documented transport barriers who are not currently Medicaid-eligible but are LMI-identified. Clinical evidence: Shekelle 2022 meta-analysis (37% no-show reduction); Balasubramanian 2025 (32% readmission reduction with outpatient follow-up). Aligns to MN DHS Health Equity Framework priority: Remove barriers to preventive and primary care.</p>
+      </div>
+      <div class="callout" style="border-left:4px solid #047857;">
+        <strong style="color:#047857;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Sustainability Plan</strong>
+        <p class="small" style="margin-top:6px;">State funding covers Year 1 non-MA patient trip costs. From Year 2 forward: MA-eligible patients billed under existing Medicaid NEMT benefit. Non-MA LMI patients funded via CRA bank consortium (application in parallel). Program achieves full sustainability by Year 3 through FFS contribution margin recovery and CCM/TCM billing — documented in the ROI model (Tab 03). State investment generates ongoing Medicaid cost avoidance of $[Layer 0 capitated ED + readmission avoided].</p>
+      </div>
+    </div>
+  </div><!-- /fa_panel_state -->
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+    <button class="secondary" onclick="mayoNav('roi')">&larr; Back to ROI</button>
+    <button class="secondary" onclick="mayoNav('banks')">Funder Strategy &rarr;</button>
+    <button class="primary" onclick="mayoNav('draft')">Generate Artifacts &rarr;</button>
+  </div>
         </div></div><div class="step-foot"><p class="step-bridge">The application is ready. The next question is who to call first, what to say, and in what order — based on each bank’s actual CRA exam rating, assessment area exposure, and current exam cycle.</p><button class="step-cont" onclick="go('banks')">See which banks to approach →</button></div></section><section id="s_banks" class="step" style="display:none"><div class="story-hdr"><div class="story-num">05</div><div><h2 class="story-hl">Seven banks. One flagship partnership. A replicable consortium.</h2><p class="story-sub">Rochester has national banks protecting Outstanding ratings, regional banks looking to improve, and community banks for whom a Mayo partnership is the most prestigious CRA activity available. The strategy below maps each institution’s motivation, suggested ask amounts, and the exact framing that works for each.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">Bank Engagement &mdash; Rochester MSA Assessment Area</div>
           <p class="small" style="margin-bottom:14px;">The Rochester MSA AA (Olmsted + Dodge counties) includes national, regional, and community banks all subject to CRA. Click each institution for a tailored pitch approach based on CRA exam history.</p>
           <div class="callout" style="border-left:4px solid #C9A227;background:rgba(201,162,39,.06);margin-bottom:16px;"><strong style="color:#7A5C00;">&#127919; Mayo&rsquo;s Strategic Advantage</strong><p class="small" style="margin-top:5px;">Mayo Clinic is the largest employer in Olmsted County. A CRA partnership with Mayo carries reputational value that bank CRA officers actively seek &mdash; it is a marquee exam file relationship. Lead with institutional standing, not dollar amount, then present the complete evidence package.</p></div>
@@ -1598,7 +1818,25 @@ button.secondary{
           </style>
 
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;"><button class="secondary" onclick="mayoNav('cra')">&larr; Back to Application</button><button class="primary" onclick="mayoNav('draft')">Generate Complete Draft &rarr;</button></div>
-        </div></div><div class="step-foot"><p class="step-bridge">You know who to approach and what to say. The last step generates the complete package — seven audit-ready documents that make this program immediately actionable for your team, your board, and your banking partners.</p><button class="step-cont" onclick="go('draft')">Generate your documents →</button></div></section><section id="s_draft" class="step" style="display:none"><div class="story-hdr"><div class="story-num">06</div><div><h2 class="story-hl">In sixty minutes, you’ve built what most health systems spend months on.</h2><p class="story-sub">Seven documents. Each pre-populated with your CHNA data and ROI model outputs. Each saving four to eight hours of preparation. This is what the Aqueduct platform makes possible — not just analysis, but the complete package your team needs to move from evidence to funded program.</p></div></div><div class="tool-body"><div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
+        </div></div><div class="step-foot"><p class="step-bridge">You know who to approach and what to say. The last step generates the complete package — seven audit-ready documents that make this program immediately actionable for your team, your board, and your banking partners.</p><button class="step-cont" onclick="go('draft')">Generate your documents →</button></div></section><section id="s_draft" class="step" style="display:none"><div class="story-hdr"><div class="story-num">06</div><div><h2 class="story-hl">In sixty minutes, you’ve built what most health systems spend months on.</h2><p class="story-sub">Seven documents. Each pre-populated with your CHNA data and ROI model outputs. Each saving four to eight hours of preparation. This is what the Aqueduct platform makes possible — not just analysis, but the complete package your team needs to move from evidence to funded program.</p></div></div><div class="tool-body"><!-- Artifact funder selector -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);">Funder pathway for Artifacts:</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button onclick="setArtPathway('cra')"   id="apt_cra"   class="fpm-btn fpm-active">🏦 Bank / CRA</button>
+      <button onclick="setArtPathway('phil')"  id="apt_phil"  class="fpm-btn">🌱 Philanthropy</button>
+      <button onclick="setArtPathway('fed')"   id="apt_fed"   class="fpm-btn">🏛 Federal</button>
+      <button onclick="setArtPathway('state')" id="apt_state" class="fpm-btn">🏥 State</button>
+    </div>
+  </div>
+
+  <!-- Universal artifacts label -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);">Universal Artifacts</div>
+    <div style="flex:1;height:1px;background:rgba(13,148,136,.2);"></div>
+    <div style="font-size:10px;color:var(--muted);">Generated for all funding pathways</div>
+  </div>
+
+  <div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
           <p class="small" style="margin-bottom:14px;">Seven high-value artifacts pre-populated with 2025 Olmsted County CHNA data and your ROI model inputs. Each saves 4&ndash;8 hours of preparation. Generate, review, copy, and adapt. All financial figures pull live from the ROI model.</p>
 
           <!-- Artifact thumbnail grid -->
@@ -1770,6 +2008,120 @@ button.secondary{
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+          <!-- Funder-specific artifacts section -->
+          <div style="margin-top:24px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div id="apt_specific_label" style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7C3AED;">Bank / CRA Artifacts</div>
+              <div style="flex:1;height:1px;background:rgba(124,58,237,.2);"></div>
+              <div style="font-size:10px;color:var(--muted);">Specific to selected funding pathway</div>
+            </div>
+
+            <!-- CRA-specific -->
+            <div id="apt_specific_cra" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+              <div class="doc-card" onclick="openDocPreview('cra_memo')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">CRA Memo</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">CRA Justification Memo</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">OCC / FDIC exam ready</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">5-section bank memo</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('bank_term')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">Term Sheet</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Bank Partnership Term Sheet</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">CRA investment structure</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Binding term sheet template</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('board_exec')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">Board Summary</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Board Executive Summary</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">3-scenario ROI brief</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">1-page board brief</span></div>
+              </div>
+            </div>
+
+            <!-- Philanthropy-specific -->
+            <div id="apt_specific_phil" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+              <div class="doc-card" onclick="openDocPreview('loi_draft')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">LOI Draft</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Letter of Intent</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Foundation-ready 2-page LOI</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">5-section LOI template</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('budget_narrative')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Budget</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Budget Narrative</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Line-item justification</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">XLSX</span><span style="font-size:10px;color:var(--muted);">Funder-formatted budget</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('impact_onepager')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Impact Brief</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Impact One-Pager</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Donor-facing summary</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">1-page program brief</span></div>
+              </div>
+            </div>
+
+            <!-- Federal-specific -->
+            <div id="apt_specific_fed" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+              <div class="doc-card" onclick="openDocPreview('sf424_cover')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">SF-424</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">SF-424 Cover Sheet</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Federal standard form</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Pre-filled cover form</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('program_narrative')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Narrative</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Program Narrative</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Need · Design · Eval · Budget</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Full federal narrative</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('logic_model')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Logic Model</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Program Logic Model</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Inputs → Outputs → Outcomes</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">W.K. Kellogg format</span></div>
+              </div>
+            </div>
+
+            <!-- State-specific -->
+            <div id="apt_specific_state" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+              <div class="doc-card" onclick="openDocPreview('medicaid_narrative')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#047857,#065f46);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">MN DHS</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Medicaid Program Narrative</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">SDOH waiver application</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#047857;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">MN DHS-aligned narrative</span></div>
+              </div>
+              <div class="doc-card" onclick="openDocPreview('medicaid_budget')">
+                <div class="doc-card-preview" style="background:linear-gradient(135deg,#047857,#065f46);">
+                  <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Budget</div>
+                  <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">State Application Budget</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px;">Match documentation included</div>
+                </div>
+                <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#047857;color:#fff;">XLSX</span><span style="font-size:10px;color:var(--muted);">DHS budget template</span></div>
+              </div>
+            </div>
+
+          </div><!-- /funder-specific artifacts -->
+
             <button class="secondary" onclick="mayoNav('banks')">&larr; Back to Banks</button>
             <button class="secondary" onclick="mayoNav('roi')">&#128200; Adjust ROI Inputs</button>
             <button class="primary" onclick="mayoNav('chna')">&#8635; Review CHNA Evidence</button>
@@ -4191,4 +4543,40 @@ document.addEventListener('DOMContentLoaded',()=>{
     };
   }
 });
+</script>
+<script>
+/* ═══ Tab 02: Funding Pathway Map selector ══════════════════════════════ */
+window.setMapPathway = function(mode) {
+  ['cra','phil','fed','state','employ'].forEach(function(m) {
+    var btn = document.getElementById('fpm_'+m);
+    var panel = document.getElementById('fp_map_'+m);
+    if (btn) btn.classList.toggle('fpm-active', m === mode);
+    if (panel) panel.style.display = m === mode ? 'block' : 'none';
+  });
+};
+
+/* ═══ Tab 04: Funding Application Builder selector ══════════════════════ */
+window.setAppPathway = function(mode) {
+  ['cra','phil','fed','state'].forEach(function(m) {
+    var btn = document.getElementById('fat_'+m);
+    var panel = document.getElementById('fa_panel_'+m);
+    if (btn) btn.classList.toggle('fpm-active', m === mode);
+    if (panel) panel.style.display = m === mode ? 'block' : 'none';
+  });
+};
+
+/* ═══ Tab 06: Artifact pathway selector ════════════════════════════════ */
+window.setArtPathway = function(mode) {
+  var labels = {cra:'Bank / CRA Artifacts', phil:'Philanthropy Artifacts', fed:'Federal Artifacts', state:'State / Medicaid Artifacts'};
+  ['cra','phil','fed','state'].forEach(function(m) {
+    var btn = document.getElementById('apt_'+m);
+    var panel = document.getElementById('apt_specific_'+m);
+    if (btn) btn.classList.toggle('fpm-active', m === mode);
+    if (panel) {
+      panel.style.display = m === mode ? 'grid' : 'none';
+    }
+  });
+  var lbl = document.getElementById('apt_specific_label');
+  if (lbl) lbl.textContent = labels[mode] || 'Artifacts';
+};
 </script>
