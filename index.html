@@ -1479,6 +1479,30 @@ button.secondary{
             </div>
 
             <div style="padding:14px 16px;background:#faf5ff;">
+
+              <!-- API key input -->
+              <div id="fi_apikey_row" style="display:flex;align-items:center;gap:8px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:9px 12px;margin-bottom:12px;flex-wrap:wrap;">
+                <span style="font-size:15px;flex-shrink:0;">🔑</span>
+                <div style="flex:1;min-width:200px;">
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:3px;">Anthropic API Key <span style="font-weight:400;color:#6b21a8;">— required to activate live research. Stored in session only, never sent anywhere except Anthropic.</span></div>
+                  <input id="fi_apikey" type="password" placeholder="sk-ant-…"
+                    style="width:100%;padding:5px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:monospace;background:#fff;color:#1a1a1a;"
+                    oninput="saveFunderKey(this.value)"/>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+                  <button onclick="toggleKeyVisibility()" id="fi_key_toggle"
+                    style="background:none;border:1px solid rgba(124,58,237,.25);border-radius:6px;padding:4px 8px;font-size:11px;color:#6b21a8;cursor:pointer;font-family:inherit;">
+                    👁 Show
+                  </button>
+                  <button onclick="forgetFunderKey()"
+                    style="background:none;border:1px solid rgba(185,28,28,.25);border-radius:6px;padding:4px 8px;font-size:11px;color:#B91C1C;cursor:pointer;font-family:inherit;"
+                    title="Remove saved API key from this browser">
+                    🗑 Forget
+                  </button>
+                  <span id="fi_key_status" style="font-size:11px;color:#6b21a8;"></span>
+                </div>
+              </div>
+
               <!-- Context summary pulled from model -->
               <div id="fi_context" style="font-size:11px;color:#6b21a8;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15);border-radius:7px;padding:7px 11px;margin-bottom:12px;line-height:1.6;"></div>
 
@@ -3921,9 +3945,62 @@ window.clearFunderResults = function() {
   const q=document.getElementById('fi_query'); if(q) q.value='';
 };
 
+window.saveFunderKey = function(val) {
+  if (val && val.startsWith('sk-ant')) {
+    localStorage.setItem('aq_fi_key', val);
+    const s = document.getElementById('fi_key_status');
+    if (s) { s.textContent = '✓ Key saved permanently in this browser'; s.style.color = '#047857'; }
+  } else {
+    const s = document.getElementById('fi_key_status');
+    if (s) { s.textContent = val.length > 5 ? 'Invalid key format' : ''; s.style.color = '#B91C1C'; }
+  }
+};
+
+window.toggleKeyVisibility = function() {
+  const inp = document.getElementById('fi_apikey');
+  const btn = document.getElementById('fi_key_toggle');
+  if (!inp) return;
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  if (btn) btn.textContent = isHidden ? '🙈 Hide' : '👁 Show';
+};
+
+window.forgetFunderKey = function() {
+  localStorage.removeItem('aq_fi_key');
+  const inp = document.getElementById('fi_apikey');
+  const s = document.getElementById('fi_key_status');
+  if (inp) inp.value = '';
+  if (s) { s.textContent = 'Key removed'; s.style.color = '#B91C1C'; }
+  setTimeout(() => { if (s) s.textContent = ''; }, 2000);
+};
+
+// Restore saved key on load
+(function() {
+  const saved = localStorage.getItem('aq_fi_key');
+  if (saved) {
+    const inp = document.getElementById('fi_apikey');
+    if (inp) { inp.value = saved; }
+    const s = document.getElementById('fi_key_status');
+    if (s) { s.textContent = '✓ Key restored from this browser'; s.style.color = '#047857'; }
+  }
+})();
+
 window.runFunderResearch = async function() {
   const query = (document.getElementById('fi_query')?.value||'').trim();
   if (!query) { document.getElementById('fi_query')?.focus(); return; }
+
+  const apiKey = document.getElementById('fi_apikey')?.value?.trim()
+    || localStorage.getItem('aq_fi_key') || '';
+
+  if (!apiKey || !apiKey.startsWith('sk-ant')) {
+    const resultsEl = document.getElementById('fi_results');
+    const resultsBody = document.getElementById('fi_results_body');
+    if (resultsEl) resultsEl.style.display = 'block';
+    if (resultsBody) resultsBody.textContent = '⚠ Please enter your Anthropic API key above (starts with sk-ant-…) to activate live research. You can get one at console.anthropic.com.';
+    document.getElementById('fi_apikey')?.focus();
+    return;
+  }
+
   const D = window._mayoROICache || {};
   const paymodel = document.getElementById('mr_paymodel')?.value||'ffs';
   const cptavail = document.getElementById('mr_cptavail')?.value||'yes';
@@ -3955,7 +4032,12 @@ Provide specific named organizations, programs, current status, typical award am
   try {
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1500,
@@ -3966,6 +4048,15 @@ Provide specific named organizations, programs, current status, typical award am
     });
     clearInterval(msgInt);
     const data=await resp.json();
+
+    if (data.error) {
+      if (loadEl) loadEl.style.display='none';
+      if (resultsEl) resultsEl.style.display='block';
+      if (resultsBody) resultsBody.textContent = `API error (${data.error.type}): ${data.error.message}\n\nIf you see "authentication_error", double-check your API key. If you see "permission_error", ensure your key has web search access.`;
+      if (runBtn){runBtn.disabled=false;runBtn.textContent='\uD83D\uDD0D Research Now';}
+      return;
+    }
+
     let text='';
     const urls=[];
     if(data.content&&Array.isArray(data.content)){
@@ -3976,19 +4067,21 @@ Provide specific named organizations, programs, current status, typical award am
         }
       }
     }
-    if(!text&&data.error) text=`Error: ${data.error.message}`;
     if(loadEl) loadEl.style.display='none';
     if(resultsEl) resultsEl.style.display='block';
-    if(resultsBody) resultsBody.textContent=text||'No results returned. Try rephrasing.';
+    if(resultsBody) {
+      resultsBody.style.whiteSpace = 'pre-wrap';
+      resultsBody.textContent=text||'No results returned. Try rephrasing your query.';
+    }
     if(sourcesEl&&urls.length){
       const unique=[...new Set(urls)].slice(0,5);
-      sourcesEl.innerHTML='<strong style="color:#6b21a8;">Sources:</strong> '+unique.map(u=>`<a href="${u}" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">${u}</a>`).join(' \u00b7 ');
+      sourcesEl.innerHTML='<strong style="color:#6b21a8;">Sources found:</strong> '+unique.map(u=>`<a href="${u}" target="_blank" style="color:#7C3AED;font-size:10px;word-break:break-all;">${u}</a>`).join(' \u00b7 ');
     }
   } catch(err){
     clearInterval(msgInt);
     if(loadEl) loadEl.style.display='none';
     if(resultsEl) resultsEl.style.display='block';
-    if(resultsBody) resultsBody.textContent=`Connection error: ${err.message}`;
+    if(resultsBody) resultsBody.textContent=`Network error: ${err.message}\n\nThis usually means a CORS or connectivity issue. Ensure you are loading this file over HTTPS (not file://) or from a local server. You can use: npx serve . and open http://localhost:3000`;
   }
   if(runBtn){runBtn.disabled=false;runBtn.textContent='\uD83D\uDD0D Research Now';}
 };
