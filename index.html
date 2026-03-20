@@ -1125,10 +1125,77 @@ button.secondary{
 
             <div id="fs_body" style="display:none;padding:16px;background:#faf5ff;">
 
+              <!-- 990 Fetch Panel -->
+              <div id="fs_fetch_panel" style="background:#fff;border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+                  <div style="font-size:20px;flex-shrink:0;margin-top:2px;">📋</div>
+                  <div style="flex:1;min-width:200px;">
+                    <div style="font-size:12px;font-weight:700;color:#4c1d95;margin-bottom:2px;">Pull data directly from your IRS Form 990</div>
+                    <div style="font-size:11px;color:#64748B;line-height:1.5;margin-bottom:10px;">Enter your organization name (and EIN for precision) — the platform retrieves your most recent Schedule H filing from ProPublica or IRS TEOS and auto-fills the four fields below. Requires your Anthropic API key to be saved in Tab 05.</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#4c1d95;display:block;margin-bottom:3px;">Organization name</label>
+                        <input id="fs_org_name" type="text" placeholder="e.g. Mayo Clinic"
+                          style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                      </div>
+                      <div>
+                        <label style="font-size:11px;font-weight:600;color:#4c1d95;display:block;margin-bottom:3px;">EIN <span style="font-weight:400;color:#94a3b8;">(optional — improves accuracy)</span></label>
+                        <input id="fs_org_ein" type="text" placeholder="e.g. 41-6011702"
+                          style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:monospace;background:#fff;"/>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                      <button onclick="fetchScheduleH()" id="fs_fetch_btn"
+                        style="background:linear-gradient(135deg,#7C3AED,#6d28d9);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
+                        📥 Fetch Schedule H from 990
+                      </button>
+                      <span id="fs_fetch_status" style="font-size:11px;color:#6b21a8;font-style:italic;"></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fetch result summary (shown after successful fetch) -->
+                <div id="fs_fetch_result" style="display:none;margin-top:12px;padding:10px 12px;background:#f5f3ff;border-radius:7px;border:1px solid rgba(124,58,237,.15);">
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:4px;">✓ Schedule H data retrieved — fields auto-populated below</div>
+                  <div id="fs_fetch_summary" style="font-size:11px;color:#334155;line-height:1.7;"></div>
+                </div>
+                <!-- No API key notice -->
+                <div id="fs_no_key_notice" style="display:none;margin-top:10px;font-size:11px;color:#7A5C00;background:rgba(201,162,39,.08);border-radius:6px;padding:7px 10px;line-height:1.5;">
+                  ⚠ To use auto-fill, save your Anthropic API key in the 🔑 field on the Bank Strategy tab (Tab 05). Or enter the values manually below using your most recent IRS Form 990.
+                </div>
+              </div>
+
               <!-- Plain-language explainer -->
               <div style="background:#fff;border-left:4px solid #7C3AED;border-radius:0 8px 8px 0;padding:12px 15px;margin-bottom:16px;">
                 <div style="font-size:12px;font-weight:700;color:#4c1d95;margin-bottom:5px;">What this tells you — and why it matters</div>
                 <div style="font-size:12px;color:#334155;line-height:1.7;">Every nonprofit hospital receives a tax exemption — from federal income tax, state taxes, and often property tax. In exchange, the IRS expects hospitals to provide community benefit proportional to that exemption value. The <strong>Fair Share Deficit/Surplus</strong> calculation answers the question your board and your auditors are increasingly being asked: <em>are you giving back as much as you're receiving?</em><br><br>A surplus means you're in a defensible position. A deficit means you're vulnerable to scrutiny — and more importantly, it shows where program investment would have the highest strategic return. This calculator uses your IRS 990 Schedule H data (or estimates if you don't have it handy) to give you that answer in real time.</div>
+              </div>
+
+              <!-- 990 Fetch row -->
+              <div style="background:#fff;border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+                  <span style="font-size:18px;flex-shrink:0;">📡</span>
+                  <div>
+                    <div style="font-size:12px;font-weight:700;color:#4c1d95;margin-bottom:2px;">Pull Schedule H data automatically</div>
+                    <div style="font-size:11px;color:#64748B;line-height:1.5;">Enter your organization name and EIN below and click <strong>Fetch from 990</strong> — the platform will retrieve your most recent IRS Form 990 Schedule H from ProPublica or IRS TEOS and auto-fill the four inputs below. No manual lookups required. Requires your Anthropic API key (set once in Tab 05 → Funder Strategy).</div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;">
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:#4c1d95;display:block;margin-bottom:3px;">Organization name</label>
+                    <input id="fs_org_name" type="text" value="Mayo Clinic"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:#4c1d95;display:block;margin-bottom:3px;">EIN <span style="font-weight:400;color:#94a3b8;">(improves accuracy)</span></label>
+                    <input id="fs_org_ein" type="text" placeholder="e.g. 41-6011702"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:monospace;background:#fff;"/>
+                  </div>
+                  <button onclick="fetchScheduleH()" id="fs_fetch_btn"
+                    style="background:linear-gradient(135deg,#7C3AED,#6d28d9);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:32px;display:flex;align-items:center;gap:5px;">
+                    📡 Fetch from 990
+                  </button>
+                </div>
+                <div id="fs_fetch_status" style="margin-top:8px;font-size:11px;color:#6b21a8;min-height:16px;line-height:1.5;"></div>
               </div>
 
               <!-- Three KPI inputs -->
@@ -2176,7 +2243,7 @@ button.secondary{
 
             <!-- CRA-specific -->
             <div id="apt_specific_cra" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="openDocPreview('cra_memo')">
+              <div class="doc-card" onclick="previewArtifact('cra_memo')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
                   <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">CRA Memo</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">CRA Justification Memo</div>
@@ -2184,7 +2251,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">5-section bank memo</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('bank_term')">
+              <div class="doc-card" onclick="previewArtifact('bank_term')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
                   <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">Term Sheet</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Bank Partnership Term Sheet</div>
@@ -2192,7 +2259,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Binding term sheet template</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('board_exec')">
+              <div class="doc-card" onclick="previewArtifact('board_exec')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
                   <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">Board Summary</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Board Executive Summary</div>
@@ -2204,7 +2271,7 @@ button.secondary{
 
             <!-- Philanthropy-specific -->
             <div id="apt_specific_phil" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="openDocPreview('loi_draft')">
+              <div class="doc-card" onclick="previewArtifact('loi_draft')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">LOI Draft</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Letter of Intent</div>
@@ -2212,7 +2279,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">5-section LOI template</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('budget_narrative')">
+              <div class="doc-card" onclick="previewArtifact('budget_narrative')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Budget</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Budget Narrative</div>
@@ -2220,7 +2287,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">XLSX</span><span style="font-size:10px;color:var(--muted);">Funder-formatted budget</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('impact_onepager')">
+              <div class="doc-card" onclick="previewArtifact('impact_onepager')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Impact Brief</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Impact One-Pager</div>
@@ -2232,7 +2299,7 @@ button.secondary{
 
             <!-- Federal-specific -->
             <div id="apt_specific_fed" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="openDocPreview('sf424_cover')">
+              <div class="doc-card" onclick="previewArtifact('sf424_cover')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">SF-424</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">SF-424 Cover Sheet</div>
@@ -2240,7 +2307,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Pre-filled cover form</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('program_narrative')">
+              <div class="doc-card" onclick="previewArtifact('program_narrative')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Narrative</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Program Narrative</div>
@@ -2248,7 +2315,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">Full federal narrative</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('logic_model')">
+              <div class="doc-card" onclick="previewArtifact('logic_model')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Logic Model</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Program Logic Model</div>
@@ -2260,7 +2327,7 @@ button.secondary{
 
             <!-- State-specific -->
             <div id="apt_specific_state" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="openDocPreview('medicaid_narrative')">
+              <div class="doc-card" onclick="previewArtifact('medicaid_narrative')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#047857,#065f46);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">MN DHS</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Medicaid Program Narrative</div>
@@ -2268,7 +2335,7 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#047857;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">MN DHS-aligned narrative</span></div>
               </div>
-              <div class="doc-card" onclick="openDocPreview('medicaid_budget')">
+              <div class="doc-card" onclick="previewArtifact('medicaid_budget')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#047857,#065f46);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">Budget</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">State Application Budget</div>
@@ -3678,8 +3745,12 @@ window.dpmDownload = function() {
 };
 
 window.previewArtifact = function(type) {
-  // Generate the text content so caches are fresh
-  generateMayoDraft(type);
+  // New funder-specific artifacts don't use the text draft system
+  var newTypes = ['loi_draft','budget_narrative','impact_onepager','sf424_cover',
+    'program_narrative','logic_model','medicaid_narrative','medicaid_budget'];
+  if (newTypes.indexOf(type) === -1) {
+    generateMayoDraft(type);
+  }
   const D   = window._mayoROICache || {};
   const dr  = window._mayoCurrentDraft || {};
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
@@ -5268,5 +5339,263 @@ window.fsFmt = function(el) {
   var newLen = el.value.length;
   var newCursor = cursor + (newLen - oldLen);
   try { el.setSelectionRange(Math.max(0, newCursor), Math.max(0, newCursor)); } catch(e) {}
+};
+</script>
+<script>
+/* ═══ Fair Share — Fetch Schedule H from 990 via AI + web search ════════ */
+window.fetchScheduleH = function() {
+  var apiKey = localStorage.getItem('aq_fi_key') || '';
+  apiKey = apiKey.replace(/[^\x20-\x7E]/g, '').trim();
+
+  var statusEl = document.getElementById('fs_fetch_status');
+  var btn = document.getElementById('fs_fetch_btn');
+
+  if (!apiKey || apiKey.indexOf('sk-ant') !== 0) {
+    if (statusEl) {
+      statusEl.innerHTML = '⚠ No API key found. Go to <strong>Tab 05 → Funder Strategy → Funder Intelligence</strong> and enter your Anthropic API key once — it will be remembered here automatically.';
+      statusEl.style.color = '#B91C1C';
+    }
+    return;
+  }
+
+  var orgName = (document.getElementById('fs_org_name') || {}).value || 'Mayo Clinic';
+  var orgEIN  = (document.getElementById('fs_org_ein')  || {}).value || '';
+
+  if (statusEl) {
+    statusEl.style.color = '#6b21a8';
+    statusEl.textContent = 'Searching IRS TEOS and ProPublica for ' + orgName + ' 990 Schedule H…';
+  }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
+
+  var sysPrompt = 'You are a healthcare finance specialist retrieving IRS Form 990 Schedule H data. ' +
+    'Search ProPublica Nonprofit Explorer at projects.propublica.org/nonprofits and IRS Tax Exempt Organization Search at apps.irs.gov/app/eos for the most recent available Form 990 filing for ' + orgName + (orgEIN ? ' (EIN: ' + orgEIN + ')' : '') + '. ' +
+    'Extract the following four specific dollar values from Schedule H Part I. If exact figures are unavailable, provide your best estimate based on the data found and note it as an estimate. ' +
+    'Return ONLY a JSON object with exactly these four keys and integer values (no dollar signs, no commas): ' +
+    '{ "total_expenses": <Part IX total expenses>, "community_benefit_total": <Schedule H Part I total community benefit>, "tax_exemption_value": <estimated annual tax exemption value — calculate as approximately 7.7% of total expenses if not directly stated>, "chis": <Part I Line 7e Community Health Improvement Services amount> }. ' +
+    'Also include a "source" key with a brief string describing where the data came from (e.g. "ProPublica 2023 990") and a "fiscal_year" key with the year. ' +
+    'Return ONLY the JSON object. No explanation, no markdown, no backticks.';
+
+  var requestBody = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 500,
+    system: sysPrompt,
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    messages: [{ role: 'user', content: 'Retrieve Schedule H data for ' + orgName + (orgEIN ? ' EIN ' + orgEIN : '') }]
+  };
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://api.anthropic.com/v1/messages', true);
+  xhr.setRequestHeader('content-type', 'application/json');
+  xhr.setRequestHeader('x-api-key', apiKey);
+  xhr.setRequestHeader('anthropic-version', '2023-06-01');
+  xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
+
+  xhr.onload = function() {
+    if (btn) { btn.disabled = false; btn.innerHTML = '📡 Fetch from 990'; }
+    try {
+      var data = JSON.parse(xhr.responseText);
+
+      // Extract text content from response
+      var text = '';
+      if (data.content && Array.isArray(data.content)) {
+        for (var i = 0; i < data.content.length; i++) {
+          if (data.content[i].type === 'text') text += data.content[i].text;
+        }
+      }
+
+      if (data.error) {
+        if (statusEl) {
+          statusEl.textContent = 'API error: ' + data.error.message;
+          statusEl.style.color = '#B91C1C';
+        }
+        return;
+      }
+
+      // Parse the JSON from the response
+      var jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        if (statusEl) {
+          statusEl.textContent = 'Could not parse Schedule H data from response. Try adding the EIN for a more precise lookup.';
+          statusEl.style.color = '#B91C1C';
+        }
+        return;
+      }
+
+      var result = JSON.parse(jsonMatch[0]);
+
+      // Populate the four inputs
+      function setInput(id, val) {
+        var el = document.getElementById(id);
+        if (el && val) {
+          var num = Math.round(parseFloat(val));
+          el.value = num.toLocaleString('en-US');
+        }
+      }
+
+      setInput('fs_total_exp',  result.total_expenses);
+      setInput('fs_cb_total',   result.community_benefit_total);
+      setInput('fs_tax_exempt', result.tax_exemption_value);
+      setInput('fs_chis',       result.chis);
+
+      // Recalculate immediately
+      if (typeof calcFairShare === 'function') calcFairShare();
+
+      // Show success message
+      if (statusEl) {
+        var src = result.source || 'IRS/ProPublica';
+        var yr  = result.fiscal_year || 'most recent';
+        statusEl.style.color = '#047857';
+        statusEl.innerHTML = '✓ Schedule H data loaded from <strong>' + src + '</strong> (FY ' + yr + '). ' +
+          'Review the values below and adjust if needed — then scroll down to see your KPIs.';
+      }
+
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.innerHTML = '📡 Fetch from 990'; }
+      if (statusEl) {
+        statusEl.textContent = 'Parse error: ' + e.message + '. You can still enter values manually below.';
+        statusEl.style.color = '#B91C1C';
+      }
+    }
+  };
+
+  xhr.onerror = function() {
+    if (btn) { btn.disabled = false; btn.innerHTML = '📡 Fetch from 990'; }
+    if (statusEl) {
+      statusEl.textContent = 'Network error. Ensure you are on HTTPS (GitHub Pages) not file://';
+      statusEl.style.color = '#B91C1C';
+    }
+  };
+
+  xhr.send(JSON.stringify(requestBody));
+};
+</script>
+<script>
+/* ═══ Fair Share: Fetch Schedule H from 990 via API ═════════════════════ */
+window.fetchScheduleH = async function() {
+  var orgName = (document.getElementById('fs_org_name') || {}).value || '';
+  var orgEIN  = (document.getElementById('fs_org_ein')  || {}).value || '';
+  var btn     = document.getElementById('fs_fetch_btn');
+  var status  = document.getElementById('fs_fetch_status');
+  var result  = document.getElementById('fs_fetch_result');
+  var summary = document.getElementById('fs_fetch_summary');
+  var noKey   = document.getElementById('fs_no_key_notice');
+
+  if (!orgName.trim()) {
+    if (status) { status.textContent = 'Please enter an organization name.'; status.style.color = '#B91C1C'; }
+    return;
+  }
+
+  // Check for API key
+  var apiKey = localStorage.getItem('aq_fi_key') || '';
+  apiKey = apiKey.replace(/[^\x20-\x7E]/g, '').trim();
+
+  if (!apiKey || apiKey.indexOf('sk-ant') !== 0) {
+    if (noKey) noKey.style.display = 'block';
+    if (status) { status.textContent = ''; }
+    return;
+  }
+  if (noKey) noKey.style.display = 'none';
+
+  // Loading state
+  if (btn) { btn.disabled = true; btn.textContent = 'Fetching...'; }
+  if (status) { status.textContent = 'Searching IRS TEOS and ProPublica...'; status.style.color = '#6b21a8'; }
+  if (result) result.style.display = 'none';
+
+  var sysPrompt = 'You are a healthcare finance specialist. The user wants IRS Form 990 Schedule H data for a specific nonprofit hospital. Use web search to find the most recent available 990 Schedule H filing from ProPublica Nonprofit Explorer (projects.propublica.org/nonprofits) or IRS Tax Exempt Organization Search (apps.irs.gov/app/eos). Extract these four specific dollar values from Schedule H Part I: (1) Total expenses from Form 990 Part IX Line 25 Column A, (2) Total community benefit from Schedule H Part I sum of all lines, (3) Estimated tax exemption value - calculate as approximately 7.7% of total expenses if not directly available, (4) Community Health Improvement Services spending from Schedule H Part I Line 7e. Return ONLY a JSON object with exactly these four keys and numeric values (no dollar signs, no commas): {"total_expenses": NUMBER, "cb_total": NUMBER, "tax_exempt": NUMBER, "chis": NUMBER, "fiscal_year": "YYYY", "source_url": "URL", "notes": "brief explanation"}. If you cannot find the exact values, use your best estimate based on available data and note it. Do not return anything except the JSON object.';
+
+  var userMsg = 'Find Schedule H data for: ' + orgName + (orgEIN ? ' (EIN: ' + orgEIN + ')' : '') + '. Return only the JSON object.';
+
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://api.anthropic.com/v1/messages', true);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.setRequestHeader('x-api-key', apiKey);
+    xhr.setRequestHeader('anthropic-version', '2023-06-01');
+    xhr.setRequestHeader('anthropic-dangerous-direct-browser-access', 'true');
+
+    xhr.onload = function() {
+      if (btn) { btn.disabled = false; btn.textContent = '📥 Fetch Schedule H from 990'; }
+
+      try {
+        var data = JSON.parse(xhr.responseText);
+        if (data.error) {
+          if (status) { status.textContent = 'API error: ' + data.error.message; status.style.color = '#B91C1C'; }
+          return;
+        }
+
+        // Extract text from response
+        var text = '';
+        if (data.content && Array.isArray(data.content)) {
+          data.content.forEach(function(b) { if (b.type === 'text') text += b.text; });
+        }
+
+        // Parse JSON from response
+        var jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          if (status) { status.textContent = 'Could not parse 990 data — try entering manually.'; status.style.color = '#B91C1C'; }
+          return;
+        }
+
+        var parsed = JSON.parse(jsonMatch[0]);
+
+        // Helper: format number with commas
+        function fmtNum(n) {
+          return Math.round(n).toLocaleString('en-US');
+        }
+
+        // Auto-populate the four inputs
+        function setField(id, val) {
+          var el = document.getElementById(id);
+          if (el && val) {
+            el.value = fmtNum(val);
+          }
+        }
+
+        setField('fs_total_exp',  parsed.total_expenses);
+        setField('fs_cb_total',   parsed.cb_total);
+        setField('fs_tax_exempt', parsed.tax_exempt);
+        setField('fs_chis',       parsed.chis);
+
+        // Show result summary
+        if (result) result.style.display = 'block';
+        if (summary) {
+          var yr = parsed.fiscal_year ? 'FY ' + parsed.fiscal_year + ' · ' : '';
+          var src = parsed.source_url ? ' · <a href="' + parsed.source_url + '" target="_blank" style="color:#7C3AED;">View source</a>' : '';
+          summary.innerHTML = yr +
+            'Total expenses: <strong>$' + fmtNum(parsed.total_expenses) + '</strong> · ' +
+            'Community benefit: <strong>$' + fmtNum(parsed.cb_total) + '</strong> · ' +
+            'Tax exemption est.: <strong>$' + fmtNum(parsed.tax_exempt) + '</strong> · ' +
+            'CHIS (Line 7e): <strong>$' + fmtNum(parsed.chis) + '</strong>' + src +
+            (parsed.notes ? '<br><span style="color:#64748B;font-style:italic;">' + parsed.notes + '</span>' : '');
+        }
+
+        if (status) { status.textContent = ''; }
+
+        // Trigger recalculation
+        if (typeof calcFairShare === 'function') calcFairShare();
+
+      } catch(e) {
+        if (btn) { btn.disabled = false; btn.textContent = '📥 Fetch Schedule H from 990'; }
+        if (status) { status.textContent = 'Parse error: ' + e.message; status.style.color = '#B91C1C'; }
+      }
+    };
+
+    xhr.onerror = function() {
+      if (btn) { btn.disabled = false; btn.textContent = '📥 Fetch Schedule H from 990'; }
+      if (status) { status.textContent = 'Network error — check API key and connection.'; status.style.color = '#B91C1C'; }
+    };
+
+    xhr.send(JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 800,
+      system: sysPrompt,
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      messages: [{ role: 'user', content: userMsg }]
+    }));
+
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = '📥 Fetch Schedule H from 990'; }
+    if (status) { status.textContent = 'Error: ' + e.message; status.style.color = '#B91C1C'; }
+  }
 };
 </script>
