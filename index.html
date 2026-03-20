@@ -1139,7 +1139,7 @@ button.secondary{
                   <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Your organization's total annual operating expenses</div>
                   <div style="display:flex;align-items:center;gap:4px;">
                     <span style="font-size:13px;color:var(--muted);">$</span>
-                    <input id="fs_total_exp" type="number" value="5200000000" oninput="calcFairShare()"
+                    <input id="fs_total_exp" type="text" value="5,200,000,000" oninput="fsFmt(this);calcFairShare()"
                       style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
                   </div>
                   <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Default: Mayo Clinic 2023 ($5.2B)</div>
@@ -1150,7 +1150,7 @@ button.secondary{
                   <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Sum of all Part I line items from your most recent 990</div>
                   <div style="display:flex;align-items:center;gap:4px;">
                     <span style="font-size:13px;color:var(--muted);">$</span>
-                    <input id="fs_cb_total" type="number" value="780000000" oninput="calcFairShare()"
+                    <input id="fs_cb_total" type="text" value="780,000,000" oninput="fsFmt(this);calcFairShare()"
                       style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
                   </div>
                   <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Default: Mayo Clinic estimate</div>
@@ -1161,7 +1161,7 @@ button.secondary{
                   <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Federal + state + local tax savings from nonprofit status</div>
                   <div style="display:flex;align-items:center;gap:4px;">
                     <span style="font-size:13px;color:var(--muted);">$</span>
-                    <input id="fs_tax_exempt" type="number" value="400000000" oninput="calcFairShare()"
+                    <input id="fs_tax_exempt" type="text" value="400,000,000" oninput="fsFmt(this);calcFairShare()"
                       style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
                   </div>
                   <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Estimate: ~7.7% of expenses (Lown Institute method)</div>
@@ -1172,7 +1172,7 @@ button.secondary{
                   <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">The proactive program spending category — not Medicaid shortfalls</div>
                   <div style="display:flex;align-items:center;gap:4px;">
                     <span style="font-size:13px;color:var(--muted);">$</span>
-                    <input id="fs_chis" type="number" value="42000000" oninput="calcFairShare()"
+                    <input id="fs_chis" type="text" value="42,000,000" oninput="fsFmt(this);calcFairShare()"
                       style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
                   </div>
                   <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">NEMT programs report here — this is where your project adds value</div>
@@ -3685,17 +3685,25 @@ window.previewArtifact = function(type) {
   const today = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   function fmt(n){ return (n<0?'-$':'$')+Math.abs(Math.round(n||0)).toLocaleString(); }
 
-  const isXlsx = (type === 'proforma' || type === 'kpi');
+  const isXlsx = (type === 'proforma' || type === 'kpi' || type === 'budget_narrative' || type === 'medicaid_budget');
   window._dpmCurrentType = type;
 
   // Configure toolbar
   const titles = {
-    proforma: '3-Year Pro Forma & P&L.xlsx',
-    kpi:      'NEMT KPI Dashboard.xlsx',
-    memo:     'CRA_Justification_Memo.docx',
-    term:     'Bank_Term_Sheet_Pitch_Brief.docx',
-    boarddeck:'Board_Executive_Summary.docx',
-    sla:      'Vendor_SLA_Template.docx',
+    proforma:           '3-Year Pro Forma & P&L.xlsx',
+    kpi:                'NEMT KPI Dashboard.xlsx',
+    memo:               'CRA_Justification_Memo.docx',
+    term:               'Bank_Term_Sheet_Pitch_Brief.docx',
+    boarddeck:          'Board_Executive_Summary.docx',
+    sla:                'Vendor_SLA_Template.docx',
+    loi_draft:          'Letter_of_Intent_Draft.docx',
+    budget_narrative:   'Budget_Narrative_3Year.xlsx',
+    impact_onepager:    'Impact_One_Pager.docx',
+    sf424_cover:        'SF424_Federal_Cover_Sheet.docx',
+    program_narrative:  'Federal_Program_Narrative.docx',
+    logic_model:        'Program_Logic_Model.docx',
+    medicaid_narrative: 'MN_DHS_Program_Narrative.docx',
+    medicaid_budget:    'State_Application_Budget.xlsx',
     rep:      'REP_Study_Protocol.docx',
   };
   document.getElementById('dpm-title').textContent = titles[type] || 'document';
@@ -4109,6 +4117,285 @@ function buildDocxPreview(type, D, dr, today, fmt) {
       <div class="dpm-kv"><strong>Bank acknowledgment:</strong><span>"This study was made possible by the community investment of ${bank} in Olmsted County health equity."</span></div>`);
   }
 
+  // ── Letter of Intent ──────────────────────────────────────────────────
+  if (type === 'loi_draft') {
+    const pt = (window.PROJECT_TYPES && window._projectType) ? (window.PROJECT_TYPES[window._projectType]||{}).title||'NEMT Program' : 'NEMT Program';
+    const progName = pt.replace(' selected','');
+    const netVal = fmt(D.totalNet||308000);
+    return page(`
+      <div class="dpm-confidential">DRAFT — Prepared for Foundation Review</div>
+      <div class="dpm-h1">Letter of Intent</div>
+      <div class="dpm-h2">Community Health Transportation Program — Olmsted County</div>
+      <hr class="dpm-rule">
+      <div class="dpm-meta-row">
+        <div class="dpm-kv"><strong>From:</strong><span>Mayo Clinic Community Health Division · Rochester, MN 55905</span></div>
+        <div class="dpm-kv"><strong>Program:</strong><span>${progName}</span></div>
+        <div class="dpm-kv"><strong>Amount Requested:</strong><span>${netVal} (Year 1 direct costs)</span></div>
+        <div class="dpm-kv"><strong>Project Period:</strong><span>12 months (Year 1 of 3-year sustainability plan)</span></div>
+      </div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">Organizational Credibility</div>
+      <div class="dpm-p">Mayo Clinic is a 501(c)(3) nonprofit health system serving Olmsted and Dodge Counties in southeastern Minnesota. Our 2025 Community Health Needs Assessment — conducted with 937 county residents and 27 community organizations — documents transportation as the primary barrier to care access, affecting 34% of adults. Mayo meets all three IRS 501(r)(3) community input requirements, placing us in the top 10.5% of U.S. nonprofit hospitals for CHNA process rigor (Burns et al., JAMA Network Open, 2026). The Rochester Epidemiology Project provides a 56-million-record longitudinal database enabling publication-quality outcomes attribution for any funded program.</div>
+      <div class="dpm-h2">Community Need</div>
+      <div class="dpm-p">The 2025 Olmsted County CHNA documents that 34% of adults delayed or avoided medical care due to transportation barriers. Populations most affected: residents with a disability (9.7%), foreign-born residents (11.1%), adults below the poverty threshold, and Medicaid enrollees. These groups face 2–3× higher rates of missed appointments, worse chronic disease control, and higher emergency utilization — all directly attributable to transportation gaps. Published meta-analysis (Shekelle et al., BMC Public Health, 2022; n=12 studies) demonstrates a 37% reduction in missed appointment odds with targeted NEMT, with HIGH certainty evidence.</div>
+      <div class="dpm-h2">Program Design</div>
+      <div class="dpm-p">The proposed program provides coordinated non-emergency medical transportation to LMI patients with documented transportation barriers (ICD-10 Z75.3) across Mayo Clinic's Olmsted County service area. Year 1 pilot: 200–400 targeted trips per month via vendor agreement. Patient identification via EHR-integrated FindHelp social needs screening at point of care. Trip authorization integrated into existing care coordination workflow. All patients tracked through REP-linked outcomes study.</div>
+      <div class="dpm-h2">Evaluation Plan</div>
+      <div class="dpm-p">Primary outcome: appointment show rate (intervention vs. propensity-matched control using REP records). Secondary: HbA1c and blood pressure at 12 months; 30-day readmission; ED utilization. Study design: difference-in-differences with inverse probability weighting. Publication target: Journal of General Internal Medicine. Timeline: enrollment months 1–6; analysis months 7–12; submission month 14. Funder acknowledged in all publications.</div>
+      <div class="dpm-h2">Budget Summary</div>
+      <div class="dpm-p">Total Year 1 request: <strong>${netVal}</strong>. Trip costs (3,600 trips × $65): $234,000 · Program coordination (0.5 FTE): $27,500 · Evaluation (REP linkage + analyst): $18,500 · Overhead (10%): $28,000. Sustainability: program achieves positive FFS contribution margin by Year 2; external funding covers scale-up costs only.</div>
+      <div class="dpm-p" style="margin-top:18px;font-style:italic;color:#64748B;">We welcome the opportunity to discuss this proposal further. The full application package, including our ROI model, REP study protocol, and vendor SLA template, is available upon request.</div>`);
+  }
+
+  // ── Budget Narrative (XLSX preview) ───────────────────────────────────
+  if (type === 'budget_narrative') {
+    const ffs=D.ffsNet||0, cod=D.codNet||0, ccm=D.ccmNet||0, tcm=D.tcmNet||0;
+    const tripCost = 234000, coord = 27500, eval_ = 18500, overhead = 28000;
+    const total = tripCost + coord + eval_ + overhead;
+    const yr2 = Math.round(total * 0.85), yr3 = Math.round(total * 0.60);
+    function row(label, y1, y2, y3, note, cls) {
+      const s = cls ? ` class="${cls}"` : '';
+      return `<tr${s}><td>${label}</td><td style="text-align:right">${fmt(y1)}</td><td style="text-align:right">${fmt(y2)}</td><td style="text-align:right">${fmt(y3)}</td><td style="color:#64748B;font-size:9pt">${note}</td></tr>`;
+    }
+    return `<div class="dpm-canvas excel-bg" style="padding:0">
+      <div class="dpm-page" style="padding:20px;">
+        <div class="dpm-h1" style="color:#16A34A">Budget Narrative — 3-Year Program</div>
+        <div class="dpm-h2">Mayo Clinic Community NEMT Program · Olmsted County</div>
+        <hr class="dpm-rule">
+        <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-bottom:18px;">
+          <thead><tr style="background:#16A34A;color:#fff;">
+            <th style="padding:7px 10px;text-align:left">Line Item</th>
+            <th style="padding:7px 10px;text-align:right">Year 1 (External)</th>
+            <th style="padding:7px 10px;text-align:right">Year 2 (Blended)</th>
+            <th style="padding:7px 10px;text-align:right">Year 3 (Sustainable)</th>
+            <th style="padding:7px 10px;text-align:left">Justification</th>
+          </tr></thead>
+          <tbody>
+            ${row('Trip costs (vendor)','234000','175000','100000','$65/trip · Year 2 MA billing offsets; Year 3 FFS positive','xl-inp')}
+            ${row('Program coordination (0.5 FTE)','27500','27500','27500','Care coordinator at $55K fully loaded','xl-inp')}
+            ${row('Data & evaluation (REP linkage)','18500','12000','8000','REP fee + analyst time; decreases as study matures','xl-inp')}
+            ${row('Overhead (10%)','28000','21500','13500','Negotiated de minimis rate','xl-inp')}
+            ${row('TOTAL EXTERNAL REQUEST',total,yr2,yr3,'','xl-tot')}
+            <tr><td colspan="5" style="padding:8px 10px;font-style:italic;color:#64748B;font-size:9pt">Mayo in-kind match: 0.5 FTE care coordination ($27,500/yr) + EHR integration + REP database access (~$85,000 value)</td></tr>
+            ${row('Internal FFS recovery (Layer 0)',Math.round(ffs*0.33),Math.round(ffs*0.66),ffs,'Contribution margin from prevented no-shows','xl-pos')}
+            ${row('CCM/TCM billing (Layer 2)',Math.round((ccm+tcm)*0.5),ccm+tcm,ccm+tcm,'Conservative Year 1; full capture Year 2+','xl-pos')}
+            ${row('Net program value (all layers)','—','—',fmt(D.totalNet||0),'Full sustainability by Year 3','xl-tot')}
+          </tbody>
+        </table>
+        <div class="dpm-p" style="font-size:9pt;color:#334155;"><strong>Sustainability narrative:</strong> External grant funding covers Year 1 scale-up costs only. From Year 2, Medicaid NEMT billing offsets trip costs for MA-eligible patients. By Year 3, the program achieves positive net value through FFS contribution margin recovery and CCM/TCM billing — requiring no ongoing external subsidy.</div>
+      </div></div>`;
+  }
+
+  // ── Impact One-Pager ───────────────────────────────────────────────────
+  if (type === 'impact_onepager') {
+    return page(`
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:9pt;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.08em;">Community Impact Brief</div>
+        <div class="dpm-h1" style="font-size:18pt;margin:6px 0;">Connecting Patients to Care</div>
+        <div class="dpm-h2" style="font-size:12pt;">Mayo Clinic NEMT Program · Olmsted County, MN</div>
+      </div>
+      <hr class="dpm-rule">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;text-align:center;">
+        <div style="background:#f5f3ff;border-radius:8px;padding:12px;">
+          <div style="font-size:22pt;font-weight:800;color:#7C3AED;">34%</div>
+          <div style="font-size:9pt;color:#4c1d95;">of Olmsted County adults<br>delayed care due to transportation</div>
+        </div>
+        <div style="background:#f0fdf4;border-radius:8px;padding:12px;">
+          <div style="font-size:22pt;font-weight:800;color:#16A34A;">37%</div>
+          <div style="font-size:9pt;color:#166534;">reduction in missed appointments<br>with targeted NEMT (Shekelle 2022)</div>
+        </div>
+        <div style="background:#fffbeb;border-radius:8px;padding:12px;">
+          <div style="font-size:22pt;font-weight:800;color:#D97706;">${fmt(D.totalNet||308000)}</div>
+          <div style="font-size:9pt;color:#92400E;">estimated annual net value<br>to health system</div>
+        </div>
+      </div>
+      <div class="dpm-h2">The Problem</div>
+      <div class="dpm-p">Transportation is the #1 documented barrier to care access in Olmsted County — identified by 937 residents in Mayo Clinic's 2025 CHNA. Patients who miss appointments face worse outcomes: HbA1c up to 0.79 percentage points higher, blood pressure less controlled, and readmission rates 22–32% higher. These gaps fall disproportionately on LMI residents, people with disabilities, and foreign-born populations.</div>
+      <div class="dpm-h2">The Solution</div>
+      <div class="dpm-p">A targeted Non-Emergency Medical Transportation program identifies patients with documented transport barriers at the point of care, coordinates rides through a vendor network, and tracks outcomes through the Rochester Epidemiology Project — generating both clinical benefit and peer-reviewed evidence that benefits health systems nationally.</div>
+      <div class="dpm-h2">Your Investment</div>
+      <div class="dpm-p">Year 1 funding of <strong>${fmt(D.totalNet||308000)}</strong> launches a pilot serving 400 patients and 3,600 trips. The program achieves financial sustainability by Year 3 through improved billing capture and reduced emergency utilization — making this a time-limited, high-leverage investment rather than an ongoing subsidy.</div>
+      <div class="dpm-h2">Outcomes You Can Measure</div>
+      <div class="dpm-p">Appointment show rate improvement · HbA1c and blood pressure at 12 months · 30-day readmission reduction · ED avoidance · Peer-reviewed publication (Journal of General Internal Medicine or Health Services Research) acknowledging your investment.</div>
+      <div style="margin-top:18px;padding:10px 14px;background:#f5f3ff;border-radius:6px;font-size:9pt;color:#4c1d95;text-align:center;font-style:italic;">
+        For the full financial model, regulatory documentation, and partnership term sheet, contact Mayo Clinic Community Health Division.
+      </div>`);
+  }
+
+  // ── SF-424 Federal Cover ───────────────────────────────────────────────
+  if (type === 'sf424_cover') {
+    return page(`
+      <div class="dpm-confidential">SF-424 APPLICATION FOR FEDERAL ASSISTANCE — DRAFT</div>
+      <div class="dpm-h1">Standard Form 424 (SF-424)</div>
+      <div class="dpm-h2">Application for Federal Assistance · Rev. 10/2023</div>
+      <hr class="dpm-rule">
+      <div class="dpm-meta-row">
+        <div class="dpm-kv"><strong>1. Type of Submission:</strong><span>Application</span></div>
+        <div class="dpm-kv"><strong>2. Type of Application:</strong><span>New</span></div>
+        <div class="dpm-kv"><strong>3. Date Received:</strong><span>[Agency Use Only]</span></div>
+        <div class="dpm-kv"><strong>4. Applicant Identifier:</strong><span>[Agency Use Only]</span></div>
+        <div class="dpm-kv"><strong>5a. Federal Entity Identifier:</strong><span>[Insert UEI]</span></div>
+        <div class="dpm-kv"><strong>5b. Federal Award Identifier:</strong><span>[If renewal]</span></div>
+        <div class="dpm-kv"><strong>6. Date Received by State:</strong><span>[State Use Only]</span></div>
+        <div class="dpm-kv"><strong>7. State Application Identifier:</strong><span>[State Use Only]</span></div>
+      </div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">8. Applicant Information</div>
+      <div class="dpm-meta-row">
+        <div class="dpm-kv"><strong>Legal Name:</strong><span>Mayo Clinic</span></div>
+        <div class="dpm-kv"><strong>Employer/Taxpayer ID:</strong><span>[Insert EIN]</span></div>
+        <div class="dpm-kv"><strong>Organizational Unit:</strong><span>Department of Community Health</span></div>
+        <div class="dpm-kv"><strong>Address:</strong><span>200 First Street SW, Rochester, MN 55905</span></div>
+        <div class="dpm-kv"><strong>Congressional District:</strong><span>MN-01</span></div>
+        <div class="dpm-kv"><strong>Organization Type:</strong><span>Nonprofit — 501(c)(3) Hospital</span></div>
+      </div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">9. Type of Applicant</div>
+      <div class="dpm-p">M — Nonprofit with 501(c)(3) IRS Status (Other Than Institution of Higher Education)</div>
+      <div class="dpm-h2">10. Name of Federal Agency</div>
+      <div class="dpm-p">[Insert: HRSA / CMMI / SAMHSA per applicable NOFA]</div>
+      <div class="dpm-h2">11. Catalog of Federal Domestic Assistance Number</div>
+      <div class="dpm-p">[Insert CFDA number from applicable NOFA — e.g., 93.224 for HRSA Health Centers]</div>
+      <div class="dpm-h2">12. Funding Opportunity Number &amp; Title</div>
+      <div class="dpm-p">[Insert NOFA number and title]</div>
+      <div class="dpm-h2">13. Competition Identification Number</div>
+      <div class="dpm-p">[Insert if applicable]</div>
+      <div class="dpm-h2">14. Areas Affected by Project</div>
+      <div class="dpm-p">Olmsted County, MN (FIPS 27109) · Dodge County, MN (FIPS 27039) · Rochester MSA (CBSAcode 40340)</div>
+      <div class="dpm-h2">15. Project Title</div>
+      <div class="dpm-p">Community Non-Emergency Medical Transportation Program — Olmsted County SDOH Access Initiative</div>
+      <div class="dpm-h2">16. Congressional Districts of Applicant / Project</div>
+      <div class="dpm-p">Applicant: MN-01 · Project: MN-01</div>
+      <div class="dpm-h2">17. Proposed Project Period</div>
+      <div class="dpm-meta-row">
+        <div class="dpm-kv"><strong>Start Date:</strong><span>[Insert]</span></div>
+        <div class="dpm-kv"><strong>End Date:</strong><span>[Insert — typically 36 months]</span></div>
+      </div>
+      <div class="dpm-h2">18. Estimated Funding</div>
+      <div class="dpm-meta-row">
+        <div class="dpm-kv"><strong>Federal:</strong><span>${fmt(D.totalNet||308000)}</span></div>
+        <div class="dpm-kv"><strong>Applicant Match:</strong><span>$85,000 in-kind (EHR integration + REP access + 0.5 FTE)</span></div>
+        <div class="dpm-kv"><strong>Total:</strong><span>${fmt((D.totalNet||308000) + 85000)}</span></div>
+      </div>
+      <div class="dpm-h2">19. Is Application Subject to Review by State Executive Order 12372?</div>
+      <div class="dpm-p">Yes — This application was made available to the Minnesota State Single Point of Contact on [date].</div>
+      <div class="dpm-h2">20. Delinquency on Federal Debt</div>
+      <div class="dpm-p">No.</div>
+      <div class="dpm-h2">21. Authorized Representative</div>
+      <div class="dpm-p">[Name, Title, Telephone, Email, Signature, Date — to be completed by authorized organizational representative]</div>`);
+  }
+
+  // ── Federal Program Narrative ──────────────────────────────────────────
+  if (type === 'program_narrative') {
+    return page(`
+      <div class="dpm-confidential">FEDERAL PROGRAM NARRATIVE — DRAFT · Not for public release</div>
+      <div class="dpm-h1">Program Narrative</div>
+      <div class="dpm-h2">Community Non-Emergency Medical Transportation Program · Mayo Clinic · Olmsted County, MN</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">A. Statement of Need</div>
+      <div class="dpm-p">The 2025 Olmsted County Community Health Needs Assessment documents transportation as the primary barrier to care access, affecting 34% of adults (N=937, response rate 18.7%). Federal surveillance confirms 5.8 million Americans delayed medical care due to transportation in 2017 (Wolfe, McDonald &amp; Holmes, AJPH 2020), with Medicaid enrollees, people with disabilities, and LMI populations facing 2–3× higher rates. Olmsted County-specific data show disproportionate impact on 9.7% with disability, 11.1% foreign-born residents, and residents below 200% FPL — the exact populations served by this program and targeted by this NOFA.</div>
+      <div class="dpm-p">Clinical consequences of transportation-related missed appointments are well-documented: HbA1c 0.70–0.79 percentage points higher among frequent no-shows (Karter et al., Medical Care, 2004; n=84,040); blood pressure control 36% lower odds without regular follow-up (Anum et al., BMC Cardiovascular Disorders, 2020); 30-day all-cause readmission 22–32% higher without post-discharge follow-up (Balasubramanian et al., JAMA Network Open, 2025; 83 studies). The evidence base for NEMT as an intervention is HIGH certainty (Shekelle et al., BMC Public Health, 2022): pooled OR 0.63 (95% CI 0.48–0.83) for missed appointments across 12 studies.</div>
+      <div class="dpm-h2">B. Project Objectives</div>
+      <div class="dpm-p">1. Reduce transportation-attributable missed appointments by 25% among enrolled patients within 12 months. 2. Achieve Z75.3 (transport barrier) documentation rate ≥80% for enrolled patients. 3. Demonstrate measurable HbA1c improvement in diabetic sub-cohort at 12 months. 4. Submit peer-reviewed manuscript to Journal of General Internal Medicine or Health Services Research by month 14. 5. Achieve program financial sustainability by Year 3 without ongoing external subsidy.</div>
+      <div class="dpm-h2">C. Project Design and Implementation Approach</div>
+      <div class="dpm-p"><strong>Identification:</strong> Social needs screening via FindHelp (SDOH screening integrated into EHR) at point of care. Patients flagging transportation barriers receive care coordinator outreach within 48 hours.</div>
+      <div class="dpm-p"><strong>Coordination:</strong> Trip requests entered into vendor dispatch system (Uber Health or LogistiCare). Round-trip scheduling coordinated with appointment calendar. Average trip cost $65; vendor SLA includes on-time performance ≥90%, satisfaction ≥85%.</div>
+      <div class="dpm-p"><strong>Documentation:</strong> ICD-10 Z75.3 coded at each NEMT-enabled visit. Outcomes tracked in REP-linked cohort for publication-quality attribution analysis.</div>
+      <div class="dpm-h2">D. Evaluation Plan</div>
+      <div class="dpm-p">Design: Difference-in-differences with inverse probability weighting using Rochester Epidemiology Project propensity-matched controls. Sample: 400 intervention / 800 matched controls. Primary endpoint: 12-month appointment show rate. Secondary: HbA1c, blood pressure, 30-day readmission, ED utilization. IRB protocol under preparation. Publication timeline: enrollment months 1–6; analysis 7–12; submission month 14.</div>
+      <div class="dpm-h2">E. Organizational Capacity</div>
+      <div class="dpm-p">Mayo Clinic is the largest nonprofit employer in Minnesota, with a dedicated Department of Community Health, active CHNA/CHIP compliance infrastructure, EHR integration capabilities (Epic), and exclusive access to the Rochester Epidemiology Project — a 56-million-record longitudinal database used in over 25,000 peer-reviewed publications. Mayo meets all three IRS 501(r)(3) community input requirements, placing it in the top 10.5% of U.S. nonprofit hospitals nationally.</div>`);
+  }
+
+  // ── Logic Model ────────────────────────────────────────────────────────
+  if (type === 'logic_model') {
+    function lmCol(header, items, color) {
+      return `<td style="vertical-align:top;padding:10px;border:1px solid #e2e8f0;width:20%;">
+        <div style="font-weight:700;font-size:9pt;color:${color};text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${color};">${header}</div>
+        ${items.map(i=>`<div style="font-size:9pt;color:#334155;padding:4px 0;border-bottom:1px solid #f1f5f9;">${i}</div>`).join('')}
+      </td>`;
+    }
+    return page(`
+      <div class="dpm-h1">Program Logic Model</div>
+      <div class="dpm-h2">Mayo Clinic Community NEMT Program · W.K. Kellogg Foundation Format</div>
+      <hr class="dpm-rule">
+      <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-bottom:16px;">
+        <tr>
+          ${lmCol('Inputs','Federal/philanthropic award','Mayo coordination staff (0.5 FTE)','Vendor NEMT contracts','EHR social needs screening (FindHelp)','REP longitudinal database','Community partnerships (Channel One, SERCC)','#1D4ED8')}
+          ${lmCol('Activities','Social needs screening at point of care','Transportation barrier identification (Z75.3)','Trip coordination &amp; dispatch','Patient outreach &amp; enrollment','Outcome tracking &amp; data collection','REP-linked cohort analysis','#7C3AED')}
+          ${lmCol('Outputs','3,600 NEMT trips per year','400 patients enrolled','Z-code documentation rate ≥80%','Monthly KPI dashboard reports','REP cohort assembled (400 + 800 controls)','Peer-reviewed manuscript submitted','#0A6B62')}
+          ${lmCol('Short-Term Outcomes (1 yr)','25% reduction in no-show rate','HbA1c improvement in diabetic cohort','Blood pressure improvement in hypertensive cohort','Reduction in transport-barrier documentation gaps','Patient satisfaction ≥85%','#C9A227')}
+          ${lmCol('Long-Term Outcomes (3 yr)','Sustained no-show reduction','30-day readmission decrease','ED avoidance — LMI population','Program financial sustainability','Peer-reviewed publication','Replicable model for other health systems','#047857')}
+        </tr>
+      </table>
+      <div class="dpm-h2">Assumptions</div>
+      <div class="dpm-p">Transportation barriers are a primary (not sole) driver of missed appointments for enrolled patients · Vendor NEMT services maintain quality standards per SLA · Mayo EHR screening identifies ≥70% of transport-barrier patients · REP linkage rate ≥85% for enrolled cohort</div>
+      <div class="dpm-h2">External Factors</div>
+      <div class="dpm-p">Medicaid NEMT benefit availability for MA-eligible patients · Olmsted County transportation infrastructure · Vendor capacity during peak demand · State 1115 waiver SDOH provisions (pending CMS approval)</div>`);
+  }
+
+  // ── Medicaid Program Narrative ─────────────────────────────────────────
+  if (type === 'medicaid_narrative') {
+    return page(`
+      <div class="dpm-confidential">MN DHS APPLICATION NARRATIVE — DRAFT</div>
+      <div class="dpm-h1">State Program Application Narrative</div>
+      <div class="dpm-h2">Minnesota DHS SDOH Community Investment · Mayo Clinic · Olmsted County</div>
+      <hr class="dpm-rule">
+      <div class="dpm-h2">1. Medicaid Population Need Documentation</div>
+      <div class="dpm-p">Mayo Clinic serves a Medicaid population in Olmsted County where transportation barriers are documented at 34% overall (2025 CHNA, N=937). Rates are disproportionately higher among Medical Assistance enrollees: disability (9.7%), foreign-born (11.1%), and poverty-threshold populations face 2–3× higher transportation-related care delays. ICD-10 Z75.3 social needs screening is integrated into Mayo's EHR via FindHelp. <strong>Estimated transport-barrier MA patients: [Insert = MA enrollment × 0.34 × 0.28].</strong></div>
+      <div class="dpm-h2">2. Statutory &amp; Regulatory Authority</div>
+      <div class="dpm-p">NEMT is an existing covered benefit for Medical Assistance enrollees under <strong>MN Statutes 256B.0625</strong>. This application requests supplemental SDOH community investment funding specifically for non-MA patients with documented transport barriers who are LMI-identified but not currently Medicaid-eligible — a population not covered by existing MA NEMT benefit, creating a documented gap this program addresses.</div>
+      <div class="dpm-h2">3. Clinical Evidence</div>
+      <div class="dpm-p">Shekelle et al. (BMC Public Health, 2022): 37% reduction in missed appointment odds with targeted NEMT (HIGH certainty, 12 studies). Balasubramanian et al. (JAMA Network Open, 2025): 32% reduction in 30-day all-cause readmission with outpatient follow-up (83 studies). Aligns to MN DHS Health Equity Framework priority: <em>Remove barriers to preventive and primary care access for LMI and underserved populations.</em></div>
+      <div class="dpm-h2">4. Program Design</div>
+      <div class="dpm-p">Coordinated NEMT to LMI patients with Z75.3-documented transport barriers, not covered by MA NEMT benefit. Trip coordination via vendor SLA. Patient identification via EHR FindHelp screening. Outcomes tracked through Rochester Epidemiology Project. Year 1: 200–400 trips/month. Year 2: MA-eligible patients transition to MA NEMT billing; non-MA LMI patients funded via CRA bank consortium (parallel track).</div>
+      <div class="dpm-h2">5. Sustainability Plan</div>
+      <div class="dpm-p">State funding covers Year 1 non-MA patient trip costs only. From Year 2: MA-eligible patients billed under existing Medicaid NEMT benefit (self-sustaining). Non-MA LMI patients funded via bank CRA consortium (in parallel negotiation). Program achieves full sustainability by Year 3 through FFS contribution margin recovery (${fmt(D.ffsNet||175000)}/yr estimated) and CCM/TCM billing (${fmt((D.ccmNet||0)+(D.tcmNet||0))/1}/yr). <strong>State investment generates ongoing Medicaid cost avoidance estimated at ${fmt((D.ffsNet||175000)*0.4)}/yr through reduced ED utilization and readmissions.</strong></div>
+      <div class="dpm-h2">6. Evaluation &amp; Reporting</div>
+      <div class="dpm-p">Quarterly reports to MN DHS: trip volume, show rate, Z-code documentation rate, MA enrollment conversion rate. Annual outcomes report: HbA1c, blood pressure, 30-day readmission. REP-linked peer-reviewed publication submitted by month 14, with DHS acknowledgment.</div>`);
+  }
+
+  // ── Medicaid Budget (XLSX) ─────────────────────────────────────────────
+  if (type === 'medicaid_budget') {
+    const tripCost = 234000, coord = 27500, eval_ = 18500, overhead = 28000;
+    const total = tripCost + coord + eval_ + overhead;
+    const maOffset = Math.round(total * 0.35);
+    const netState = total - maOffset;
+    function row2(label, amount, note, cls) {
+      return `<tr${cls?' class="'+cls+'"':''}><td style="padding:6px 10px">${label}</td><td style="padding:6px 10px;text-align:right">${fmt(amount)}</td><td style="padding:6px 10px;color:#64748B;font-size:9pt">${note}</td></tr>`;
+    }
+    return `<div class="dpm-canvas excel-bg" style="padding:0">
+      <div class="dpm-page" style="padding:20px;">
+        <div class="dpm-h1" style="color:#047857">State / Medicaid Application Budget</div>
+        <div class="dpm-h2">MN DHS SDOH Investment · Mayo Clinic · Olmsted County</div>
+        <hr class="dpm-rule">
+        <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-bottom:16px;">
+          <thead><tr style="background:#047857;color:#fff;">
+            <th style="padding:7px 10px;text-align:left">Budget Line</th>
+            <th style="padding:7px 10px;text-align:right">Amount</th>
+            <th style="padding:7px 10px;text-align:left">Notes</th>
+          </tr></thead>
+          <tbody>
+            <tr><td colspan="3" style="padding:6px 10px;background:#f0fdf4;font-weight:700;color:#047857">Direct Costs — External State Request</td></tr>
+            ${row2('NEMT trip costs (non-MA patients only)',tripCost,'$65/trip × 3,600 trips · MA-eligible patients billed to MA benefit','xl-inp')}
+            ${row2('Program coordination (0.5 FTE)',coord,'Care coordinator, $55K fully loaded · shared with CRA-funded program','xl-inp')}
+            ${row2('Evaluation (REP linkage + analyst)',eval_,'REP fee + 0.25 FTE analyst · shared across all funding streams','xl-inp')}
+            ${row2('Overhead (10% de minimis)',overhead,'Negotiated indirect cost rate','xl-inp')}
+            ${row2('TOTAL STATE REQUEST',total,'Year 1 only — see sustainability plan','xl-tot')}
+            <tr><td colspan="3" style="padding:6px 10px;background:#f0fdf4;font-weight:700;color:#047857">Offsets &amp; Match</td></tr>
+            ${row2('MA NEMT billing offset (Year 2)',-maOffset,'MA-eligible patients transition to existing benefit · reduces net state cost','xl-pos')}
+            ${row2('Mayo in-kind match',-85000,'EHR integration ($25K) + REP database access ($35K) + 0.5 FTE care coordination ($27K)','xl-pos')}
+            ${row2('NET STATE INVESTMENT (Year 1)',netState,'After in-kind match; declining in Years 2–3 as MA billing and FFS recovery scale up','xl-tot')}
+            <tr><td colspan="3" style="padding:6px 10px;background:#f0fdf4;font-weight:700;color:#047857">Medicaid Cost Avoidance (Program Benefit to DHS)</td></tr>
+            ${row2('ED avoidance (prevented visits × avg Medicaid ED cost)',Math.round((D.ffsNet||175000)*0.3),'Conservative 8% ED avoidance rate × $2,800 avg Medicaid ED cost','xl-pos')}
+            ${row2('Readmission reduction',Math.round((D.ffsNet||175000)*0.2),'12% readmission reduction × $15,000 avg Medicaid readmission cost','xl-pos')}
+            ${row2('Net Medicaid cost avoidance',Math.round((D.ffsNet||175000)*0.5),'Exceeds state investment by Year 2','xl-tot')}
+          </tbody>
+        </table>
+        <div class="dpm-p" style="font-size:9pt;color:#334155;"><strong>Note to DHS reviewers:</strong> This budget is structured so the state investment is fully recovered through Medicaid cost avoidance within 24 months. The program is designed to be self-sustaining by Year 3 through MA NEMT benefit billing and FFS contribution margin recovery — requiring no ongoing state subsidy.</div>
+      </div></div>`;
+  }
+
   // default — use raw text nicely formatted
   return page(`
     <div class="dpm-h1">${dr.title||'NEMT Document'}</div>
@@ -4251,6 +4538,45 @@ window.downloadArtifactFile = async function(type) {
       showToast('✓ ' + fname + ' downloaded!', true);
 
     } catch(e){ showToast('Error generating spreadsheet: '+e.message, true); console.error(e); }
+    return;
+  }
+
+  /* ─── New XLSX: Budget Narrative & Medicaid Budget ─────── */
+  if (type === 'budget_narrative' || type === 'medicaid_budget') {
+    showToast('Building Excel budget...', false);
+    const titles2 = {budget_narrative:'Budget_Narrative_3Year.xlsx', medicaid_budget:'State_Application_Budget.xlsx'};
+    try {
+      const XLSX = window.XLSX;
+      if (!XLSX) { showToast('SheetJS not loaded — try again', true); return; }
+      const wb = XLSX.utils.book_new();
+      const ffs=D.ffsNet||0, ccm=D.ccmNet||0, tcm=D.tcmNet||0;
+      const tripCost=234000, coord=27500, eval_=18500, overhead=28000, total=tripCost+coord+eval_+overhead;
+      const rows = type === 'budget_narrative'
+        ? [['Line Item','Year 1 (External)','Year 2 (Blended)','Year 3 (Sustainable)','Notes'],
+           ['Trip costs (vendor)',tripCost,Math.round(tripCost*0.75),Math.round(tripCost*0.43),'$65/trip; MA billing offsets Yr2+'],
+           ['Program coordination (0.5 FTE)',coord,coord,coord,'$55K fully loaded'],
+           ['Data & evaluation',eval_,12000,8000,'REP linkage + analyst'],
+           ['Overhead (10%)',overhead,Math.round(overhead*0.75),Math.round(overhead*0.5),'De minimis rate'],
+           ['TOTAL EXTERNAL REQUEST',total,Math.round(total*0.85),Math.round(total*0.60),''],
+           ['','','','',''],
+           ['FFS recovery (Layer 0)',Math.round(ffs*0.33),Math.round(ffs*0.66),ffs,'Prevented no-show contribution margin'],
+           ['CCM/TCM billing (Layer 2)',Math.round((ccm+tcm)*0.5),ccm+tcm,ccm+tcm,'Conservative Yr1; full Yr2+'],
+           ['Net program value','—','—',D.totalNet||0,'Full sustainability Year 3']]
+        : [['Budget Line','Amount','Notes'],
+           ['NEMT trip costs (non-MA patients)',tripCost,'$65/trip × 3,600'],
+           ['Program coordination (0.5 FTE)',coord,'Shared with CRA-funded stream'],
+           ['Evaluation (REP + analyst)',eval_,'Shared across funding streams'],
+           ['Overhead (10%)',overhead,'Negotiated indirect rate'],
+           ['TOTAL STATE REQUEST',total,'Year 1 only'],
+           ['Mayo in-kind match',-85000,'EHR + REP + 0.5 FTE'],
+           ['MA NEMT billing offset (Yr2)',-Math.round(total*0.35),'MA-eligible → existing benefit'],
+           ['NET STATE INVESTMENT',Math.round(total*0.65),'After match; declining Yr2-3'],
+           ['Medicaid cost avoidance (ED + readmission)',Math.round((D.ffsNet||175000)*0.5),'Exceeds investment by Yr2']];
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      XLSX.utils.book_append_sheet(wb, ws, 'Budget');
+      XLSX.writeFile(wb, titles2[type]);
+      showToast('Downloaded ' + titles2[type], true);
+    } catch(e) { showToast('Error: ' + e.message, true); }
     return;
   }
 
@@ -4839,7 +5165,7 @@ window.toggleFairShare = function() {
 };
 
 window.calcFairShare = function() {
-  function gv(id) { var el=document.getElementById(id); return el ? (parseFloat(el.value)||0) : 0; }
+  function gv(id) { var el=document.getElementById(id); return el ? (parseFloat((el.value||'').replace(/,/g,''))||0) : 0; }
   function fmt(n) { if(n>=1e9) return '$'+(n/1e9).toFixed(2)+'B'; if(n>=1e6) return '$'+(n/1e6).toFixed(1)+'M'; if(n>=1e3) return '$'+(n/1e3).toFixed(0)+'K'; return '$'+Math.round(n).toLocaleString(); }
   function pct(n,d) { return d ? (n/d*100).toFixed(1)+'%' : '0%'; }
 
@@ -4927,5 +5253,20 @@ window.calcFairShare = function() {
     }
     interpEl.innerHTML = '<div style="font-size:12px;color:#334155;line-height:1.8;">'+interp+'</div>';
   }
+};
+</script>
+<script>
+/* ── Fair Share comma formatting for text inputs ────────────────────── */
+window.fsFmt = function(el) {
+  var raw = el.value.replace(/[^0-9]/g, '');
+  if (!raw) return;
+  var num = parseInt(raw, 10);
+  var cursor = el.selectionStart;
+  var oldLen = el.value.length;
+  el.value = num.toLocaleString('en-US');
+  // Preserve approximate cursor position
+  var newLen = el.value.length;
+  var newCursor = cursor + (newLen - oldLen);
+  try { el.setSelectionRange(Math.max(0, newCursor), Math.max(0, newCursor)); } catch(e) {}
 };
 </script>
