@@ -2062,7 +2062,7 @@ button.secondary{
   </div>
 
   <div class="section-title" style="font-size:17px;margin-bottom:4px;">&#127775; Generative Artifact Suite &mdash; Mayo Clinic NEMT Program</div>
-          <p class="small" style="margin-bottom:14px;">Seven high-value artifacts pre-populated with 2025 Olmsted County CHNA data and your ROI model inputs. Each saves 4&ndash;8 hours of preparation. Generate, review, copy, and adapt. All financial figures pull live from the ROI model.</p>
+          <p class="small" style="margin-bottom:14px;">Five universal artifacts pre-populated with your CHNA data and ROI model — generated for every funding pathway. Select a funding pathway below for three additional funder-specific documents tailored to that application.</p>
 
           <!-- Artifact thumbnail grid -->
           <div class="doc-thumb-grid">
@@ -2085,45 +2085,6 @@ button.secondary{
                 <div class="doc-card-title">3-Year Pro Forma &amp; P&amp;L</div>
                 <div class="doc-card-desc">Full income statement · layer maturation · cumulative ROI</div>
                 <div class="doc-card-dl">👁 Preview ⬇ Download .xlsxamp; Download .xlsx</div>
-              </div>
-            </div>
-
-            <!-- 2: CRA Memo (DOCX) -->
-            <div class="doc-card" onclick="previewArtifact('memo')" title="Preview CRA Justification Memo">
-              <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e40af);">
-                <span class="doc-card-badge doc-badge-docx">DOCX</span>
-                <div class="doc-line doc-line-dk" style="width:70%;"></div>
-                <div class="doc-line" style="width:90%;"></div>
-                <div class="doc-line" style="width:85%;"></div>
-                <div class="doc-line" style="width:75%;margin-top:6px;"></div>
-                <div class="doc-line" style="width:90%;"></div>
-                <div class="doc-line" style="width:80%;"></div>
-                <div class="doc-line" style="width:65%;"></div>
-              </div>
-              <div class="doc-card-footer">
-                <div class="doc-card-title">CRA Justification Memo</div>
-                <div class="doc-card-desc">5-section OCC/FDIC-ready · CHNA citations · LMI docs</div>
-                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
-              </div>
-            </div>
-
-            <!-- 3: Term Sheet (DOCX) -->
-            <div class="doc-card" onclick="previewArtifact('term')" title="Preview Bank Term Sheet">
-              <div class="doc-card-preview" style="background:linear-gradient(135deg,#7A5C00,#B88A00);">
-                <span class="doc-card-badge doc-badge-docx">DOCX</span>
-                <div class="doc-line doc-line-dk" style="width:75%;"></div>
-                <div style="display:flex;gap:4px;margin-top:5px;">
-                  <div style="flex:1;"><div class="doc-line" style="width:100%;margin-bottom:3px;"></div><div class="doc-line" style="width:80%;"></div></div>
-                  <div style="flex:1;"><div class="doc-line" style="width:100%;margin-bottom:3px;"></div><div class="doc-line" style="width:70%;"></div></div>
-                </div>
-                <div class="doc-line" style="width:90%;margin-top:6px;"></div>
-                <div class="doc-line" style="width:70%;"></div>
-                <div class="doc-line" style="width:55%;background:rgba(255,255,255,.65);margin-top:6px;"></div>
-              </div>
-              <div class="doc-card-footer">
-                <div class="doc-card-title">Bank Term Sheet &amp; Pitch Brief</div>
-                <div class="doc-card-desc">Financial structure · reporting cadence · ROI summary</div>
-                <div class="doc-card-dl">👁 Preview ⬇ Download .docxamp; Download .docx</div>
               </div>
             </div>
 
@@ -3445,7 +3406,7 @@ window.generateMayoDraft = function(type) {
         + LINE + '\n\n'
         + 'Prepared by: Community Engagement / Finance\n'
         + 'Date: ' + today + '\n'
-        + 'Requested Action: Approve NEMT pilot program and bank CRA partnership\n\n'
+        + 'Requested Action: Approve NEMT pilot program and external funding partnership\n\n'
         + LINE + '\n'
         + 'THE STRATEGIC CASE\n'
         + LINE + '\n\n'
@@ -3468,14 +3429,14 @@ window.generateMayoDraft = function(type) {
         + '  Optimistic (Y2+)     ' + fmt(optimistic+progCost).padEnd(14)  + fmt(optimistic).padEnd(14)  + (progCost>0?(optimistic/progCost).toFixed(2)+'x':'—') + '\n\n'
         + '  Program cost:        ' + fmt(progCost) + '/year\n'
         + '  Break-even trip:     $' + beTrip + '/round trip\n'
-        + '  Bank CRA offset:     ' + fmt(bankCRA) + '/year (net outlay: ' + fmt(progCost-bankCRA) + ')\n\n'
+        + '  External funding offset: ' + fmt(bankCRA) + '/year (see Tab 05 for funder details)\n\n'
         + LINE + '\n'
         + 'COMPLIANCE & REGULATORY POSTURE\n'
         + LINE + '\n\n'
         + '  \u2022 AKS Safe Harbor: Program is structured to meet the 2016 OIG Safe\n'
         + '    Harbor for transportation of LMI patients. Legal review prior to launch.\n'
-        + '  \u2022 CRA: Bank contribution qualifies as community development activity\n'
-        + '    under OCC 12 CFR 25.23 — LMI health services, Rochester MSA AA.\n'
+        + '  \u2022 External Funding: Program structured to meet relevant funder criteria\n'
+        + '    (CRA, philanthropic, federal, or state — per selected funding pathway).\n'
         + '  \u2022 Schedule H: NEMT program directly implements CHNA Priority #1 (Access\n'
         + '    to Care) per 501(r) / IRS Form 990 Schedule H requirements.\n'
         + '  \u2022 HIPAA/BAA: Full BAA with vendor required before program launch.\n\n'
@@ -3484,7 +3445,7 @@ window.generateMayoDraft = function(type) {
         + LINE + '\n\n'
         + 'The Board approves:\n'
         + '  (1) NEMT pilot program at ' + Math.round(V).toLocaleString() + ' targeted visits/year;\n'
-        + '  (2) Bank CRA partnership with ' + bank + ' at $' + amount + '/year for ' + term + ' years;\n'
+        + '  (2) External funding partnership: $' + amount + '/year · Confirm funder and term with Finance;\n'
         + '  (3) Rochester Epidemiology Project study enrollment;\n'
         + '  (4) Quarterly board reporting on program KPIs and financial performance.\n\n'
         + 'CONFIDENTIAL DRAFT. Review with legal and finance before distribution.\n';
@@ -3746,6 +3707,10 @@ window.dpmDownload = function() {
 
 window.previewArtifact = function(type) {
   // New funder-specific artifacts don't use the text draft system
+  // Alias funder-panel types to their preview/download implementations
+  var typeAliases = {cra_memo:'memo', bank_term:'term', board_exec:'boarddeck'};
+  if (typeAliases[type]) type = typeAliases[type];
+
   var newTypes = ['loi_draft','budget_narrative','impact_onepager','sf424_cover',
     'program_narrative','logic_model','medicaid_narrative','medicaid_budget'];
   if (newTypes.indexOf(type) === -1) {
@@ -4478,6 +4443,9 @@ function buildDocxPreview(type, D, dr, today, fmt) {
    REAL FILE DOWNLOAD — .docx via docx.js CDN / .xlsx via SheetJS
    ══════════════════════════════════════════════════════════ */
 window.downloadArtifactFile = async function(type) {
+  // Alias funder-panel types
+  var dlAliases = {cra_memo:'memo', bank_term:'term', board_exec:'boarddeck'};
+  if (dlAliases[type]) type = dlAliases[type];
   // First generate the text content so _mayoCurrentDraft and _mayoROICache are fresh
   generateMayoDraft(type);
   const D  = window._mayoROICache || {};
