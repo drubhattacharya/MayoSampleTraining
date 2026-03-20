@@ -42,6 +42,9 @@ body{margin:0;padding:0;min-height:100vh;display:flex;flex-direction:column;
 .demo-brand-sub{color:rgba(255,255,255,.4);font-weight:400}
 
 .fpm-btn{background:rgba(0,21,51,.07);border:1px solid rgba(0,21,51,.18);color:var(--navy);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.pt-btn{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 10px;cursor:pointer;font-family:inherit;text-align:center;transition:all .18s;color:#1a2332;width:100%;}
+.pt-btn:hover{border-color:rgba(201,162,39,.5);background:rgba(201,162,39,.05);}
+.pt-active{border-color:#C9A227!important;background:rgba(201,162,39,.08)!important;box-shadow:0 0 0 2px rgba(201,162,39,.2);}
 .fpm-btn:hover{background:rgba(0,21,51,.13);}
 .fpm-active{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important;}
 .fp-map-panel{}
@@ -1031,8 +1034,163 @@ button.secondary{
             </div>
           </div>
 
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="primary" onclick="mayoNav('linkage')">Map CHNA &rarr; CRA Opportunities &rarr;</button>
+
+          <!-- ══ PROJECT TYPE SELECTOR ══════════════════════════════════════════ -->
+          <div style="margin-top:28px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,162,39,.3);">
+
+            <!-- Header with explanation -->
+            <div style="background:linear-gradient(135deg,#001533,#002860);padding:14px 18px;">
+              <div style="font-size:13px;font-weight:800;color:#E8C84A;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Step 1 of 6 — Choose Your Project Type</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;">Your CHNA documents multiple community health needs. The platform works for any of them — not just NEMT. Select the project you want to develop and fund. <strong style="color:#E8C84A;">Every tab, every artifact, and every funding pathway will update to match.</strong></div>
+            </div>
+
+            <div style="padding:14px 16px;background:rgba(201,162,39,.04);">
+
+              <!-- Why this matters callout -->
+              <div style="background:#fff;border:1px solid rgba(201,162,39,.2);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:18px;flex-shrink:0;">💡</span>
+                <div>
+                  <div style="font-size:12px;font-weight:700;color:#7A5C00;margin-bottom:3px;">Why this matters for your team</div>
+                  <div style="font-size:12px;color:#334155;line-height:1.6;">Each project type maps to different IRS Schedule H reporting categories, different CRA classification topics, and different funder criteria. Selecting the right type here means every application, every artifact, and every compliance narrative is pre-aligned — saving your team hours of translation work.</div>
+                </div>
+              </div>
+
+              <!-- Project type grid -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-bottom:12px;" id="pt_grid">
+
+                <button onclick="setProjectType('nemt')" id="pt_nemt" class="pt-btn pt-active">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">🚐</span>
+                  <div style="font-weight:700;font-size:12px;">Transportation / NEMT</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e · CRA Topic L</div>
+                </button>
+
+                <button onclick="setProjectType('language')" id="pt_language" class="pt-btn">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">🗣️</span>
+                  <div style="font-weight:700;font-size:12px;">Language Access / LEP</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e, 7g · CRA Topic L</div>
+                </button>
+
+                <button onclick="setProjectType('maternal')" id="pt_maternal" class="pt-btn">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">🤱</span>
+                  <div style="font-weight:700;font-size:12px;">Maternal &amp; Child Health</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e · CRA Topic L, R</div>
+                </button>
+
+                <button onclick="setProjectType('behavioral')" id="pt_behavioral" class="pt-btn">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">🧠</span>
+                  <div style="font-weight:700;font-size:12px;">Mental &amp; Behavioral Health</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e · CRA Topic L</div>
+                </button>
+
+                <button onclick="setProjectType('chronic')" id="pt_chronic" class="pt-btn">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">💊</span>
+                  <div style="font-weight:700;font-size:12px;">Chronic Disease Prevention</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e, 7h · CRA Topic L</div>
+                </button>
+
+                <button onclick="setProjectType('equity')" id="pt_equity" class="pt-btn">
+                  <span style="font-size:20px;display:block;margin-bottom:4px;">⚖️</span>
+                  <div style="font-weight:700;font-size:12px;">Health Equity (General)</div>
+                  <div style="font-size:10px;opacity:.7;margin-top:2px;">Schedule H 7e, 7i · CRA Topic L, S</div>
+                </button>
+
+              </div>
+
+              <!-- Context display — updates when type is selected -->
+              <div id="pt_context" style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 15px;font-size:12px;line-height:1.7;color:#334155;">
+                <div style="font-weight:700;color:var(--navy);margin-bottom:4px;" id="pt_ctx_title">Transportation / NEMT selected</div>
+                <div id="pt_ctx_body">The platform is currently configured for your NEMT program — the highest-leverage intervention documented in your CHNA. Transportation barriers are documented across all three of your CHIP priorities simultaneously (Access, Mental Health, Food Security), making this the strongest starting point for multi-priority CRA documentation.</div>
+                <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;" id="pt_ctx_tags">
+                  <span style="background:rgba(0,58,122,.08);color:#003A7A;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;">Schedule H: Part I Line 7e</span>
+                  <span style="background:rgba(0,58,122,.08);color:#003A7A;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;">CRA: Topic L — Health Services</span>
+                  <span style="background:rgba(13,148,136,.1);color:#0A6B62;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;">ICD-10: Z75.3 Transport Barrier</span>
+                  <span style="background:rgba(201,162,39,.12);color:#7A5C00;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;">Evidence: Shekelle 2022 (HIGH certainty)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ FAIR SHARE KPI CALCULATOR ════════════════════════════════════ -->
+          <div style="margin-top:18px;border-radius:12px;overflow:hidden;border:1px solid rgba(124,58,237,.25);">
+
+            <!-- Header -->
+            <div style="cursor:pointer;background:linear-gradient(135deg,#2e1065,#4c1d95);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;"
+              onclick="toggleFairShare()">
+              <div>
+                <div style="font-size:13px;font-weight:800;color:#E8C84A;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Fair Share Calculator</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.65);">Does your community benefit spending justify your tax-exempt status? Three KPIs that matter to your board, your auditors, and your regulators.</div>
+              </div>
+              <span id="fs_toggle_icon" style="color:rgba(255,255,255,.5);font-size:18px;margin-left:12px;flex-shrink:0;">▾</span>
+            </div>
+
+            <div id="fs_body" style="display:none;padding:16px;background:#faf5ff;">
+
+              <!-- Plain-language explainer -->
+              <div style="background:#fff;border-left:4px solid #7C3AED;border-radius:0 8px 8px 0;padding:12px 15px;margin-bottom:16px;">
+                <div style="font-size:12px;font-weight:700;color:#4c1d95;margin-bottom:5px;">What this tells you — and why it matters</div>
+                <div style="font-size:12px;color:#334155;line-height:1.7;">Every nonprofit hospital receives a tax exemption — from federal income tax, state taxes, and often property tax. In exchange, the IRS expects hospitals to provide community benefit proportional to that exemption value. The <strong>Fair Share Deficit/Surplus</strong> calculation answers the question your board and your auditors are increasingly being asked: <em>are you giving back as much as you're receiving?</em><br><br>A surplus means you're in a defensible position. A deficit means you're vulnerable to scrutiny — and more importantly, it shows where program investment would have the highest strategic return. This calculator uses your IRS 990 Schedule H data (or estimates if you don't have it handy) to give you that answer in real time.</div>
+              </div>
+
+              <!-- Three KPI inputs -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:3px;">Total expenses (from 990 Part IX)</div>
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Your organization's total annual operating expenses</div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <span style="font-size:13px;color:var(--muted);">$</span>
+                    <input id="fs_total_exp" type="number" value="5200000000" oninput="calcFairShare()"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                  </div>
+                  <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Default: Mayo Clinic 2023 ($5.2B)</div>
+                </div>
+
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:3px;">Total community benefit (Schedule H Part I)</div>
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Sum of all Part I line items from your most recent 990</div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <span style="font-size:13px;color:var(--muted);">$</span>
+                    <input id="fs_cb_total" type="number" value="780000000" oninput="calcFairShare()"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                  </div>
+                  <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Default: Mayo Clinic estimate</div>
+                </div>
+
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:3px;">Estimated tax exemption value (annual)</div>
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">Federal + state + local tax savings from nonprofit status</div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <span style="font-size:13px;color:var(--muted);">$</span>
+                    <input id="fs_tax_exempt" type="number" value="400000000" oninput="calcFairShare()"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                  </div>
+                  <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">Estimate: ~7.7% of expenses (Lown Institute method)</div>
+                </div>
+
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:3px;">Community Health Improvement Services (Line 7e)</div>
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:5px;">The proactive program spending category — not Medicaid shortfalls</div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <span style="font-size:13px;color:var(--muted);">$</span>
+                    <input id="fs_chis" type="number" value="42000000" oninput="calcFairShare()"
+                      style="width:100%;padding:6px 9px;border:1px solid rgba(124,58,237,.25);border-radius:6px;font-size:12px;font-family:inherit;background:#fff;"/>
+                  </div>
+                  <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic;">NEMT programs report here — this is where your project adds value</div>
+                </div>
+
+              </div>
+
+              <!-- Results panel -->
+              <div id="fs_results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;"></div>
+
+              <!-- Interpretation -->
+              <div id="fs_interpretation" style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 15px;font-size:12px;color:#334155;line-height:1.7;display:none;"></div>
+
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;">
+            <button class="primary" onclick="mayoNav('linkage')">Map CHNA &rarr; Funding Pathways &rarr;</button>
             <button class="secondary" onclick="window.open('https://storymaps.arcgis.com/collections/7651105f080c418891d71862b91ed210','_blank')">Open CHNA StoryMap &#8599;</button>
           </div>
         </div></div><div class="step-foot"><p class="step-bridge">You’ve seen the evidence. The next question every CFO asks is: <em>which federal regulation turns community health need into bank-eligible investment?</em> The answer is specific, citable, and already established.</p><button class="step-cont" onclick="go('linkage')">See how this becomes fundable →</button></div></section><section id="s_linkage" class="step" style="display:none">
@@ -4578,5 +4736,196 @@ window.setArtPathway = function(mode) {
   });
   var lbl = document.getElementById('apt_specific_label');
   if (lbl) lbl.textContent = labels[mode] || 'Artifacts';
+};
+</script>
+<script>
+/* ═══ Project Type Selector ══════════════════════════════════════════════ */
+var PROJECT_TYPES = {
+  nemt: {
+    title: 'Transportation / NEMT selected',
+    body: 'The platform is configured for your NEMT program — the highest-leverage intervention in your CHNA. Transportation barriers appear across all three CHIP priorities simultaneously (Access, Mental Health, Food Security), making this the strongest starting point for multi-priority documentation and the fastest path to bank CRA funding.',
+    tags: [
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'Schedule H: Part I Line 7e'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'CRA: Topic L — Health Services'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'ICD-10: Z75.3 Transport Barrier'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'Evidence: Shekelle 2022 (HIGH certainty)'}
+    ]
+  },
+  language: {
+    title: 'Language Access / LEP selected',
+    body: 'Language Access is a high-yield community benefit project because it maps to multiple IRS Schedule H categories simultaneously and directly addresses the documented LEP population gap in your CHNA. Critically, it enables conversion of non-reportable bad debt into reportable charity care — improving your Fair Share position without new clinical spending. Qualified Bilingual Staff training hours are 100% reportable under Part I Line 7e Health Professions Education.',
+    tags: [
+      {bg:'rgba(124,58,237,.08)',color:'#4c1d95',text:'Schedule H: Lines 7e, 7g, 7q'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'CRA: Topic L — Health Services'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'IRS: Bad Debt → Charity Care conversion'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'Population: LEP / Foreign-born (11.1% Olmsted)'}
+    ]
+  },
+  maternal: {
+    title: 'Maternal & Child Health selected',
+    body: 'Maternal and child health programs qualify under Schedule H Line 7e and often earn enhanced CRA credit under both Topic L (health services) and Topic R (essential community facilities). Prenatal no-show rates are documented at 20–40% nationally, with transportation as the leading barrier — making the NEMT ROI model directly applicable with adjusted visit economics.',
+    tags: [
+      {bg:'rgba(124,58,237,.08)',color:'#4c1d95',text:'Schedule H: Part I Line 7e'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'CRA: Topics L and R'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'Target: Prenatal / pediatric LMI populations'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'HRSA: MCH Title V federal funding eligible'}
+    ]
+  },
+  behavioral: {
+    title: 'Mental & Behavioral Health selected',
+    body: 'Mental health programs addressing LMI populations qualify for enhanced CRA credit and are currently the fastest-growing category for bank community development investment. Your CHNA documents 37% mental health prevalence — exceeding both Minnesota and national averages — which is unusually strong documentation. SAMHSA CCBHC and state Medicaid SDOH pilots are also active funding pathways for this project type.',
+    tags: [
+      {bg:'rgba(124,58,237,.08)',color:'#4c1d95',text:'Schedule H: Part I Line 7e'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'CRA: Topic L — Enhanced credit eligible'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'SAMHSA: CCBHC transportation benefit'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'CHNA: 37% prevalence vs. 23% MN baseline'}
+    ]
+  },
+  chronic: {
+    title: 'Chronic Disease Prevention selected',
+    body: 'Chronic disease programs — diabetes self-management, hypertension control, obesity prevention — qualify under Schedule H Line 7e and 7h (health education). The ROI model is particularly strong here because missed appointments directly worsen HbA1c and blood pressure control, creating measurable clinical outcome gaps that NEMT or other access interventions can close. MIPS quality measures 001 and 236 are directly affected.',
+    tags: [
+      {bg:'rgba(124,58,237,.08)',color:'#4c1d95',text:'Schedule H: Lines 7e, 7h'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'MIPS: Measures 001 (HbA1c) and 236 (BP)'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'Evidence: Karter 2004 — 0.70% HbA1c gap'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'VBC: Quality earn-back pathway strong'}
+    ]
+  },
+  equity: {
+    title: 'Health Equity (General) selected',
+    body: 'A general health equity program framework lets you document cross-cutting SDOH interventions that address multiple CHNA priorities at once. This is strongest when bundled with a specific intervention (like NEMT) as the anchor — the health equity framing strengthens the IRS Schedule H narrative and broadens the funder universe to include foundations and federal programs that require explicit equity language.',
+    tags: [
+      {bg:'rgba(124,58,237,.08)',color:'#4c1d95',text:'Schedule H: Lines 7e, 7i, 7g'},
+      {bg:'rgba(0,58,122,.08)',color:'#003A7A',text:'CRA: Topics L and S — LMI geography'},
+      {bg:'rgba(13,148,136,.1)',color:'#0A6B62',text:'Funders: RWJF, Kresge, AHA Foundation'},
+      {bg:'rgba(201,162,39,.12)',color:'#7A5C00',text:'IRS: Part VI narrative strengthened'}
+    ]
+  }
+};
+
+window._projectType = 'nemt';
+
+window.setProjectType = function(type) {
+  window._projectType = type;
+  // Update button states
+  Object.keys(PROJECT_TYPES).forEach(function(t) {
+    var btn = document.getElementById('pt_'+t);
+    if (btn) btn.classList.toggle('pt-active', t === type);
+  });
+  // Update context panel
+  var data = PROJECT_TYPES[type];
+  if (!data) return;
+  var title = document.getElementById('pt_ctx_title');
+  var body  = document.getElementById('pt_ctx_body');
+  var tags  = document.getElementById('pt_ctx_tags');
+  if (title) title.textContent = data.title;
+  if (body)  body.textContent  = data.body;
+  if (tags) {
+    tags.innerHTML = data.tags.map(function(tag) {
+      return '<span style="background:'+tag.bg+';color:'+tag.color+';border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;">'+tag.text+'</span>';
+    }).join('');
+  }
+};
+
+/* ═══ Fair Share Calculator ══════════════════════════════════════════════ */
+window.toggleFairShare = function() {
+  var body = document.getElementById('fs_body');
+  var icon = document.getElementById('fs_toggle_icon');
+  if (!body) return;
+  var open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  if (icon) icon.textContent = open ? '▴' : '▾';
+  if (open) calcFairShare();
+};
+
+window.calcFairShare = function() {
+  function gv(id) { var el=document.getElementById(id); return el ? (parseFloat(el.value)||0) : 0; }
+  function fmt(n) { if(n>=1e9) return '$'+(n/1e9).toFixed(2)+'B'; if(n>=1e6) return '$'+(n/1e6).toFixed(1)+'M'; if(n>=1e3) return '$'+(n/1e3).toFixed(0)+'K'; return '$'+Math.round(n).toLocaleString(); }
+  function pct(n,d) { return d ? (n/d*100).toFixed(1)+'%' : '0%'; }
+
+  var totalExp  = gv('fs_total_exp');
+  var cbTotal   = gv('fs_cb_total');
+  var taxExempt = gv('fs_tax_exempt');
+  var chis      = gv('fs_chis');
+
+  if (!totalExp || !cbTotal) return;
+
+  // KPI 1: Fair Share Surplus / Deficit
+  var fairShareSurplus = cbTotal - taxExempt;
+  var cbPct = cbTotal / totalExp * 100;
+  var fairSharePct = 5.9; // research benchmark
+
+  // KPI 2: Spending mix — CHIS as % of total CB
+  var chisPct = cbTotal ? chis / cbTotal * 100 : 0;
+
+  // KPI 3: Per capita (assume Olmsted County pop 164,784)
+  var population = 164784;
+  var perCapita = cbTotal / population;
+
+  // KPI 4: CHIS gap — what CHIS would need to be at 20% mix (academic center benchmark)
+  var chisTarget = cbTotal * 0.20;
+  var chisGap = Math.max(0, chisTarget - chis);
+
+  var resultsEl = document.getElementById('fs_results');
+  var interpEl  = document.getElementById('fs_interpretation');
+  if (!resultsEl) return;
+
+  var surplus_color = fairShareSurplus >= 0 ? '#047857' : '#B91C1C';
+  var surplus_bg    = fairShareSurplus >= 0 ? 'rgba(4,120,87,.06)' : 'rgba(185,28,28,.06)';
+  var surplus_label = fairShareSurplus >= 0 ? 'Fair Share Surplus' : 'Fair Share Deficit';
+  var surplus_note  = fairShareSurplus >= 0
+    ? 'Defensible position — community benefit exceeds tax exemption value'
+    : 'Gap to close — community benefit is less than tax exemption received';
+
+  var mix_color = chisPct >= 15 ? '#047857' : chisPct >= 8 ? '#C9A227' : '#B91C1C';
+  var mix_note  = chisPct >= 15
+    ? 'Strong proactive program mix — above academic center benchmark'
+    : chisPct >= 8
+    ? 'Moderate — room to grow proactive program spending relative to Medicaid shortfall'
+    : 'Medicaid shortfall likely dominates — high opportunity to shift toward proactive programs like NEMT';
+
+  resultsEl.innerHTML =
+    '<div style="background:'+surplus_bg+';border:1px solid '+surplus_color+'44;border-radius:8px;padding:12px 14px;">'+
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+surplus_color+';margin-bottom:4px;">'+surplus_label+'</div>'+
+      '<div style="font-size:22px;font-weight:800;color:'+surplus_color+';">'+(fairShareSurplus>=0?'+':'')+fmt(fairShareSurplus)+'</div>'+
+      '<div style="font-size:11px;color:#334155;margin-top:4px;">CB = '+pct(cbTotal,totalExp)+' of expenses &nbsp;·&nbsp; Benchmark: 5.9%</div>'+
+      '<div style="font-size:10px;color:#64748B;margin-top:3px;font-style:italic;">'+surplus_note+'</div>'+
+    '</div>'+
+    '<div style="background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:12px 14px;">'+
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4c1d95;margin-bottom:4px;">Community Health Improvement Mix</div>'+
+      '<div style="font-size:22px;font-weight:800;color:'+mix_color+';">'+chisPct.toFixed(1)+'%</div>'+
+      '<div style="font-size:11px;color:#334155;margin-top:4px;">of total CB in proactive programs &nbsp;·&nbsp; AMC benchmark: 19%+</div>'+
+      '<div style="font-size:10px;color:#64748B;margin-top:3px;font-style:italic;">'+mix_note+'</div>'+
+    '</div>'+
+    '<div style="background:rgba(13,148,136,.05);border:1px solid rgba(13,148,136,.2);border-radius:8px;padding:12px 14px;">'+
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#0A6B62;margin-bottom:4px;">Per Capita Community Benefit</div>'+
+      '<div style="font-size:22px;font-weight:800;color:#0A6B62;">'+fmt(perCapita)+'</div>'+
+      '<div style="font-size:11px;color:#334155;margin-top:4px;">per Olmsted County resident &nbsp;(pop. 164,784)</div>'+
+      '<div style="font-size:10px;color:#64748B;margin-top:3px;font-style:italic;">Measures intensity of investment relative to community size</div>'+
+    '</div>'+
+    '<div style="background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:12px 14px;">'+
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7A5C00;margin-bottom:4px;">CHIS Gap to AMC Benchmark</div>'+
+      '<div style="font-size:22px;font-weight:800;color:#7A5C00;">'+(chisGap>0?'+'+fmt(chisGap):'At benchmark')+'</div>'+
+      '<div style="font-size:11px;color:#334155;margin-top:4px;">additional Line 7e spending to reach 20% proactive mix</div>'+
+      '<div style="font-size:10px;color:#64748B;margin-top:3px;font-style:italic;">This is the opportunity your NEMT or other CHIS program directly fills</div>'+
+    '</div>';
+
+  // Interpretation narrative
+  if (interpEl) {
+    interpEl.style.display = 'block';
+    var projectName = PROJECT_TYPES[window._projectType] ? PROJECT_TYPES[window._projectType].title.replace(' selected','') : 'your program';
+    var interp = '<strong style="color:#1a2332;">What this means for your program:</strong><br><br>';
+    if (fairShareSurplus < 0) {
+      interp += 'Your community benefit spending is currently below your tax exemption value — a Fair Share Deficit of <strong>'+fmt(Math.abs(fairShareSurplus))+'</strong>. This is the number that appears in Lown Institute hospital rankings and increasingly in state regulatory reviews. A funded '+projectName+' program, documented on Schedule H Part I Line 7e, directly reduces this deficit — and unlike Medicaid shortfall, it is fully within your control to expand.<br><br>';
+    } else {
+      interp += 'Your community benefit spending exceeds your tax exemption value — a Fair Share Surplus of <strong>'+fmt(fairShareSurplus)+'</strong>. This is a strong defensive position. The strategic question is whether the <em>mix</em> is defensible — particularly the ratio of proactive community programs (Line 7e) vs. Medicaid shortfall.<br><br>';
+    }
+    if (chisPct < 15) {
+      interp += 'Your Community Health Improvement Services (Line 7e) represent <strong>'+chisPct.toFixed(1)+'%</strong> of total community benefit — below the academic medical center benchmark of ~19%. If your community benefit is dominated by Medicaid shortfall (which the IRS views as a structural byproduct rather than a proactive investment), regulators and advocacy groups may still question whether your spending is genuinely community-oriented. A '+projectName+' program adds to Line 7e — the category that matters most for demonstrating active community investment.';
+    } else {
+      interp += 'Your Community Health Improvement Services mix is above benchmark at <strong>'+chisPct.toFixed(1)+'%</strong> — a strong position. The CHIS gap to the 20% target is <strong>'+fmt(chisGap)+'</strong>, which a funded '+projectName+' program could close within 1–2 years at pilot scale.';
+    }
+    interpEl.innerHTML = '<div style="font-size:12px;color:#334155;line-height:1.8;">'+interp+'</div>';
+  }
 };
 </script>
