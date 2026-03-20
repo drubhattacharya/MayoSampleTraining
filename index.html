@@ -2203,8 +2203,9 @@ button.secondary{
             </div>
 
             <!-- CRA-specific -->
-            <div id="apt_specific_cra" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="previewArtifact('cra_memo')">
+            <div id="apt_specific_cra" style="display:grid;grid-template-columns:3fr 2fr;gap:14px;align-items:start;">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+<div class="doc-card" onclick="previewArtifact('cra_memo')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#001533,#003A7A);">
                   <div style="font-size:9px;font-weight:800;color:rgba(201,162,39,.8);text-transform:uppercase;letter-spacing:.1em;">CRA Memo</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">CRA Justification Memo</div>
@@ -2228,11 +2229,36 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-strong" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">1-page board brief</span></div>
               </div>
+              </div>
+              <div style="background:rgba(0,21,51,.04);border:1px solid rgba(0,21,51,.15);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:280px;">
+                <div style="font-size:12px;font-weight:700;color:#001533;border-bottom:1px solid rgba(0,21,51,.15);padding-bottom:8px;margin-bottom:2px;">Bank / CRA Artifact Set — How to Use</div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#001533;margin-bottom:3px;">What these documents do</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">These three documents constitute the complete package for a bank CRA officer. Together they answer the four questions every CRA examiner asks: What is the activity? Does it qualify? What are the terms? Has the board approved it?</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#001533;margin-bottom:3px;">Who receives them</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">CRA Compliance Officer at target bank · Bank Community Development VP · Mayo Finance and Legal (internal review first)</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#001533;margin-bottom:3px;">Submission sequence</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">1. Legal reviews CRA Memo for AKS compliance. 2. Finance confirms Term Sheet figures against ROI model. 3. Board adopts Implementation Strategy (Board Summary supports this vote). 4. Submit package to bank CRA officer with your CHNA attached.</div>
+                </div>
+                
+                <div style="background:rgba(185,28,28,.05);border-left:3px solid #B91C1C;border-radius:0 6px 6px 0;padding:7px 10px;">
+                  <div style="font-size:10px;font-weight:700;color:#B91C1C;margin-bottom:2px;">Watch out</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">Never submit the Term Sheet before Mayo Legal has reviewed the Anti-Kickback Safe Harbor structure. The CRA Memo cites 12 CFR 25.04(c)(3) — confirm the bank's assessment area covers your service ZIP codes.</div>
+                </div>
+              </div>
             </div>
 
             <!-- Philanthropy-specific -->
-            <div id="apt_specific_phil" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="previewArtifact('loi_draft')">
+            <div id="apt_specific_phil" style="display:none;grid-template-columns:3fr 2fr;gap:14px;align-items:start;">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+<div class="doc-card" onclick="previewArtifact('loi_draft')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#3b0764,#6d28d9);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">LOI Draft</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Letter of Intent</div>
@@ -2256,11 +2282,36 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#7C3AED;color:#fff;">DOCX</span><span style="font-size:10px;color:var(--muted);">1-page program brief</span></div>
               </div>
+              </div>
+              <div style="background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:280px;">
+                <div style="font-size:12px;font-weight:700;color:#3b0764;border-bottom:1px solid rgba(124,58,237,.2);padding-bottom:8px;margin-bottom:2px;">Philanthropy Artifact Set — How to Use</div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#3b0764;margin-bottom:3px;">What these documents do</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">The LOI, Budget Narrative, and Impact One-Pager form a complete foundation submission package. The LOI opens the relationship, the Budget Narrative justifies the ask, and the One-Pager serves as the leave-behind or email attachment.</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#3b0764;margin-bottom:3px;">Who receives them</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">Program Officer at target foundation · Mayo Community Health VP (LOI signatory) · Finance (budget validation before submission)</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#3b0764;margin-bottom:3px;">Submission sequence</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">1. Confirm foundation's current grant cycle is open (check Funder Intelligence in Tab 05). 2. Finance validates budget figures. 3. VP Community Health signs LOI. 4. Submit LOI + One-Pager first; budget narrative only if invited to full proposal.</div>
+                </div>
+                
+                <div style="background:rgba(185,28,28,.05);border-left:3px solid #B91C1C;border-radius:0 6px 6px 0;padding:7px 10px;">
+                  <div style="font-size:10px;font-weight:700;color:#B91C1C;margin-bottom:2px;">Watch out</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">Most foundations require LOI approval before accepting a full proposal. Do not submit the Budget Narrative cold — it signals inexperience with foundation culture. Lead with the One-Pager and LOI only.</div>
+                </div>
+              </div>
             </div>
 
             <!-- Federal-specific -->
-            <div id="apt_specific_fed" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="previewArtifact('sf424_cover')">
+            <div id="apt_specific_fed" style="display:none;grid-template-columns:3fr 2fr;gap:14px;align-items:start;">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+<div class="doc-card" onclick="previewArtifact('sf424_cover')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#1D4ED8,#1e3a8a);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">SF-424</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">SF-424 Cover Sheet</div>
@@ -2284,11 +2335,36 @@ button.secondary{
                 </div>
                 <div class="doc-card-meta"><span class="badge b-mod" style="font-size:9px;">DOCX</span><span style="font-size:10px;color:var(--muted);">W.K. Kellogg format</span></div>
               </div>
+              </div>
+              <div style="background:rgba(29,78,216,.04);border:1px solid rgba(29,78,216,.2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:280px;">
+                <div style="font-size:12px;font-weight:700;color:#1D4ED8;border-bottom:1px solid rgba(29,78,216,.2);padding-bottom:8px;margin-bottom:2px;">Federal Application Artifact Set — How to Use</div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1D4ED8;margin-bottom:3px;">What these documents do</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">The SF-424 Cover, Program Narrative, and Logic Model are the three core components of most HHS, HRSA, and CMMI applications. These align to standard NOFA requirements — they must be supplemented with agency-specific attachments from the applicable NOFA.</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1D4ED8;margin-bottom:3px;">Who receives them</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">Federal Grants Officer at HRSA / CMMI / SAMHSA · Mayo Sponsored Research / Grants Administration · Finance (budget period, indirect cost rate) · Legal (assurances and certifications)</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1D4ED8;margin-bottom:3px;">Submission sequence</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">1. Identify the specific NOFA and CFDA number (use Funder Intelligence in Tab 05). 2. Grants Administration confirms UEI registration is current in SAM.gov. 3. Insert CFDA and NOFA number into SF-424 bracketed fields. 4. Logic Model must match the narrative exactly — reviewer cross-checks them.</div>
+                </div>
+                
+                <div style="background:rgba(185,28,28,.05);border-left:3px solid #B91C1C;border-radius:0 6px 6px 0;padding:7px 10px;">
+                  <div style="font-size:10px;font-weight:700;color:#B91C1C;margin-bottom:2px;">Watch out</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">Federal applications require active SAM.gov registration. Renewal takes up to 10 business days — check status before NOFA deadline. Budget must include negotiated indirect cost rate or use 10% de minimis. Assurances page (SF-424B) required but not included — download from grants.gov.</div>
+                </div>
+              </div>
             </div>
 
             <!-- State-specific -->
-            <div id="apt_specific_state" style="display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="doc-card" onclick="previewArtifact('medicaid_narrative')">
+            <div id="apt_specific_state" style="display:none;grid-template-columns:3fr 2fr;gap:14px;align-items:start;">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+<div class="doc-card" onclick="previewArtifact('medicaid_narrative')">
                 <div class="doc-card-preview" style="background:linear-gradient(135deg,#047857,#065f46);">
                   <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;">MN DHS</div>
                   <div style="font-size:11px;font-weight:700;color:#fff;margin-top:4px;">Medicaid Program Narrative</div>
@@ -2305,8 +2381,31 @@ button.secondary{
                 <div class="doc-card-meta"><span class="badge" style="font-size:9px;background:#047857;color:#fff;">XLSX</span><span style="font-size:10px;color:var(--muted);">DHS budget template</span></div>
               </div>
             </div>
-
-          </div><!-- /funder-specific artifacts -->
+              </div>
+              <div style="background:rgba(4,120,87,.04);border:1px solid rgba(4,120,87,.2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:280px;">
+                <div style="font-size:12px;font-weight:700;color:#047857;border-bottom:1px solid rgba(4,120,87,.2);padding-bottom:8px;margin-bottom:2px;">State / Medicaid Artifact Set — How to Use</div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#047857;margin-bottom:3px;">What these documents do</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">The MN DHS Program Narrative and State Budget are structured for Minnesota Medicaid SDOH investment applications and waiver documentation. The budget highlights Medicaid cost avoidance — the metric MN DHS uses to evaluate SDOH program ROI.</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#047857;margin-bottom:3px;">Who receives them</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">MN DHS SDOH Program Coordinator · Mayo Government Relations / Medicaid Contracting · Finance (MA enrollment data, CCR calculation) · Legal (waiver compliance and MCO contract alignment)</div>
+                </div>
+                
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#047857;margin-bottom:3px;">Submission sequence</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">1. Confirm current DHS SDOH investment cycle with Mayo Government Relations. 2. Finance inserts actual MA enrollment count into narrative (see bracketed field). 3. Calculate CCR (Cost-to-Charge Ratio) for Schedule H reporting alignment. 4. Submit narrative with your 2025 CHNA attached as supporting documentation.</div>
+                </div>
+                
+                <div style="background:rgba(185,28,28,.05);border-left:3px solid #B91C1C;border-radius:0 6px 6px 0;padding:7px 10px;">
+                  <div style="font-size:10px;font-weight:700;color:#B91C1C;margin-bottom:2px;">Watch out</div>
+                  <div style="font-size:11px;color:#334155;line-height:1.65;">The narrative notes MN NEMT is an existing MA benefit (MN Stat. 256B.0625) — this is the key distinction from other funders. Frame the ask as supplemental investment for non-MA LMI patients, not a substitute for the existing benefit. DHS reviewers will flag any conflation of the two.</div>
+                </div>
+              </div>
+            </div><!-- /funder-specific artifacts -->
 
           <!-- ══ ACTIONABLE INSIGHTS ═══════════════════════════════════════ -->
           <div style="margin-top:24px;border-radius:12px;background:linear-gradient(135deg,rgba(0,21,51,.04),rgba(0,58,122,.06));border:1px solid rgba(0,58,122,.12);padding:18px 20px;">
