@@ -2308,9 +2308,44 @@ button.secondary{
 
           </div><!-- /funder-specific artifacts -->
 
-            <button class="secondary" onclick="mayoNav('banks')">&larr; Back to Banks</button>
-            <button class="secondary" onclick="mayoNav('roi')">&#128200; Adjust ROI Inputs</button>
-            <button class="primary" onclick="mayoNav('chna')">&#8635; Review CHNA Evidence</button>
+          <!-- ══ ACTIONABLE INSIGHTS ═══════════════════════════════════════ -->
+          <div style="margin-top:24px;border-radius:12px;background:linear-gradient(135deg,rgba(0,21,51,.04),rgba(0,58,122,.06));border:1px solid rgba(0,58,122,.12);padding:18px 20px;">
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--navy);margin-bottom:14px;">Before You Share These Documents</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;" id="tab6_insights">
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#047857;margin-bottom:4px;">✓ Confirm your ROI inputs</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">Every dollar figure in these documents pulls live from your Tab 03 model. If you've changed a payment model, trip cost, or FFS rate, regenerate from Tab 03 first — then return here to download.</div>
+              </div>
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#1D4ED8;margin-bottom:4px;">✓ Legal review before any external distribution</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">The CRA Memo, Term Sheet, LOI, and Federal Narrative are drafts. Have your General Counsel review Anti-Kickback Safe Harbor compliance and funder-specific representations before sending to any bank, foundation, or federal program officer.</div>
+              </div>
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#7C3AED;margin-bottom:4px;">✓ Customize bracketed placeholders</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">Several documents contain <code style="background:#f1f5f9;padding:1px 4px;border-radius:3px;font-size:10px;">[BANK NAME]</code>, <code style="background:#f1f5f9;padding:1px 4px;border-radius:3px;font-size:10px;">[INSERT EIN]</code>, and similar fields. Search for <code style="background:#f1f5f9;padding:1px 4px;border-radius:3px;font-size:10px;">[</code> in each downloaded file and replace all before distribution.</div>
+              </div>
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#C9A227;margin-bottom:4px;">✓ REP study — IRB pathway first</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">The REP Study Protocol should be reviewed with Mayo IRB and REP administration before it is shared externally. The protocol notes a likely QI/program evaluation exemption, but this must be confirmed by IRB — not assumed.</div>
+              </div>
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#047857;margin-bottom:4px;">✓ Board approval documented</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">The IRS requires the Board of Directors to formally adopt the Implementation Strategy. The Board Executive Summary is designed to support that vote — ensure the motion language matches your CHIP documentation before presenting.</div>
+              </div>
+
+              <div style="background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px 14px;">
+                <div style="font-size:11px;font-weight:700;color:#B91C1C;margin-bottom:4px;">✓ Do not share the Pro Forma externally as-is</div>
+                <div style="font-size:11px;color:#334155;line-height:1.6;">The 3-Year Pro Forma uses model defaults and should be validated against your actual cost structure by Finance before it becomes a board or funder commitment. The figures are directionally sound — they are not audited financial projections.</div>
+              </div>
+
+            </div>
+          </div>
+
           </div>
         </div></div><div class="step-foot step-cta"><div class="cta-wrap"><blockquote class="cta-quote"><span class="cta-qm">“</span>We are your partner. We have all the tools you need, all in one place. <strong>You can do it yourself. You can have us help you.</strong> We’re here to enable the kind of population health outcomes your community deserves.<span class="cta-qm">”</span></blockquote><div class="cta-btns"><button class="cta-primary" onclick="alert('Contact info@aqueducthealth.com to begin your Aqueduct Partnership engagement.')">Begin Your Aqueduct Partnership →</button><button class="cta-ghost" onclick="go('chna')">↻ Review from Start</button></div></div></div></section>
 </section>
